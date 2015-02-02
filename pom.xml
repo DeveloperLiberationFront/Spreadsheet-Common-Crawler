@@ -51,6 +51,8 @@
           </execution>
         </executions>
         <configuration>
+		  <source>1.7</source>
+          <target>1.7</target>
           <mainClass>net.barik.spreadsheet.SpreadsheetJob</mainClass>
         </configuration>
       </plugin>
