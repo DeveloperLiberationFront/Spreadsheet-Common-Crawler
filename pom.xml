@@ -7,8 +7,8 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>AWS SDK for Java Sample</name>
-  <url>http://aws.amazon.com/sdkforjava</url>
+  <name>Spreadsheet Common Crawler</name>
+  <url>https://github.com/DeveloperLiberationFront/Spreadsheet-Common-Crawler</url>
 
   <dependencies>
     <dependency>
@@ -51,7 +51,7 @@
           </execution>
         </executions>
         <configuration>
-          <mainClass>net.barik.spreadsheet.S3Load</mainClass>
+          <mainClass>net.barik.spreadsheet.SpreadsheetJob</mainClass>
         </configuration>
       </plugin>
     </plugins>
