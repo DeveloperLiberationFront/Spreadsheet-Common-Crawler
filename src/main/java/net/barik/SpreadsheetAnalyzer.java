@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -60,19 +61,31 @@ public class SpreadsheetAnalyzer {
                             break;
                         
                         case Cell.CELL_TYPE_FORMULA:
-                        	System.out.print(cell.getCellFormula());
+                        	handleFormulas(cell);
                         	break;
-                        
                         }
+                   
                     }
                 }
 				System.out.println();
 			}
 		}
 		
+	private void handleFormulas(Cell cell) {
+    	String s = cell.getCellFormula();
+    	if (s.startsWith("#")) {
+    		inputCellCounts.put(InputCellType.ERROR, 
+            		incrementOrInitialize(inputCellCounts.get(InputCellType.ERROR)));
+    	}
+	}
+
 	private void handleInputCell(Cell cell) {
-		//TODO dates
 		if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+			if (DateUtil.isCellDateFormatted(cell)) {
+				inputCellCounts.put(InputCellType.DATE, 
+	            		incrementOrInitialize(inputCellCounts.get(InputCellType.DATE)));
+				return;
+			}
 			double d = cell.getNumericCellValue();
 	    	if (Math.rint(d) == d) {  //integer check from http://stackoverflow.com/a/9898613/1447621
 	    		inputCellCounts.put(InputCellType.INTEGER, 
