@@ -6,6 +6,8 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -20,6 +22,8 @@ public class SpreadsheetAnalyzer {
 	private Workbook workbook;
 	private Map<InputCellType, Integer> inputCellCounts = new EnumMap<>(InputCellType.class);
 	private Map<String, Integer> functionCounts = new HashMap<>();
+	
+	private final Pattern findFunctions = Pattern.compile("\\p{Upper}+\\(");
 
 	private SpreadsheetAnalyzer(Workbook wb) {
 		this.workbook = wb;
@@ -76,7 +80,14 @@ public class SpreadsheetAnalyzer {
     	if (s.startsWith("#")) {
     		inputCellCounts.put(InputCellType.ERROR, 
             		incrementOrInitialize(inputCellCounts.get(InputCellType.ERROR)));
-    	}
+		} else {
+			Matcher m = findFunctions.matcher(s);
+			while(m.find()) {
+				String function = m.group();
+				function = function.substring(0, function.length()-1);
+				functionCounts.put(function, incrementOrInitialize(functionCounts.get(function)));
+			}
+		}
 	}
 
 	private void handleInputCell(Cell cell) {
