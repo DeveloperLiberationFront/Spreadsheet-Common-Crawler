@@ -10,15 +10,15 @@ import net.barik.SpreadsheetAnalyzer.InputCellType;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestSpreadsheetAnalyzer {
+public class TestEusesAnalysis_small {
 	
 	private static SpreadsheetAnalyzer analyzer;
 
 	@BeforeClass
 	public static void loadSmallWorksheet() throws Exception{
-		InputStream is = TestSpreadsheetAnalyzer.class.getResourceAsStream("/small-worksheet.xlsx");
+		InputStream is = TestEusesAnalysis_small.class.getResourceAsStream("/small-worksheet.xlsx");
 		assertNotNull(is);
-		analyzer = SpreadsheetAnalyzer.parse(is);
+		analyzer = SpreadsheetAnalyzer.doEUSESAnalysis(is);
 		assertNotNull(analyzer);
 		
 	}
