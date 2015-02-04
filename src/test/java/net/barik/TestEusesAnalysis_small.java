@@ -94,7 +94,7 @@ public class TestEusesAnalysis_small {
 		Map<String, Integer> counts = analyzer.getFunctionCounts();
 		Integer count = counts.get("COUNT");
 		assertNotNull(count);
-		assertEquals(1, count.intValue());
+		assertEquals(2, count.intValue());
 	}
 	
 	@Test
