@@ -25,59 +25,92 @@ public class TestEusesAnalysis_small {
 
 	
 	@Test
-	public void testCountingSum() throws Exception {
-		Map<String, Integer> counts = analyzer.getFunctionCounts();
-		Integer sumCounts = counts.get("SUM");
-		assertNotNull(sumCounts);
-		assertEquals(13, sumCounts.intValue());
-	}
-	
-	@Test
 	public void testCountingIntInput() throws Exception {
 		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputCellCounts();
-		Integer sumCounts = counts.get(InputCellType.INTEGER);
-		assertNotNull(sumCounts);
-		assertEquals(36, sumCounts.intValue());
+		Integer count = counts.get(InputCellType.INTEGER);
+		assertNotNull(count);
+		assertEquals(36, count.intValue());
 	}
 	
 	@Test
 	public void testCountingDateInput() throws Exception {
 		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputCellCounts();
-		Integer sumCounts = counts.get(InputCellType.DATE);
-		assertNotNull(sumCounts);
-		assertEquals(1, sumCounts.intValue());
+		Integer count = counts.get(InputCellType.DATE);
+		assertNotNull(count);
+		assertEquals(1, count.intValue());
 	}
 	
 	@Test
 	public void testCountingBooleanInput() throws Exception {
 		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputCellCounts();
-		Integer sumCounts = counts.get(InputCellType.BOOLEAN);
-		assertNotNull(sumCounts);
-		assertEquals(2, sumCounts.intValue());
+		Integer count = counts.get(InputCellType.BOOLEAN);
+		assertNotNull(count);
+		assertEquals(2, count.intValue());
 	}
 	
 	@Test
 	public void testCountingStringInput() throws Exception {
 		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputCellCounts();
-		Integer sumCounts = counts.get(InputCellType.STRING);
-		assertNotNull(sumCounts);
-		assertEquals(5, sumCounts.intValue());
+		Integer count = counts.get(InputCellType.STRING);
+		assertNotNull(count);
+		assertEquals(5, count.intValue());
 	}
 	
 	@Test
 	public void testCountingNonIntInput() throws Exception {
 		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputCellCounts();
-		Integer sumCounts = counts.get(InputCellType.NON_INTEGER_NUMBER);
-		assertNotNull(sumCounts);
-		assertEquals(1, sumCounts.intValue());
+		Integer count = counts.get(InputCellType.NON_INTEGER_NUMBER);
+		assertNotNull(count);
+		assertEquals(1, count.intValue());
 	}
 	
 	@Test
 	public void testCountingErrorInput() throws Exception {
 		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputCellCounts();
-		Integer sumCounts = counts.get(InputCellType.ERROR);
-		assertNotNull(sumCounts);
-		assertEquals(1, sumCounts.intValue());
+		Integer count = counts.get(InputCellType.ERROR);
+		assertNotNull(count);
+		assertEquals(1, count.intValue());
+	}
+
+
+	@Test
+	public void testCountingSum() throws Exception {
+		Map<String, Integer> counts = analyzer.getFunctionCounts();
+		Integer count = counts.get("SUM");
+		assertNotNull(count);
+		assertEquals(13, count.intValue());
+	}
+	
+	@Test
+	public void testCountingPower() throws Exception {
+		Map<String, Integer> counts = analyzer.getFunctionCounts();
+		Integer count = counts.get("POWER");
+		assertNotNull(count);
+		assertEquals(130, count.intValue());
+	}
+	
+	@Test
+	public void testCountingCount() throws Exception {
+		Map<String, Integer> counts = analyzer.getFunctionCounts();
+		Integer count = counts.get("COUNT");
+		assertNotNull(count);
+		assertEquals(1, count.intValue());
+	}
+	
+	@Test
+	public void testCountingLog() throws Exception {
+		Map<String, Integer> counts = analyzer.getFunctionCounts();
+		Integer count = counts.get("LOG");
+		assertNotNull(count);
+		assertEquals(13, count.intValue());
+	}
+	
+	@Test
+	public void testCountingMax() throws Exception {
+		Map<String, Integer> counts = analyzer.getFunctionCounts();
+		Integer count = counts.get("MAX");
+		assertNotNull(count);
+		assertEquals(13, count.intValue());
 	}
 
 }
