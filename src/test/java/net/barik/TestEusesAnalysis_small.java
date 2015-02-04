@@ -112,5 +112,49 @@ public class TestEusesAnalysis_small {
 		assertNotNull(count);
 		assertEquals(13, count.intValue());
 	}
+	
+	@Test
+	public void testReferencesBooleanInput() throws Exception {
+		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputReferences();
+		Integer count = counts.get(InputCellType.BOOLEAN);
+		assertNull(count);
+	}
+	
+	@Test
+	public void testReferencesIntInput() throws Exception {
+		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputReferences();
+		Integer count = counts.get(InputCellType.INTEGER);
+		assertNotNull(count);
+		assertEquals(36, count.intValue());
+	}
+	
+	@Test
+	public void testReferencesNonIntInput() throws Exception {
+		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputReferences();
+		Integer count = counts.get(InputCellType.NON_INTEGER_NUMBER);
+		assertNull(count);
+	}
+	
+	@Test
+	public void testReferencesStringInput() throws Exception {
+		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputReferences();
+		Integer count = counts.get(InputCellType.STRING);
+		assertNull(count);
+	}
+	
+	@Test
+	public void testReferencesDateInput() throws Exception {
+		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputReferences();
+		Integer count = counts.get(InputCellType.DATE);
+		assertNull(count);
+	}
+	
+	@Test
+	public void testReferencesErrorInput() throws Exception {
+		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputReferences();
+		Integer count = counts.get(InputCellType.ERROR);
+		assertNull(count);
+	}
+	
 
 }

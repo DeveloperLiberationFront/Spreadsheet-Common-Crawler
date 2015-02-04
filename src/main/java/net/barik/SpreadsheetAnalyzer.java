@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.barik.SpreadsheetAnalyzer.InputCellType;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -22,6 +24,7 @@ public class SpreadsheetAnalyzer {
 	private Workbook workbook;
 	private Map<InputCellType, Integer> inputCellCounts = new EnumMap<>(InputCellType.class);
 	private Map<String, Integer> functionCounts = new HashMap<>();
+	private Map<InputCellType, Integer> referencedInputCells = new EnumMap<>(InputCellType.class);
 	
 	private final Pattern findFunctions = Pattern.compile("\\p{Upper}+\\(");
 
@@ -138,6 +141,10 @@ public class SpreadsheetAnalyzer {
 			}
 			return null;
 		}
+	}
+
+	public Map<InputCellType, Integer> getInputReferences() {
+		return referencedInputCells;
 	}
 
 }
