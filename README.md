@@ -34,5 +34,6 @@ Here is a screenshot of the log when "slave 3" picked up a build job:
 
 Our Jenkins config file and the config file for our job are found under `jenkins/`.
 
+
 To make an Eclipse project with the sources and javadocs linked:  
 `mvn eclipse:eclipse -DdownloadSources=true  -DdownloadJavadocs=true`
