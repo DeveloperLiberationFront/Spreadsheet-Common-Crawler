@@ -170,5 +170,11 @@ public class TestEusesAnalysis_small {
 		assertNotNull(count);
 		assertEquals(145, count.intValue());
 	}
+	
+	@Test
+	public void testCountingFormulasThatReferenceOtherCells() throws Exception {
+		int count = analyzer.getFormulaReferences();
+		assertEquals(158, count);
+	}
 
 }

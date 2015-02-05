@@ -358,6 +358,11 @@ public class SpreadsheetAnalyzer {
 			return true;
 		}
 		
-		
+			
+	}
+
+	public int getFormulaReferences() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
