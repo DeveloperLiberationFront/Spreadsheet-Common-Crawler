@@ -11,8 +11,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.barik.SpreadsheetAnalyzer.InputCellType;
-
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -27,8 +25,11 @@ public class SpreadsheetAnalyzer {
 	
 	private Workbook workbook;
 	
-	private Map<SheetLocation, InputCellPackage> inputCellByReferenceMap = new HashMap<>();
-	private Map<String, Set<InputCellPackage>> inputCellMap = new HashMap<>();
+	private Map<SheetLocation, InputCellReferencePackage> inputCellByReferenceMap = new HashMap<>();
+	private Map<String, Set<InputCellReferencePackage>> inputCellMap = new HashMap<>();		//maps sheet name to inputCellPackage
+	
+	private Map<SheetLocation, CellReferencePackage> formulaCellByReferenceMap = new HashMap<>();
+	private Map<String, Set<CellReferencePackage>> formulaCellMap = new HashMap<>();		//maps sheet name to formulaCellPackage
 	
 	private Map<InputCellType, Integer> inputCellCounts = new EnumMap<>(InputCellType.class);
 	private Map<String, Integer> functionCounts = new HashMap<>();
@@ -44,6 +45,8 @@ public class SpreadsheetAnalyzer {
 	private int formulasThatReferenceOtherCells;
 
 	private Map<InputCellType, Integer>  referencedInputCells;
+
+	private int formulasReferencedByOtherCells;
 
 	private SpreadsheetAnalyzer(Workbook wb) {
 		this.workbook = wb;
@@ -101,8 +104,8 @@ public class SpreadsheetAnalyzer {
 						inputCellCounts.put(lastInputCellType,
 								incrementOrInitialize(inputCellCounts.get(lastInputCellType)));
 
-						InputCellPackage inputCellPackage = new InputCellPackage(cell, lastInputCellType);
-						Set<InputCellPackage> oldSet = inputCellMap.get(currentSheet.getSheetName());
+						InputCellReferencePackage inputCellPackage = new InputCellReferencePackage(cell, lastInputCellType);
+						Set<InputCellReferencePackage> oldSet = inputCellMap.get(currentSheet.getSheetName());
 						if (oldSet == null) {
 							oldSet = new HashSet<>();
 							inputCellMap.put(currentSheet.getSheetName(), oldSet);
@@ -136,27 +139,39 @@ public class SpreadsheetAnalyzer {
 	}
 	
 	private void handleFormulas(Cell cell) {
+		addFormulaToReferenceMaps(cell);
+		
     	//Formula cell evaluation type
 		FunctionEvalType evaluatingType = getAndConvertCachedType(cell);
 		if (evaluatingType != null){ //Null signals function or blank from call to fromCellType
-			evalTypeCounts.put(evaluatingType,
-					incrementOrInitialize(evalTypeCounts.get(evaluatingType)));
+			evalTypeCounts.put(evaluatingType,incrementOrInitialize(evalTypeCounts.get(evaluatingType)));
 		}
-	
 		
-		
-		String s = cell.getCellFormula();
-    	if (s.startsWith("#")) {
+		String functionString = cell.getCellFormula();
+    	if (functionString.startsWith("#")) {
     		lastInputCellType = InputCellType.ERROR;
 		} else {
-			
-			
-			Matcher m = findFunctions.matcher(s);
-			while(m.find()) {
-				String function = m.group();
-				function = function.substring(0, function.length()-1);
-				functionCounts.put(function, incrementOrInitialize(functionCounts.get(function)));
-			}
+			findFunctionsUsed(functionString);
+		}
+	}
+
+	private void addFormulaToReferenceMaps(Cell cell) {
+		CellReferencePackage inputCellPackage = new CellReferencePackage(cell);
+		Set<CellReferencePackage> oldSet = formulaCellMap.get(currentSheet.getSheetName());
+		if (oldSet == null) {
+			oldSet = new HashSet<>();
+			formulaCellMap.put(currentSheet.getSheetName(), oldSet);
+		}
+		oldSet.add(inputCellPackage);
+		formulaCellByReferenceMap.put(new SheetLocation(cell), inputCellPackage);
+	}
+
+	private void findFunctionsUsed(String functionString) {
+		Matcher m = findFunctions.matcher(functionString);
+		while(m.find()) {
+			String function = m.group();
+			function = function.substring(0, function.length()-1);
+			functionCounts.put(function, incrementOrInitialize(functionCounts.get(function)));
 		}
 	}
 
@@ -184,6 +199,7 @@ public class SpreadsheetAnalyzer {
 		inputCellMap.clear();
 		evalTypeCounts.clear();
 		formulasThatReferenceOtherCells = 0;
+		formulasReferencedByOtherCells = 0;
 	}
 
 	private void findReferencedCells() {
@@ -203,7 +219,15 @@ public class SpreadsheetAnalyzer {
 				}
 			}
 		}
-		condenseFormulasFromAllSheets();
+		condenseInputCellReferencesFromAllSheets();
+		countFormulaCellsReferenced();
+	}
+
+	private void countFormulaCellsReferenced() {
+		for(CellReferencePackage formulaPackage : formulaCellByReferenceMap.values()) {
+			if (formulaPackage.isReferenced)
+				formulasReferencedByOtherCells++;
+		}
 		
 	}
 
@@ -224,10 +248,9 @@ public class SpreadsheetAnalyzer {
 					}
 					CellReference cr = new CellReference(maybeCell);
 					wasThereAReference = true;
-					InputCellPackage p = inputCellByReferenceMap.get(new SheetLocation(cr));
-					if (p != null) {
-						p.isReferenced = true;
-					}
+					
+					checkInputCellReferences(cr);
+					checkFormulaCellReferences(cr);
 				}
 				else {
 					CellRangeAddress cra = CellRangeAddress.valueOf(maybeCell);
@@ -241,14 +264,8 @@ public class SpreadsheetAnalyzer {
 						sheetName = cell.getSheet().getSheetName();
 					}
 					
-					Set<InputCellPackage> set = inputCellMap.get(sheetName);
-					if (set != null) {
-						for(InputCellPackage p : set) {
-							if (cra.isInRange(p.cell.getRowIndex(), p.cell.getColumnIndex())) {
-								p.isReferenced = true;
-							}
-						}
-					}
+					checkInputCellReferences(cra, sheetName);
+					checkFormulaCellReferences(cra, sheetName);
 				}
 			} catch (Exception e) {
 				System.out.println("Failed for " + maybeCell);
@@ -259,11 +276,43 @@ public class SpreadsheetAnalyzer {
 		}
 	}
 
-	private void condenseFormulasFromAllSheets() {
+	private void checkInputCellReferences(CellRangeAddress cra, String sheetName) {
+		checkReferences(cra, inputCellMap.get(sheetName));
+	}
+	
+	private void checkFormulaCellReferences(CellRangeAddress cra, String sheetName) {
+		checkReferences(cra, formulaCellMap.get(sheetName));
+	}
+
+	private void checkReferences(CellRangeAddress cra, Set<? extends CellReferencePackage> set) {
+		if (set != null) {
+			for(CellReferencePackage p : set) {
+				if (cra.isInRange(p.cell.getRowIndex(), p.cell.getColumnIndex())) {
+					p.isReferenced = true;
+				}
+			}
+		}
+	}
+
+	private void checkInputCellReferences(CellReference cr) {
+		CellReferencePackage p = inputCellByReferenceMap.get(new SheetLocation(cr));
+		if (p != null) {
+			p.isReferenced = true;
+		}
+	}
+	
+	private void checkFormulaCellReferences(CellReference cr) {
+		CellReferencePackage p = formulaCellByReferenceMap.get(new SheetLocation(cr));
+		if (p != null) {
+			p.isReferenced = true;
+		}
+	}
+
+	private void condenseInputCellReferencesFromAllSheets() {
 		referencedInputCells = new EnumMap<>(InputCellType.class);
 		
-		for(Set<InputCellPackage> set: inputCellMap.values()) {
-			for(InputCellPackage p : set) {
+		for(Set<InputCellReferencePackage> set: inputCellMap.values()) {
+			for(InputCellReferencePackage p : set) {
 				if (p.isReferenced) {
 					referencedInputCells.put(p.type, incrementOrInitialize(referencedInputCells.get(p.type)));
 				}
@@ -323,30 +372,36 @@ public class SpreadsheetAnalyzer {
 		}
 	}
 
-	private static class InputCellPackage {
+	private static class CellReferencePackage {
+		public Cell cell;
+		public boolean isReferenced;
 		
-		Cell cell;
-		boolean isReferenced;
-		InputCellType type;
-		public InputCellPackage(Cell cell, InputCellType type) {
+		
+		public CellReferencePackage(Cell cell) {
 			this.cell = cell;
+		}
+
+	}
+	
+	private static class InputCellReferencePackage extends CellReferencePackage {
+		public InputCellType type;
+		
+		public InputCellReferencePackage(Cell cell, InputCellType type) {
+			super(cell);
 			this.type = type;
 		}
 	}
 	
 	private static class SheetLocation {
-		private String s; 
-		
+		private final String s; 
 
 		public SheetLocation(Cell c) {
 			s = c.getSheet().getSheetName() +"!"+ c.getColumnIndex() +","+ c.getRowIndex();
 		}
 
-
 		public SheetLocation(CellReference cr) {
 			s = cr.getSheetName() +"!"+ cr.getCol() +","+cr.getRow();
 		}
-
 
 		@Override
 		public int hashCode() {
@@ -377,7 +432,11 @@ public class SpreadsheetAnalyzer {
 			
 	}
 
-	public int getFormulaReferences() {
+	public int getFormulaReferencingOtherCells() {
 		return formulasThatReferenceOtherCells;
+	}
+
+	public int getFormulasReferenced() {
+		return formulasReferencedByOtherCells;
 	}
 }

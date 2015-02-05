@@ -173,8 +173,14 @@ public class TestEusesAnalysis_small {
 	
 	@Test
 	public void testCountingFormulasThatReferenceOtherCells() throws Exception {
-		int count = analyzer.getFormulaReferences();
+		int count = analyzer.getFormulaReferencingOtherCells();
 		assertEquals(159, count);
+	}
+	
+	@Test
+	public void testCountingFormulasThatAreReferenced() throws Exception {
+		int count = analyzer.getFormulasReferenced();
+		assertEquals(156, count);
 	}
 
 }
