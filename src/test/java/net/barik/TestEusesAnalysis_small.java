@@ -1,10 +1,13 @@
 package net.barik;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.InputStream;
 import java.util.Map;
 
+import net.barik.SpreadsheetAnalyzer.FunctionEvalType;
 import net.barik.SpreadsheetAnalyzer.InputCellType;
 
 import org.junit.BeforeClass;
@@ -162,10 +165,10 @@ public class TestEusesAnalysis_small {
 	
 	@Test
 	public void testCountingIntFormula() throws Exception {
-		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getFormulaCellCounts();
-		Integer count = counts.get(InputCellType.INTEGER);
+		Map<SpreadsheetAnalyzer.FunctionEvalType, Integer> counts = analyzer.getFormulaCellCounts();
+		Integer count = counts.get(FunctionEvalType.INTEGER);
 		assertNotNull(count);
-		assertEquals(144, count.intValue());
+		assertEquals(145, count.intValue());
 	}
 
 }

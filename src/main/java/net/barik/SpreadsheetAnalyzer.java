@@ -32,7 +32,7 @@ public class SpreadsheetAnalyzer {
 	
 	private Map<InputCellType, Integer> inputCellCounts = new EnumMap<>(InputCellType.class);
 	private Map<String, Integer> functionCounts = new HashMap<>();
-	
+	private Map<FunctionEvalType, Integer> evalTypeCounts = new EnumMap<>(FunctionEvalType.class);
 	
 	private final Pattern findFunctions = Pattern.compile("\\p{Upper}+\\(");
 	private final Pattern findPotentialCellReferences = Pattern.compile("[^+-.,}{><();\\\\/*\'\\\"~]+");
@@ -114,8 +114,40 @@ public class SpreadsheetAnalyzer {
 		}
 	}
 
+	private FunctionEvalType getAndConvertCachedType(Cell cell){
+		//Helper for handling evaluation types can return BLANK
+		if (cell.getCachedFormulaResultType() == Cell.CELL_TYPE_NUMERIC) {
+			if (DateUtil.isCellDateFormatted(cell)) {
+				return FunctionEvalType.DATE;
+			}
+			double d = cell.getNumericCellValue();
+	    	if (Math.rint(d) == d) {  //integer check from http://stackoverflow.com/a/9898613/1447621
+	    		return FunctionEvalType.INTEGER;
+	    	} else {
+	    		return FunctionEvalType.NON_INTEGER_NUMBER;
+	    	}
+		} else {
+			return FunctionEvalType.fromCellType(cell.getCellType());
+		}
+	}
+	
 	private void handleFormulas(Cell cell) {
-    	String s = cell.getCellFormula();
+    	//Formula cell evaluation type
+		FunctionEvalType evaluatingType = getAndConvertCachedType(cell);
+		if (evaluatingType != null){ //Null signals function or blank from call to fromCellType
+			System.out.println("Works with: " + cell.toString());
+
+			evalTypeCounts.put(evaluatingType,
+					incrementOrInitialize(evalTypeCounts.get(evaluatingType)));
+			System.out.println(evalTypeCounts.size());
+		}
+		else {
+			System.out.println("Null with: " + cell.toString());
+		}
+ 
+		
+		
+		String s = cell.getCellFormula();
     	if (s.startsWith("#")) {
     		lastInputCellType = InputCellType.ERROR;
 		} else {
@@ -152,6 +184,7 @@ public class SpreadsheetAnalyzer {
 		functionCounts.clear();
 		inputCellCounts.clear();
 		inputCellMap.clear();
+		evalTypeCounts.clear();
 	}
 
 	private void findReferencedCells() {
@@ -224,6 +257,11 @@ public class SpreadsheetAnalyzer {
 	public Map<InputCellType, Integer> getInputCellCounts() {
 		return inputCellCounts;
 	}
+	
+	public Map<FunctionEvalType, Integer> getFormulaCellCounts() {
+		return evalTypeCounts; 
+	}
+
 
 	public Map<InputCellType, Integer> getInputReferences() {
 		
@@ -240,6 +278,25 @@ public class SpreadsheetAnalyzer {
 		return referencedInputCells;
 	}
 
+	public enum FunctionEvalType {
+		//Includes Blank
+		INTEGER,BOOLEAN,DATE,ERROR,NON_INTEGER_NUMBER,STRING, BLANK;
+
+		public static FunctionEvalType fromCellType(int cellType) {
+			switch (cellType) {
+			case Cell.CELL_TYPE_BOOLEAN:
+				return BOOLEAN;
+			case Cell.CELL_TYPE_ERROR:
+				return ERROR;
+			case Cell.CELL_TYPE_STRING:
+				return STRING;
+			case Cell.CELL_TYPE_BLANK:
+				return BLANK;
+			}
+			return null;
+		}
+	}
+	
 	public enum InputCellType {
 		INTEGER,BOOLEAN,DATE,ERROR,NON_INTEGER_NUMBER,STRING;
 
@@ -309,10 +366,4 @@ public class SpreadsheetAnalyzer {
 		
 		
 	}
-
-	public Map<InputCellType, Integer> getFormulaCellCounts() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
