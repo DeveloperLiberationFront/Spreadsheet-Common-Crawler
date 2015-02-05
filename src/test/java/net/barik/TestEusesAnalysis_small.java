@@ -159,5 +159,13 @@ public class TestEusesAnalysis_small {
 		assertNull(count);
 	}
 	
+	
+	@Test
+	public void testCountingIntFormula() throws Exception {
+		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getFormulaCellCounts();
+		Integer count = counts.get(InputCellType.INTEGER);
+		assertNotNull(count);
+		assertEquals(144, count.intValue());
+	}
 
 }

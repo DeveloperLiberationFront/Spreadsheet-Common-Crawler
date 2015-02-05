@@ -119,6 +119,8 @@ public class SpreadsheetAnalyzer {
     	if (s.startsWith("#")) {
     		lastInputCellType = InputCellType.ERROR;
 		} else {
+			
+			
 			Matcher m = findFunctions.matcher(s);
 			while(m.find()) {
 				String function = m.group();
@@ -306,6 +308,11 @@ public class SpreadsheetAnalyzer {
 		}
 		
 		
+	}
+
+	public Map<InputCellType, Integer> getFormulaCellCounts() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
