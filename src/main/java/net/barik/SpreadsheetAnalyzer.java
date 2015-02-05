@@ -135,16 +135,10 @@ public class SpreadsheetAnalyzer {
     	//Formula cell evaluation type
 		FunctionEvalType evaluatingType = getAndConvertCachedType(cell);
 		if (evaluatingType != null){ //Null signals function or blank from call to fromCellType
-			System.out.println("Works with: " + cell.toString());
-
 			evalTypeCounts.put(evaluatingType,
 					incrementOrInitialize(evalTypeCounts.get(evaluatingType)));
-			System.out.println(evalTypeCounts.size());
 		}
-		else {
-			System.out.println("Null with: " + cell.toString());
-		}
- 
+	
 		
 		
 		String s = cell.getCellFormula();
