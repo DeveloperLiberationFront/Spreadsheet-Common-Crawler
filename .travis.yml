@@ -1,0 +1,13 @@
+# Use docker-based build environment (instead of openvz)
+sudo: false
+
+language: java
+
+# Cache maven
+#cache:
+#  directories:
+#    - '$HOME/.m2/repository'
+
+# forces java 1.7 and prints the version of mvn before running
+install: mvn install -Dmaven.compiler.target=1.7 -Dmaven.compiler.source=1.7 -B -V
+script: mvn test
