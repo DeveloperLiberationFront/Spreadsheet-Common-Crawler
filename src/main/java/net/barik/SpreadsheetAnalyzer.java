@@ -117,8 +117,7 @@ public class SpreadsheetAnalyzer {
 	private void handleFormulas(Cell cell) {
     	String s = cell.getCellFormula();
     	if (s.startsWith("#")) {
-    		inputCellCounts.put(InputCellType.ERROR, 
-            		incrementOrInitialize(inputCellCounts.get(InputCellType.ERROR)));
+    		lastInputCellType = InputCellType.ERROR;
 		} else {
 			Matcher m = findFunctions.matcher(s);
 			while(m.find()) {

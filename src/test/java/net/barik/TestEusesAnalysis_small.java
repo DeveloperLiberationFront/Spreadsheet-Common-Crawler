@@ -61,7 +61,7 @@ public class TestEusesAnalysis_small {
 		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputCellCounts();
 		Integer count = counts.get(InputCellType.NON_INTEGER_NUMBER);
 		assertNotNull(count);
-		assertEquals(1, count.intValue());
+		assertEquals(2, count.intValue());
 	}
 	
 	@Test
@@ -132,21 +132,24 @@ public class TestEusesAnalysis_small {
 	public void testReferencesNonIntInput() throws Exception {
 		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputReferences();
 		Integer count = counts.get(InputCellType.NON_INTEGER_NUMBER);
-		assertNull(count);
+		assertNotNull(count);
+		assertEquals(1, count.intValue());
 	}
 	
 	@Test
 	public void testReferencesStringInput() throws Exception {
 		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputReferences();
 		Integer count = counts.get(InputCellType.STRING);
-		assertNull(count);
+		assertNotNull(count);
+		assertEquals(2, count.intValue());
 	}
 	
 	@Test
 	public void testReferencesDateInput() throws Exception {
 		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputReferences();
 		Integer count = counts.get(InputCellType.DATE);
-		assertNull(count);
+		assertNotNull(count);
+		assertEquals(1, count.intValue());
 	}
 	
 	@Test
