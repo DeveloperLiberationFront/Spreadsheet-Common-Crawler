@@ -32,3 +32,4 @@ We created a slave vm (also using vagrant) that the master connects to via SSH t
 Here is a screenshot of the log when "slave 3" picked up a build job:
 ![image](https://cloud.githubusercontent.com/assets/6819944/6066633/8d4c50a6-ad3c-11e4-88dd-c6b029c5cf69.png)
 
+Our Jenkins config file and the config file for our job are found under `jenkins/`.
