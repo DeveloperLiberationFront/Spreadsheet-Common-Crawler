@@ -41,6 +41,10 @@ public class SpreadsheetAnalyzer {
 
 	private InputCellType lastInputCellType;
 
+	private int formulasThatReferenceOtherCells;
+
+	private Map<InputCellType, Integer>  referencedInputCells;
+
 	private SpreadsheetAnalyzer(Workbook wb) {
 		this.workbook = wb;
 	}
@@ -179,12 +183,11 @@ public class SpreadsheetAnalyzer {
 		inputCellCounts.clear();
 		inputCellMap.clear();
 		evalTypeCounts.clear();
+		formulasThatReferenceOtherCells = 0;
 	}
 
 	private void findReferencedCells() {
-		//Step 1: find input cells [check]
-
-		//Step 2: pass through all formula cells again
+		// pass through all formula cells again and look for references
 		for(int i = 0; i< workbook.getNumberOfSheets();i++) {
 			currentSheet = workbook.getSheetAt(i);
 			Iterator <Row> rowIterator = currentSheet.iterator();
@@ -195,50 +198,74 @@ public class SpreadsheetAnalyzer {
 					Cell cell = cellIterator.next();
 
 					if(cell.getCellType()==Cell.CELL_TYPE_FORMULA) {
-						String formula = cell.getCellFormula();
-						Matcher m = findPotentialCellReferences.matcher(formula);
-						
-						while (m.find()) {
-							String maybeCell = m.group();
-							
-							try {
-								//look for colon to detect range
-								if (maybeCell.indexOf(':') == -1) {
-									if (maybeCell.matches("[A-Z]+")) {
-										continue;
-									}
-									CellReference cr = new CellReference(maybeCell);
-									InputCellPackage p = inputCellByReferenceMap.get(new SheetLocation(cr));
-									if (p != null) {
-										p.isReferenced = true;
-									}
-								}
-								else {
-									CellRangeAddress cra = CellRangeAddress.valueOf(maybeCell);
-									int index = maybeCell.indexOf('!');
-									String sheetName;
-									if (index != -1) {
-										 sheetName = maybeCell.substring(0, index);
-									} else {
-										// otherwise, we are in the current sheet.
-										sheetName = cell.getSheet().getSheetName();
-									}
-									
-									Set<InputCellPackage> set = inputCellMap.get(sheetName);
-									if (set != null) {
-										for(InputCellPackage p : set) {
-											if (cra.isInRange(p.cell.getRowIndex(), p.cell.getColumnIndex())) {
-												p.isReferenced = true;
-											}
-										}
-									}
-								}
-								
-							} catch (Exception e) {
-								System.out.println("Failed for " + maybeCell);
+						processFormulaReferences(cell);
+					}
+				}
+			}
+		}
+		condenseFormulasFromAllSheets();
+		
+	}
+
+	private void processFormulaReferences(Cell cell) {
+		String formula = cell.getCellFormula();
+		//we look for anything that might be a cell reference and use
+		// POI's parsers to see if they are valid references
+		Matcher m = findPotentialCellReferences.matcher(formula);
+		
+		boolean wasThereAReference = false;
+		while (m.find()) {
+			String maybeCell = m.group();
+			try {
+				//look for colon to detect range
+				if (maybeCell.indexOf(':') == -1) {
+					if (maybeCell.matches("[A-Z]+")) {	// skip LOG, SUM and other functions
+						continue;
+					}
+					CellReference cr = new CellReference(maybeCell);
+					wasThereAReference = true;
+					InputCellPackage p = inputCellByReferenceMap.get(new SheetLocation(cr));
+					if (p != null) {
+						p.isReferenced = true;
+					}
+				}
+				else {
+					CellRangeAddress cra = CellRangeAddress.valueOf(maybeCell);
+					wasThereAReference = true;
+					int index = maybeCell.indexOf('!');
+					String sheetName;
+					if (index != -1) {
+						 sheetName = maybeCell.substring(0, index);
+					} else {
+						// otherwise, we are in the current sheet.
+						sheetName = cell.getSheet().getSheetName();
+					}
+					
+					Set<InputCellPackage> set = inputCellMap.get(sheetName);
+					if (set != null) {
+						for(InputCellPackage p : set) {
+							if (cra.isInRange(p.cell.getRowIndex(), p.cell.getColumnIndex())) {
+								p.isReferenced = true;
 							}
 						}
 					}
+				}
+			} catch (Exception e) {
+				System.out.println("Failed for " + maybeCell);
+			}
+		}
+		if (wasThereAReference) {
+			formulasThatReferenceOtherCells++;
+		}
+	}
+
+	private void condenseFormulasFromAllSheets() {
+		referencedInputCells = new EnumMap<>(InputCellType.class);
+		
+		for(Set<InputCellPackage> set: inputCellMap.values()) {
+			for(InputCellPackage p : set) {
+				if (p.isReferenced) {
+					referencedInputCells.put(p.type, incrementOrInitialize(referencedInputCells.get(p.type)));
 				}
 			}
 		}
@@ -257,18 +284,7 @@ public class SpreadsheetAnalyzer {
 	}
 
 
-	public Map<InputCellType, Integer> getInputReferences() {
-		
-		Map<InputCellType, Integer> referencedInputCells = new EnumMap<>(InputCellType.class);
-		
-		for(Set<InputCellPackage> set: inputCellMap.values()) {
-			for(InputCellPackage p : set) {
-				if (p.isReferenced) {
-					referencedInputCells.put(p.type, incrementOrInitialize(referencedInputCells.get(p.type)));
-				}
-			}
-		}
-		
+	public Map<InputCellType, Integer> getInputReferences() {		
 		return referencedInputCells;
 	}
 
@@ -362,7 +378,6 @@ public class SpreadsheetAnalyzer {
 	}
 
 	public int getFormulaReferences() {
-		// TODO Auto-generated method stub
-		return 0;
+		return formulasThatReferenceOtherCells;
 	}
 }
