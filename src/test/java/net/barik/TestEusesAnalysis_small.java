@@ -174,7 +174,7 @@ public class TestEusesAnalysis_small {
 	@Test
 	public void testCountingFormulasThatReferenceOtherCells() throws Exception {
 		int count = analyzer.getFormulaReferencingOtherCells();
-		assertEquals(159, count);
+		assertEquals(160, count);
 	}
 	
 	@Test
@@ -183,4 +183,51 @@ public class TestEusesAnalysis_small {
 		assertEquals(156, count);
 	}
 
+    @Test
+    public void testCountingNonIntFormula() throws Exception {
+        Map<SpreadsheetAnalyzer.FunctionEvalType, Integer> counts = analyzer.getFormulaCellCounts();
+        Integer count = counts.get(FunctionEvalType.NON_INTEGER_NUMBER);
+        assertNotNull(count);
+        assertEquals(13, count.intValue());
+    }
+    
+    @Test
+    public void testCountingBlankFormula() throws Exception {
+        Map<SpreadsheetAnalyzer.FunctionEvalType, Integer> counts = analyzer.getFormulaCellCounts();
+        Integer count = counts.get(FunctionEvalType.BLANK);
+        assertNull(count);
+    }
+    
+    @Test
+    public void testCountingStringFormula() throws Exception {
+        Map<SpreadsheetAnalyzer.FunctionEvalType, Integer> counts = analyzer.getFormulaCellCounts();
+        Integer count = counts.get(FunctionEvalType.STRING);
+        assertNull(count);
+    }
+
+    @Test
+    public void testCountingErrorFormula() throws Exception {
+        Map<SpreadsheetAnalyzer.FunctionEvalType, Integer> counts = analyzer.getFormulaCellCounts();
+        Integer count = counts.get(FunctionEvalType.ERROR);
+        assertNotNull(count);
+        assertEquals(1, count.intValue());   
+    }
+    
+    @Test
+    public void testCountingDateFormula() throws Exception {
+        Map<SpreadsheetAnalyzer.FunctionEvalType, Integer> counts = analyzer.getFormulaCellCounts();
+        Integer count = counts.get(FunctionEvalType.DATE);
+        assertNotNull(count);
+        assertEquals(1, count.intValue());
+    }
+    
+    @Test
+    public void testCountingBooleanFormula() throws Exception {
+        Map<SpreadsheetAnalyzer.FunctionEvalType, Integer> counts = analyzer.getFormulaCellCounts();
+        Integer count = counts.get(FunctionEvalType.BOOLEAN);
+        assertNotNull(count);
+        assertEquals(1, count.intValue());
+    }
+
+	
 }
