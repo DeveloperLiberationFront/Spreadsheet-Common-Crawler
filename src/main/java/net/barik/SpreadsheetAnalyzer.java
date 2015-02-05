@@ -134,7 +134,7 @@ public class SpreadsheetAnalyzer {
 	    		return FunctionEvalType.NON_INTEGER_NUMBER;
 	    	}
 		} else {
-			return FunctionEvalType.fromCellType(cell.getCellType());
+			return FunctionEvalType.fromCellType(cell.getCachedFormulaResultType());
 		}
 	}
 	
