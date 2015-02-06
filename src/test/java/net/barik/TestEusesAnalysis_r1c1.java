@@ -30,7 +30,11 @@ public class TestEusesAnalysis_r1c1 {
 		assertNotNull(count);
 		assertEquals(1, count.intValue());
 		
-		assertTrue(counts.keySet().size() == 1);//sum is the only input
+		count = counts.get("AVERAGE");
+		assertNotNull(count);
+		assertEquals(1, count.intValue());
+		
+		assertTrue(counts.keySet().size() == 2);//sum and average is the only input
 	}
 
 	@Test
@@ -50,7 +54,11 @@ public class TestEusesAnalysis_r1c1 {
 		assertNotNull(count);
 		assertEquals(6,  count.intValue());
 		
-		assertTrue(counts.keySet().size() == 1);//only integer formula results
+		count = counts.get(FunctionEvalType.NON_INTEGER_NUMBER);
+		assertNotNull(count);
+		assertEquals(1,  count.intValue());		//from the average
+		
+		assertTrue(counts.keySet().size() == 2);//only integer formula results
 	}
 
 	@Test
@@ -66,7 +74,7 @@ public class TestEusesAnalysis_r1c1 {
 	@Test
 	public void testGetFormulaReferencingOtherCells() {
 		int count = analyzer.getFormulaReferencingOtherCells();
-		assertEquals(6, count);
+		assertEquals(7, count);
 	}
 
 	@Test
