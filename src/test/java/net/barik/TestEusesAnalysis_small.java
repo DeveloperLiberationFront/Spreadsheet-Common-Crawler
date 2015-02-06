@@ -21,7 +21,9 @@ public class TestEusesAnalysis_small {
 	public static void loadSmallWorksheet() throws Exception{
 		InputStream is = TestEusesAnalysis_small.class.getResourceAsStream("/small-worksheet.xlsx");
 		assertNotNull(is);
-		analyzer = SpreadsheetAnalyzer.doEUSESAnalysis(is);
+		InputStream is2 = TestEusesAnalysis_small.class.getResourceAsStream("/small-worksheet.xlsx");
+		assertNotNull(is2);
+		analyzer = SpreadsheetAnalyzer.doEUSESAnalysis(is, is2);
 		assertNotNull(analyzer);
 		
 	}
@@ -230,5 +232,11 @@ public class TestEusesAnalysis_small {
         assertEquals(1, count.intValue());
     }
 
+    @Test
+    public void testContainsMacro() throws Exception{
+    	boolean b = analyzer.getContainsMacro();
+    	assertNotNull(b);
+    	assertEquals(true, b);
+    }
 	
 }
