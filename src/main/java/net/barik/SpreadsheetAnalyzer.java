@@ -295,14 +295,14 @@ public class SpreadsheetAnalyzer {
 	}
 
 	private void checkInputCellReferences(CellReference cr) {
-		CellReferencePackage p = inputCellByReferenceMap.get(new SheetLocation(cr));
+		CellReferencePackage p = inputCellByReferenceMap.get(new SheetLocation(cr, currentSheet));
 		if (p != null) {
 			p.isReferenced = true;
 		}
 	}
 	
 	private void checkFormulaCellReferences(CellReference cr) {
-		CellReferencePackage p = formulaCellByReferenceMap.get(new SheetLocation(cr));
+		CellReferencePackage p = formulaCellByReferenceMap.get(new SheetLocation(cr, currentSheet));
 		if (p != null) {
 			p.isReferenced = true;
 		}
@@ -399,8 +399,12 @@ public class SpreadsheetAnalyzer {
 			s = c.getSheet().getSheetName() +"!"+ c.getColumnIndex() +","+ c.getRowIndex();
 		}
 
-		public SheetLocation(CellReference cr) {
-			s = cr.getSheetName() +"!"+ cr.getCol() +","+cr.getRow();
+		public SheetLocation(CellReference cr, Sheet currentSheet) {
+			String sheetName = cr.getSheetName();
+			if (sheetName == null) {		//currentSheet is only used if sheetName is null
+				sheetName = currentSheet.getSheetName();
+			}
+			s = sheetName +"!"+ cr.getCol() +","+cr.getRow();
 		}
 
 		@Override
@@ -429,6 +433,10 @@ public class SpreadsheetAnalyzer {
 			return true;
 		}
 		
+		@Override
+		public String toString() {
+			return s;
+		}
 			
 	}
 

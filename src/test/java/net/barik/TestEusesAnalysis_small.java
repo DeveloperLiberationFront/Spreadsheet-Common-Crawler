@@ -120,7 +120,8 @@ public class TestEusesAnalysis_small {
 	public void testReferencesBooleanInput() throws Exception {
 		Map<SpreadsheetAnalyzer.InputCellType, Integer> counts = analyzer.getInputReferences();
 		Integer count = counts.get(InputCellType.BOOLEAN);
-		assertNull(count);
+		assertNotNull(count);
+		assertEquals(2, count.intValue());
 	}
 	
 	@Test
