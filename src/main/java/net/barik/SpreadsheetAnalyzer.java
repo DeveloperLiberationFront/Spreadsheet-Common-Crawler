@@ -11,7 +11,13 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.poi.POIXMLDocument;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.poifs.eventfilesystem.POIFSReader;
+import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
+import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
@@ -20,6 +26,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class SpreadsheetAnalyzer {
 	
@@ -34,6 +41,7 @@ public class SpreadsheetAnalyzer {
 	private Map<InputCellType, Integer> inputCellCounts = new EnumMap<>(InputCellType.class);
 	private Map<String, Integer> functionCounts = new HashMap<>();
 	private Map<FunctionEvalType, Integer> evalTypeCounts = new EnumMap<>(FunctionEvalType.class);
+	private boolean containsMacros = false;
 	
 	private final Pattern findFunctions = Pattern.compile("\\p{Upper}+\\(");
 	private final Pattern findPotentialCellReferences = Pattern.compile("[^+-.,}{><();\\\\/*\'\\\"~]+");
@@ -52,10 +60,10 @@ public class SpreadsheetAnalyzer {
 		this.workbook = wb;
 	}
 
-	public static SpreadsheetAnalyzer doEUSESAnalysis(InputStream is) throws InvalidFormatException, IOException {
+	public static SpreadsheetAnalyzer doEUSESAnalysis(InputStream is, InputStream is2) throws InvalidFormatException, IOException {
 		SpreadsheetAnalyzer analyzer = new SpreadsheetAnalyzer(WorkbookFactory.create(is));
 		
-		analyzer.analyzeEUSESMetrics();
+		analyzer.analyzeEUSESMetrics(is2);
 
 		return analyzer;
 	}
@@ -68,13 +76,33 @@ public class SpreadsheetAnalyzer {
 	}
 
 
-	private void analyzeEUSESMetrics() {
+	private void analyzeEUSESMetrics(InputStream is2) throws IOException {
 		clearPreviousMetrics();
 
+		checkForMacros(is2);
+		
 		findInputCells();
 		
 		findReferencedCells();
 	}
+
+	private void checkForMacros(InputStream is2) throws IOException {
+		if (POIFSFileSystem.hasPOIFSHeader(is2)){
+			//Looking at HSSF
+			POIFSReader r = new POIFSReader();
+			MacroListener ml = new MacroListener();
+			r.registerListener(ml);
+			r.read(is2);
+			this.containsMacros = ml.isMacroDetected();
+		}	
+		else if (POIXMLDocument.hasOOXMLHeader(is2)) {
+           	this.containsMacros = false;
+        }
+		else {
+			throw new IllegalArgumentException("Your InputStream was neither an OLE2 stream, nor an OOXML stream");
+		}	
+	}
+			
 
 	private void findInputCells() {
 		for(int i = 0; i< workbook.getNumberOfSheets();i++) {
@@ -198,6 +226,7 @@ public class SpreadsheetAnalyzer {
 		inputCellCounts.clear();
 		inputCellMap.clear();
 		evalTypeCounts.clear();
+		containsMacros = false;
 		formulasThatReferenceOtherCells = 0;
 		formulasReferencedByOtherCells = 0;
 	}
@@ -320,6 +349,10 @@ public class SpreadsheetAnalyzer {
 		}
 	}
 
+	public boolean getContainsMacro(){
+		return containsMacros;
+	}
+	
 	public Map<String, Integer> getFunctionCounts() {
 		return functionCounts;
 	}
@@ -439,6 +472,22 @@ public class SpreadsheetAnalyzer {
 		}
 			
 	}
+	
+	public class MacroListener implements POIFSReaderListener {
+			//From http://www.rgagnon.com/javadetails/java-detect-if-xls-excel-file-contains-a-macro.html
+		  boolean macroDetected = false;
+
+		  public boolean isMacroDetected() {
+		    return macroDetected;
+		  }
+
+		  public void processPOIFSReaderEvent(POIFSReaderEvent event) {
+		    if(event.getPath().toString().startsWith("\\Macros")
+		          || event.getPath().toString().startsWith("\\_VBA")) {
+		      macroDetected = true;
+		    }
+		  }
+		}
 
 	public int getFormulaReferencingOtherCells() {
 		return formulasThatReferenceOtherCells;
