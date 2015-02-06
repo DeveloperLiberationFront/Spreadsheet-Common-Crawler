@@ -447,4 +447,19 @@ public class SpreadsheetAnalyzer {
 	public int getFormulasReferenced() {
 		return formulasReferencedByOtherCells;
 	}
+
+	public int getFormulasUsedOnce() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getMostTimesMostFrequentlyOcurringFormulaWasUsed() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getFormulasUsedMoreThanOnce() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

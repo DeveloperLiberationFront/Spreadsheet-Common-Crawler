@@ -82,5 +82,23 @@ public class TestEusesAnalysis_r1c1 {
 		int count = analyzer.getFormulasReferenced();
 		assertEquals(2, count);
 	}
+	
+	@Test
+	public void testGetFormulasUsedOnce() {
+		int count = analyzer.getFormulasUsedOnce();
+		assertEquals(3, count);
+	}
+	
+	@Test
+	public void testGetFormulasUsedMoreThanOnce() {
+		int count = analyzer.getFormulasUsedMoreThanOnce();
+		assertEquals(1, count);
+	}
+	
+	@Test
+	public void testGetMostTimesMostFrequentlyOcurringFormulaWasUsed() {
+		int count = analyzer.getMostTimesMostFrequentlyOcurringFormulaWasUsed();
+		assertEquals(4, count);
+	}
 
 }
