@@ -196,8 +196,7 @@ public class SpreadsheetAnalyzer {
 		r1c1FormulaToCountMap.put(formulaString, incrementOrInitialize(r1c1FormulaToCountMap.get(formulaString)));
 	}
 
-	private String convertToR1C1(Cell formulaCell) {
-		// TODO Auto-generated method stub
+	String convertToR1C1(Cell formulaCell) {
 		String cellFormula = formulaCell.getCellFormula();
 		String adjustedFormula = cellFormula;
 		
