@@ -44,7 +44,7 @@ public class TestEusesAnalysis_r1c1 {
 		assertNotNull(count);
 		assertEquals(1, count.intValue());
 		
-		assertTrue(counts.keySet().size() == 2);//sum and average is the only input
+		assertEquals(2,counts.keySet().size());//sum and average are the only input
 	}
 
 	@Test
@@ -54,7 +54,7 @@ public class TestEusesAnalysis_r1c1 {
 		assertNotNull(count);
 		assertEquals(4, count.intValue());
 
-		assertTrue(counts.keySet().size() == 1);//only integer inputs
+		assertEquals(1, counts.keySet().size());//only integer inputs
 	}
 
 	@Test
@@ -66,9 +66,9 @@ public class TestEusesAnalysis_r1c1 {
 		
 		count = counts.get(FunctionEvalType.NON_INTEGER_NUMBER);
 		assertNotNull(count);
-		assertEquals(1,  count.intValue());		//from the average
+		assertEquals(1, count.intValue());		//from the average
 		
-		assertTrue(counts.keySet().size() == 2);//only integer formula results
+		assertEquals(2, counts.keySet().size());//only integer formula results
 	}
 
 	@Test
@@ -78,7 +78,7 @@ public class TestEusesAnalysis_r1c1 {
 		assertNotNull(count);
 		assertEquals(4, count.intValue());
 
-		assertTrue(counts.keySet().size() == 1);//only integer inputs
+		assertEquals(1, counts.keySet().size());//only integer inputs
 	}
 
 	@Test
