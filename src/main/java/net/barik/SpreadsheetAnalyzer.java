@@ -64,12 +64,16 @@ public class SpreadsheetAnalyzer {
 
 	private SpreadsheetAnalyzer(Workbook wb) {
 		this.workbook = wb;
+
+		if (wb instanceof XSSFWorkbook) {
+			this.containsMacros = ((XSSFWorkbook) wb).isMacroEnabled();
+		}
 	}
 
-	public static SpreadsheetAnalyzer doEUSESAnalysis(InputStream is, InputStream is2) throws InvalidFormatException, IOException {
+	public static SpreadsheetAnalyzer doEUSESAnalysis(InputStream is, InputStream streamForMacroChecking) throws InvalidFormatException, IOException {
 		SpreadsheetAnalyzer analyzer = new SpreadsheetAnalyzer(WorkbookFactory.create(is));
 		
-		analyzer.analyzeEUSESMetrics(is2);
+		analyzer.analyzeEUSESMetrics(streamForMacroChecking);
 
 		return analyzer;
 	}
@@ -82,31 +86,25 @@ public class SpreadsheetAnalyzer {
 	}
 
 
-	private void analyzeEUSESMetrics(InputStream is2) throws IOException {
+	private void analyzeEUSESMetrics(InputStream inputStream) throws IOException {
 		clearPreviousMetrics();
 
-		checkForMacros(is2);
+		checkForMacros(inputStream);
 		
 		findInputCells();
 		
 		findReferencedCells();
 	}
 
-	private void checkForMacros(InputStream is2) throws IOException {
-		if (POIFSFileSystem.hasPOIFSHeader(is2)){
+	private void checkForMacros(InputStream inputStream) throws IOException {
+		if (POIFSFileSystem.hasPOIFSHeader(inputStream)){
 			//Looking at HSSF
 			POIFSReader r = new POIFSReader();
 			MacroListener ml = new MacroListener();
 			r.registerListener(ml);
-			r.read(is2);
+			r.read(inputStream);
 			this.containsMacros = ml.isMacroDetected();
-		}	
-		else if (POIXMLDocument.hasOOXMLHeader(is2)) {
-           	this.containsMacros = false;
-        }
-		else {
-			throw new IllegalArgumentException("Your InputStream was neither an OLE2 stream, nor an OOXML stream");
-		}	
+		}
 	}
 			
 
