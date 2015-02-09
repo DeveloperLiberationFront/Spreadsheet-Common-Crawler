@@ -19,6 +19,7 @@ import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
+import org.apache.poi.poifs.filesystem.POIFSDocumentPath;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -602,23 +603,25 @@ public class SpreadsheetAnalyzer {
 			
 	}
 	
-<<<<<<< HEAD
 	public class MacroListener implements POIFSReaderListener {
-			//From http://www.rgagnon.com/javadetails/java-detect-if-xls-excel-file-contains-a-macro.html
-		  boolean macroDetected = false;
+		//From http://www.rgagnon.com/javadetails/java-detect-if-xls-excel-file-contains-a-macro.html
+		boolean macroDetected = false;
 
-		  public boolean isMacroDetected() {
-		    return macroDetected;
-		  }
-
-		  public void processPOIFSReaderEvent(POIFSReaderEvent event) {
-		    if(event.getPath().toString().startsWith("\\Macros")
-		          || event.getPath().toString().startsWith("\\_VBA")) {
-		      macroDetected = true;
-		    }
-		  }
+		public boolean isMacroDetected() {
+			return macroDetected;
 		}
-=======
+
+		public void processPOIFSReaderEvent(POIFSReaderEvent event) {
+			POIFSDocumentPath path = event.getPath();
+			if (path.length() == 0) {
+				return;
+			}
+			String firstFolder = path.getComponent(0);
+			if(firstFolder.startsWith("Macro") || firstFolder.startsWith("_VBA")) {
+				macroDetected = true;
+			}
+		}
+	}
 	private static class CellReferencePair {
 		public final CellReference first, second;
 		public CellReferencePair(CellReference first, CellReference second) {
@@ -627,7 +630,6 @@ public class SpreadsheetAnalyzer {
 		}
 		
 	}
->>>>>>> 621eaec... initial unique formula test
 
 	public int getFormulaReferencingOtherCells() {
 		return formulasThatReferenceOtherCells;
