@@ -219,15 +219,25 @@ public class SpreadsheetAnalyzer {
 				else {
 					CellReferencePair cellRange = parseCellRange(maybeCell);
 					
-					int index = maybeCell.indexOf('!');
+					int indexOfSheetIdentifier = maybeCell.lastIndexOf('!');
 					String sheetReference = "";
-					if (index != -1) {
-						 sheetReference = maybeCell.substring(0, index) + '!';
+					if (indexOfSheetIdentifier != -1) {
+						 sheetReference = maybeCell.substring(0, indexOfSheetIdentifier) + '!';
 					}
 					
-					String convertedReference = String.format("%s%s:%s", sheetReference, 
-							convertToR1C1(cellRange.first, formulaCell),
-							convertToR1C1(cellRange.second, formulaCell));
+					String firstPointInRange = convertToR1C1(cellRange.first, formulaCell);
+					String secondPointInRange = convertToR1C1(cellRange.second, formulaCell);
+					
+					String convertedReference;
+					if (firstPointInRange.equals(secondPointInRange)) {
+						//it's a single row or single column
+						convertedReference = String.format("%s%s", sheetReference, 
+								firstPointInRange);
+					}else {
+						convertedReference = String.format("%s%s:%s", sheetReference, 
+								firstPointInRange,
+								secondPointInRange);
+					}
 					
 					adjustedFormula = adjustedFormula.replace(maybeCell, convertedReference);
 					
@@ -255,19 +265,42 @@ public class SpreadsheetAnalyzer {
 	}
 
 	private String convertToR1C1(CellReference cr, Cell startingCell) {
-		int row;
-		if (cr.isRowAbsolute()) {
-			row = cr.getRow() + 1;		//0 indexed, converting to 1 indexed
+		boolean isRowOnly = false, isColOnly = false;
+		
+		int col = cr.getCol();
+		if (col == -1) {
+			isRowOnly = true;
+		} else if (cr.isColAbsolute()) {
+			col += 1;		//0 indexed, converting to 1 indexed
 		} else {
-			row = cr.getRow() - startingCell.getRowIndex(); //both are 0 indexed
+			col -= startingCell.getColumnIndex(); //both are 0 indexed
 		}
-		int col;
-		if (cr.isColAbsolute()) {
-			col = cr.getCol() + 1;		//0 indexed, converting to 1 indexed
+		
+		int row = cr.getRow();		//we must compute col only and then row only because of the 
+		if (row == -1) {			//absolute glitch referenced below.
+			isColOnly = true;
+		} else if (cr.isRowAbsolute() || (isRowOnly && cr.isColAbsolute())) {
+			row += 1;		//0 indexed, converting to 1 indexed
 		} else {
-			col = cr.getCol() - startingCell.getColumnIndex(); //both are 0 indexed
+			row -= startingCell.getRowIndex(); //both are 0 indexed
 		}
 
+		if (isColOnly) {
+			//there appears to be a glitch with Apache POI that thinks $5 in 5:$5
+			// makes the column absolute, despite it being a row.
+			return String.format("C%s%d%s", 
+					cr.isColAbsolute() || cr.isRowAbsolute() ? "" : "[",
+					col,
+					cr.isColAbsolute() || cr.isRowAbsolute() ? "" : "]"
+					);
+		} else if (isRowOnly) {
+			return String.format("R%s%d%s", 
+					cr.isRowAbsolute() || cr.isColAbsolute() ? "" : "[",
+					row,
+					cr.isRowAbsolute() || cr.isColAbsolute() ? "" : "]"
+					);
+		}
+		
 		return String.format("R%s%d%sC%s%d%s", 
 				cr.isRowAbsolute() ? "" : "[",
 				row,
