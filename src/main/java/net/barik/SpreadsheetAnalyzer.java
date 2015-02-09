@@ -428,7 +428,7 @@ public class SpreadsheetAnalyzer {
 					checkFormulaCellReferences(cra, sheetName);
 				}
 			} catch (Exception e) {
-				System.out.println("Failed for " + maybeCell);
+				System.out.println("Processing formula references failed for " + maybeCell);
 			}
 		}
 		if (wasThereAReference) {
@@ -575,8 +575,7 @@ public class SpreadsheetAnalyzer {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + ((s == null) ? 0 : s.hashCode());
-			return result;
+			return prime * result + ((s == null) ? 0 : s.hashCode());
 		}
 
 
