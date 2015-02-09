@@ -105,6 +105,7 @@ public class SpreadsheetAnalyzer {
 			r.read(inputStream);
 			this.containsMacros = ml.isMacroDetected();
 		}
+		inputStream.close();
 	}
 			
 

@@ -1,8 +1,6 @@
 package net.barik;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.io.InputStream;
 
@@ -28,8 +26,7 @@ public class TestEusesAnalysis_macroXLS {
     @Test
     public void testContainsMacro() throws Exception{
     	boolean b = analyzer.getContainsMacro();
-    	assertNotNull(b);
-    	assertEquals(true, b);
+    	assertTrue(b);
     }
 	
 }
