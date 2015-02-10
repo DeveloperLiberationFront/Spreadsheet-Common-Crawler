@@ -741,5 +741,14 @@ public class SpreadsheetAnalyzer {
 		return numCharts;
 	}
 
+	public void close() {
+		try {
+			this.clearPreviousMetrics();
+			this.workbook.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 
 }
