@@ -253,4 +253,9 @@ public class TestEusesAnalysis_small {
 		assertEquals(130, count);		//all the power functions are the same
 	}
 	
+	@Test
+	public void testNoChart() throws Exception {
+		assertFalse(analyzer.containsChart());
+	}
+	
 }

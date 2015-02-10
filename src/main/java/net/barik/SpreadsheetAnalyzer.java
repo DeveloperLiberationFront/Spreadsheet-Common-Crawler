@@ -13,9 +13,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.poi.POIXMLDocument;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
@@ -29,6 +27,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class SpreadsheetAnalyzer {
@@ -661,10 +660,21 @@ public class SpreadsheetAnalyzer {
 		}
 		return Collections.max(c);
 	}
-
+	
 	public boolean containsChart() {
-		// TODO Auto-generated method stub
-		return false;
+		return getNumCharts() > 0;
+	}
+
+	public int getNumCharts() {
+		int numCharts = 0;
+		if (workbook instanceof XSSFWorkbook) {
+			XSSFWorkbook xWorkbook = (XSSFWorkbook) workbook;
+			for (XSSFSheet sheet : xWorkbook) {
+				numCharts += sheet.createDrawingPatriarch().getCharts().size();
+			}
+		}
+
+		return numCharts;
 	}
 
 

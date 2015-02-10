@@ -24,6 +24,7 @@ public class TestXLSXChart {
 	@Test
 	public void testChart() {
 		assertTrue(analyzer.containsChart());
+		assertEquals(1, analyzer.getNumCharts());
 	}
 
 }
