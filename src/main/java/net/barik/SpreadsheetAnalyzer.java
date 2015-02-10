@@ -63,8 +63,6 @@ public class SpreadsheetAnalyzer {
 	
 	private Map<String, Integer> r1c1FormulaToCountMap = new HashMap<>();
 	
-	private int formulasUsedOnce;
-
 	private int formulasReferencedByOtherCells;
 
 	private int sizeInBytes ;
@@ -393,7 +391,6 @@ public class SpreadsheetAnalyzer {
 		r1c1FormulaToCountMap.clear();
 		formulasThatReferenceOtherCells = 0;
 		formulasReferencedByOtherCells = 0;
-		formulasUsedOnce = -1;
 	}
 
 	private void findReferencedCells() {
@@ -678,18 +675,27 @@ public class SpreadsheetAnalyzer {
 	}
 
 	public int getFormulasUsedOnce() {
-		if (formulasUsedOnce < 0) {
-			formulasUsedOnce = 0;
-			for (Integer value: r1c1FormulaToCountMap.values()) {
-				if (value.intValue() == 1) {
-					formulasUsedOnce++;
-				}
+		int formulasUsedOnce = 0;
+		for (Integer value : r1c1FormulaToCountMap.values()) {
+			if (value.intValue() == 1) {
+				formulasUsedOnce++;
 			}
 		}
 		return formulasUsedOnce;
 	}
+	
 	public int getFormulasUsedMoreThanOnce() {
-		return r1c1FormulaToCountMap.size() - getFormulasUsedOnce();
+		return getFormulasUsedNOrMoreTimes(2);
+	}
+	
+	public int getFormulasUsedNOrMoreTimes(int n) {
+		int formulasNOrMoreTimes = 0;
+		for (Integer value : r1c1FormulaToCountMap.values()) {
+			if (value.intValue() >= n) {
+				formulasNOrMoreTimes++;
+			}
+		}
+		return formulasNOrMoreTimes;
 	}
 
 	public int getMostTimesMostFrequentlyOcurringFormulaWasUsed() {
