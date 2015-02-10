@@ -248,14 +248,21 @@ public class TestEusesAnalysis_small {
 	}
 	
 	@Test
-	public void testGetMostTimesMostFrequentlyOcurringFormulaWasUsed() {
-		int count = analyzer.getMostTimesMostFrequentlyOcurringFormulaWasUsed();
+	public void testMostFrequentlyOcurringFormula() {
+		int count = analyzer.getMostTimesMostFrequentlyOccurringFormulaWasUsed();
 		assertEquals(130, count);		//all the power functions are the same
+		
+		assertEquals("POWER(R4C[0],R[0]C2)", analyzer.getMostFrequentlyOccurringFormula());
 	}
 	
 	@Test
 	public void testNoChart() throws Exception {
 		assertFalse(analyzer.containsChart());
+	}
+	
+	@Test
+	public void testSizeInBytes() throws Exception {
+		assertEquals(12522, analyzer.getSizeInBytes());
 	}
 	
 }

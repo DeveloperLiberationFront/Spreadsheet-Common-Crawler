@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -697,8 +698,17 @@ public class SpreadsheetAnalyzer {
 		}
 		return formulasNOrMoreTimes;
 	}
+	public String getMostFrequentlyOccurringFormula() {
+		int targetN = getMostTimesMostFrequentlyOccurringFormulaWasUsed();
+		for(Entry<String, Integer> s: r1c1FormulaToCountMap.entrySet()) {
+			if (s.getValue() == targetN) {
+				return s.getKey();
+			}
+		}
+		return "[Could not find Most Frequently OccurringFormula]";
+	}
 
-	public int getMostTimesMostFrequentlyOcurringFormulaWasUsed() {
+	public int getMostTimesMostFrequentlyOccurringFormulaWasUsed() {
 		Collection<Integer> c = r1c1FormulaToCountMap.values();
 		if (c.isEmpty()) {
 			return 0;

@@ -107,7 +107,7 @@ public class TestEusesAnalysis_r1c1 {
 	
 	@Test
 	public void testGetMostTimesMostFrequentlyOcurringFormulaWasUsed() {
-		int count = analyzer.getMostTimesMostFrequentlyOcurringFormulaWasUsed();
+		int count = analyzer.getMostTimesMostFrequentlyOccurringFormulaWasUsed();
 		assertEquals(4, count);
 	}
 	
