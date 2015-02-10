@@ -232,9 +232,7 @@ public class TestEusesAnalysis_small {
 
     @Test
     public void testContainsMacro() throws Exception{
-    	boolean b = analyzer.getContainsMacro();
-    	assertNotNull(b);
-    	assertEquals(true, b);
+    	assertFalse(analyzer.containsMacro());
     }
 
 	@Test
