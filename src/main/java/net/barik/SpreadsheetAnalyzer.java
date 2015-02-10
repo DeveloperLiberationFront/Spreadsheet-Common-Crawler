@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
@@ -29,6 +31,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFChart;
 
 public class SpreadsheetAnalyzer {
 	
@@ -112,6 +115,8 @@ public class SpreadsheetAnalyzer {
 	private void findInputCells() {
 		for(int i = 0; i< workbook.getNumberOfSheets();i++) {
 			currentSheet = workbook.getSheetAt(i);
+				
+				
 			Iterator <Row> rowIterator = currentSheet.iterator();
 			while(rowIterator.hasNext()){
 				Row row = rowIterator.next();
@@ -479,7 +484,7 @@ public class SpreadsheetAnalyzer {
 		}
 	}
 
-	public boolean containsMacro(){
+	public boolean getContainsMacro(){
 		return containsMacros;
 	}
 	
@@ -673,6 +678,15 @@ public class SpreadsheetAnalyzer {
 				numCharts += sheet.createDrawingPatriarch().getCharts().size();
 			}
 		}
+		//Check for charts in xls 
+		else if (workbook instanceof HSSFWorkbook){
+			HSSFWorkbook hWorkbook = (HSSFWorkbook) workbook;
+			for (int i = 0; i < hWorkbook.getNumberOfSheets(); i++){
+				HSSFSheet sheet = hWorkbook.getSheetAt(i);
+				numCharts += HSSFChart.getSheetCharts(sheet).length;
+			}
+		}
+		
 
 		return numCharts;
 	}
