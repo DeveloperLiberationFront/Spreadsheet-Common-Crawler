@@ -67,6 +67,8 @@ public class SpreadsheetAnalyzer {
 
 	private int formulasReferencedByOtherCells;
 
+	private int sizeInBytes ;
+
 	private SpreadsheetAnalyzer(Workbook wb) {
 		this.workbook = wb;
 
@@ -75,13 +77,19 @@ public class SpreadsheetAnalyzer {
 		}
 	}
 
-	public static SpreadsheetAnalyzer doEUSESAnalysis(InputStream is) throws InvalidFormatException, IOException {
+	public static SpreadsheetAnalyzer doEUSESAnalysis(InputStream is) throws IOException {
 		byte[] byteArray = readInInputStream(is);
 		InputStream inputStreamForWorkbook = new ByteArrayInputStream(byteArray); 
 		InputStream inputStreamForMacro = new ByteArrayInputStream(byteArray); 
 		
-		SpreadsheetAnalyzer analyzer = new SpreadsheetAnalyzer(WorkbookFactory.create(inputStreamForWorkbook));
+		SpreadsheetAnalyzer analyzer;
+		try {
+			analyzer = new SpreadsheetAnalyzer(WorkbookFactory.create(inputStreamForWorkbook));
+		} catch (InvalidFormatException e) {
+			throw new IOException("Problem reading in the workbook", e);
+		}
 		
+		analyzer.sizeInBytes = byteArray.length;
 		analyzer.analyzeEUSESMetrics(inputStreamForMacro);
 
 		return analyzer;
@@ -512,6 +520,10 @@ public class SpreadsheetAnalyzer {
 	
 	public Map<String, Integer> getFunctionCounts() {
 		return functionCounts;
+	}
+
+	public int getSizeInBytes() {
+		return sizeInBytes;
 	}
 
 	public Map<InputCellType, Integer> getInputCellCounts() {
