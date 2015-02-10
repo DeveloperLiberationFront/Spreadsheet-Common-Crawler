@@ -1,5 +1,7 @@
 package net.barik;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -13,6 +15,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.poi.hssf.usermodel.HSSFChart;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -31,7 +34,6 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.hssf.usermodel.HSSFChart;
 
 public class SpreadsheetAnalyzer {
 	
@@ -73,12 +75,32 @@ public class SpreadsheetAnalyzer {
 		}
 	}
 
-	public static SpreadsheetAnalyzer doEUSESAnalysis(InputStream is, InputStream streamForMacroChecking) throws InvalidFormatException, IOException {
-		SpreadsheetAnalyzer analyzer = new SpreadsheetAnalyzer(WorkbookFactory.create(is));
+	public static SpreadsheetAnalyzer doEUSESAnalysis(InputStream is) throws InvalidFormatException, IOException {
+		byte[] byteArray = readInInputStream(is);
+		InputStream inputStreamForWorkbook = new ByteArrayInputStream(byteArray); 
+		InputStream inputStreamForMacro = new ByteArrayInputStream(byteArray); 
 		
-		analyzer.analyzeEUSESMetrics(streamForMacroChecking);
+		SpreadsheetAnalyzer analyzer = new SpreadsheetAnalyzer(WorkbookFactory.create(inputStreamForWorkbook));
+		
+		analyzer.analyzeEUSESMetrics(inputStreamForMacro);
 
 		return analyzer;
+	}
+
+	private static byte[] readInInputStream(InputStream is) throws IOException {
+		//a very trival way to read in an input stream to bytes.
+		//Because we don't expect our spreadsheets to be too big (<100MB), we can get away with this copying to memory
+		// from http://stackoverflow.com/questions/5923817/how-to-clone-an-inputstream
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+		byte[] buffer = new byte[1024];
+		int len;
+		while ((len = is.read(buffer)) > -1 ) {
+			baos.write(buffer, 0, len);
+		}
+		baos.flush();
+
+		return baos.toByteArray();
 	}
 	
 	private static Integer incrementOrInitialize(Integer i) {

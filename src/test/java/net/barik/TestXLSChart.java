@@ -15,9 +15,7 @@ public class TestXLSChart {
 	public static void setUpBeforeClass() throws Exception {
 		InputStream is = TestXLSChart.class.getResourceAsStream("/chart.xls");
 		assertNotNull(is);
-		InputStream is2 = TestXLSChart.class.getResourceAsStream("/chart.xls");
-		assertNotNull(is2);
-		analyzer = SpreadsheetAnalyzer.doEUSESAnalysis(is, is2);
+		analyzer = SpreadsheetAnalyzer.doEUSESAnalysis(is);
 		assertNotNull(analyzer);
 	}
 
