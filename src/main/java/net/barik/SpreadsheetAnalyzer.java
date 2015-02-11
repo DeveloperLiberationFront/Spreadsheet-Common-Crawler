@@ -52,7 +52,7 @@ public class SpreadsheetAnalyzer {
 	private boolean containsMacros = false;
 	
 	private final Pattern findFunctions = Pattern.compile("\\p{Upper}+\\(");
-	private final Pattern findPotentialCellReferences = Pattern.compile("[^+-.,}{><();\\\\/*\'\\\"~]+");
+	private Pattern findPotentialCellReferences;
 
 	private Sheet currentSheet;
 
@@ -69,11 +69,31 @@ public class SpreadsheetAnalyzer {
 	private int sizeInBytes ;
 
 	private SpreadsheetAnalyzer(Workbook wb) {
-		this.workbook = wb;
+		setWorkBook(wb);
+	}
 
-		if (wb instanceof XSSFWorkbook) {
-			this.containsMacros = ((XSSFWorkbook) wb).isMacroEnabled();
+	private void setWorkBook(Workbook wb) {
+		this.workbook = wb;
+		
+		compileReferenceRegexFromSheetNames(wb);
+	}
+
+	private void compileReferenceRegexFromSheetNames(Workbook wb) {
+		//((\'?Sheet 1!\'?)|(\'?Sheet 2!\'?))?[A-Z0-9$]+(:[$A-Z0-9]+)?
+		StringBuilder builder = new StringBuilder();
+		builder.append('(');
+		for(int i = 0;i<wb.getNumberOfSheets();i++) {
+			if (i != 0) {
+				builder.append('|');
+			}
+			String sheetName = wb.getSheetName(i);
+			builder.append("(\\\'?");
+			builder.append(Pattern.quote(sheetName)); //escapes things like () and \
+			builder.append("\\\'?!)");
 		}
+		builder.append(")?[A-Z0-9$]+(:[$A-Z0-9]+)?");
+		
+		findPotentialCellReferences = Pattern.compile(builder.toString());
 	}
 
 	public static SpreadsheetAnalyzer doEUSESAnalysis(InputStream is) throws IOException {
@@ -121,7 +141,7 @@ public class SpreadsheetAnalyzer {
 	private void analyzeEUSESMetrics(InputStream inputStream) throws IOException {
 		clearPreviousMetrics();
 
-		checkForMacros(inputStream);
+		checkForMacros(inputStreamForMacroChecking);
 		
 		findInputCells();
 		
@@ -129,8 +149,10 @@ public class SpreadsheetAnalyzer {
 	}
 
 	private void checkForMacros(InputStream inputStream) throws IOException {
-		if (POIFSFileSystem.hasPOIFSHeader(inputStream)){
-			//Looking at HSSF
+		if (this.workbook instanceof XSSFWorkbook) {
+			this.containsMacros = ((XSSFWorkbook) workbook).isMacroEnabled();
+		} else if (POIFSFileSystem.hasPOIFSHeader(inputStream)) {
+			// Looking at HSSF
 			POIFSReader r = new POIFSReader();
 			MacroListener ml = new MacroListener();
 			r.registerListener(ml);
@@ -238,6 +260,9 @@ public class SpreadsheetAnalyzer {
 		while (m.find()) {
 			String maybeCell = m.group();
 			try {
+				if (maybeCell.length() <= 1 || isInQuotes(m.start(), cellFormula)) {
+					continue;
+				}
 				//look for colon to detect range
 				if (maybeCell.indexOf(':') == -1) {
 					if (maybeCell.matches("[A-Z]+")) {	// skip LOG, SUM and other functions
@@ -281,6 +306,20 @@ public class SpreadsheetAnalyzer {
 		}
 		
 		return adjustedFormula;
+	}
+
+	private boolean isInQuotes(int start, String cellFormula) {
+		boolean inDoubleQuotes = false;
+		boolean inSingleQuotes = false;
+		for(int i = 0;i<start;i++) {
+			if (cellFormula.charAt(i) == '"') {
+				inDoubleQuotes = !inDoubleQuotes;
+			}
+			else if (cellFormula.charAt(i) == '\'') {
+				inSingleQuotes = !inSingleQuotes;
+			}
+		}
+		return inDoubleQuotes || inSingleQuotes;
 	}
 
 	private CellReferencePair parseCellRange(String ref) {
@@ -360,6 +399,9 @@ public class SpreadsheetAnalyzer {
 		Matcher m = findFunctions.matcher(functionString);
 		while(m.find()) {
 			String function = m.group();
+			if (isInQuotes(m.start(), function)) {
+				continue;
+			}
 			function = function.substring(0, function.length()-1);
 			functionCounts.put(function, incrementOrInitialize(functionCounts.get(function)));
 		}

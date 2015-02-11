@@ -1,8 +1,6 @@
 package net.barik;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -183,6 +181,28 @@ public class TestEusesAnalysis_r1c1 {
 	    O17.setCellFormula("AVERAGE($20:108)");
 	    //test multi row range with on achor
 	    assertEquals("AVERAGE(R20:R[91])",analyzer.convertToR1C1(O17));
+	    
+	    wb.close();
+	}
+	
+	@Test
+	public void testEdgeCases() throws Exception {
+		Workbook wb = new XSSFWorkbook();
+	    Sheet sheet = wb.createSheet("new sheet");
+
+	    Row row = sheet.createRow(16);
+	    // Create a cell and put a value in it.  Columns are 0-indexed
+	    Cell C17 = row.createCell(2);
+	    C17.setCellFormula("IF(C6=\"yes\",(1*F6),IF(C6=\"no\",(0*F6),\"\"))");
+	    //test assorted single cell references
+	    assertEquals("IF(R[-11]C[0]=\"yes\",(1*R[-11]C[3]),IF(R[-11]C[0]=\"no\",(0*R[-11]C[3]),\"\"))", analyzer.convertToR1C1(C17));
+	    
+	    // Create a cell and put a value in it.  Columns are 0-indexed
+	    Cell D17 = row.createCell(3);
+	    D17.setCellFormula("IF(C6=\"yes\",\"$5\")");
+	    //test assorted single cell references
+	    assertEquals("IF(R[-11]C[-1]=\"yes\",\"$5\")", analyzer.convertToR1C1(D17));
+	    
 	    
 	    wb.close();
 	}
