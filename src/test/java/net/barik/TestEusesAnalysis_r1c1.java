@@ -188,7 +188,9 @@ public class TestEusesAnalysis_r1c1 {
 	@Test
 	public void testEdgeCases() throws Exception {
 		Workbook wb = new XSSFWorkbook();
-	    Sheet sheet = wb.createSheet("new sheet");
+	    Sheet sheet = wb.createSheet("NamedAssetGroup");
+	    
+	    analyzer.setWorkBook(wb);
 
 	    Row row = sheet.createRow(16);
 	    // Create a cell and put a value in it.  Columns are 0-indexed
@@ -197,12 +199,15 @@ public class TestEusesAnalysis_r1c1 {
 	    //test assorted single cell references
 	    assertEquals("IF(R[-11]C[0]=\"yes\",(1*R[-11]C[3]),IF(R[-11]C[0]=\"no\",(0*R[-11]C[3]),\"\"))", analyzer.convertToR1C1(C17));
 	    
-	    // Create a cell and put a value in it.  Columns are 0-indexed
 	    Cell D17 = row.createCell(3);
 	    D17.setCellFormula("IF(C6=\"yes\",\"$5\")");
-	    //test assorted single cell references
+	    
 	    assertEquals("IF(R[-11]C[-1]=\"yes\",\"$5\")", analyzer.convertToR1C1(D17));
 	    
+	    Cell E17 = row.createCell(4);
+	    E17.setCellFormula("INDEX(NamedAssetGroup!$B$96:NamedAssetGroup!$B$106,NamedAssetGroup!$C17)");
+	    
+	    assertEquals("INDEX(NamedAssetGroup!R96C2:R106C2,NamedAssetGroup!R[0]C3)", analyzer.convertToR1C1(E17));
 	    
 	    wb.close();
 	}

@@ -72,7 +72,7 @@ public class SpreadsheetAnalyzer {
 		setWorkBook(wb);
 	}
 
-	private void setWorkBook(Workbook wb) {
+	void setWorkBook(Workbook wb) {
 		this.workbook = wb;
 		
 		compileReferenceRegexFromSheetNames(wb);
@@ -81,17 +81,23 @@ public class SpreadsheetAnalyzer {
 	private void compileReferenceRegexFromSheetNames(Workbook wb) {
 		//((\'?Sheet 1!\'?)|(\'?Sheet 2!\'?))?[A-Z0-9$]+(:[$A-Z0-9]+)?
 		StringBuilder builder = new StringBuilder();
-		builder.append('(');
+		StringBuilder sheetsBuilder = new StringBuilder();
+		sheetsBuilder.append('(');
 		for(int i = 0;i<wb.getNumberOfSheets();i++) {
 			if (i != 0) {
-				builder.append('|');
+				sheetsBuilder.append('|');
 			}
 			String sheetName = wb.getSheetName(i);
-			builder.append("(\\\'?");
-			builder.append(Pattern.quote(sheetName)); //escapes things like () and \
-			builder.append("\\\'?!)");
+			sheetsBuilder.append("(\\\'?");
+			sheetsBuilder.append(Pattern.quote(sheetName)); //escapes things like () and \
+			sheetsBuilder.append("\\\'?!)");
 		}
-		builder.append(")?[A-Z0-9$]+(:[$A-Z0-9]+)?");
+		sheetsBuilder.append(")?");
+		builder.append(sheetsBuilder);
+		
+		builder.append("[A-Z0-9$]+(:");
+		builder.append(sheetsBuilder);
+		builder.append("[$A-Z0-9]+)?");
 		
 		findPotentialCellReferences = Pattern.compile(builder.toString());
 	}
@@ -270,17 +276,26 @@ public class SpreadsheetAnalyzer {
 					}
 					CellReference cr = new CellReference(maybeCell);
 					
-					String convertedReference = convertToR1C1(cr, formulaCell);
+					String cellReference = convertToR1C1(cr, formulaCell);
+					String sheetReference = cr.getSheetName();
+					if (sheetReference == null) {
+						 sheetReference = "";
+					} else {
+						sheetReference += "!";
+					}
+					
+					String convertedReference = String.format("%s%s", sheetReference, cellReference);
 					
 					adjustedFormula = adjustedFormula.replace(maybeCell, convertedReference);
 				}
 				else {
 					CellReferencePair cellRange = parseCellRange(maybeCell);
 					
-					int indexOfSheetIdentifier = maybeCell.lastIndexOf('!');
-					String sheetReference = "";
-					if (indexOfSheetIdentifier != -1) {
-						 sheetReference = maybeCell.substring(0, indexOfSheetIdentifier) + '!';
+					String sheetReference = cellRange.first.getSheetName();
+					if (sheetReference == null) {
+						 sheetReference = "";
+					} else {
+						sheetReference += "!";
 					}
 					
 					String firstPointInRange = convertToR1C1(cellRange.first, formulaCell);
@@ -399,7 +414,7 @@ public class SpreadsheetAnalyzer {
 		Matcher m = findFunctions.matcher(functionString);
 		while(m.find()) {
 			String function = m.group();
-			if (isInQuotes(m.start(), function)) {
+			if (isInQuotes(m.start(), functionString)) {
 				continue;
 			}
 			function = function.substring(0, function.length()-1);
