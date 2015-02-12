@@ -6,61 +6,61 @@ import net.barik.SpreadsheetAnalyzer.FunctionEvalType;
 import net.barik.SpreadsheetAnalyzer.InputCellType;
 
 public class AnalysisOutput {
-	private String fileName;
-	private int sizeInBytes;
+	public String fileName;
+	public int sizeInBytes;
 	
-	private int totalInputCells;
-	private int booleanInputCells;
-	private int dateTimeInputCells;
-	private int errorInputCells;
-	private int integerInputCells;
-	private int nonIntegerInputCells;
-	private int stringInputCells;
+	public int totalInputCells;
+	public int booleanInputCells;
+	public int dateTimeInputCells;
+	public int errorInputCells;
+	public int integerInputCells;
+	public int nonIntegerInputCells;
+	public int stringInputCells;
 	
-	private int totalReferencedInput;
-	private int booleanReferencedInput;
-	private int dateReferencedInput;
-	private int errorReferencedInput;
-	private int integerReferencedInput;
-	private int nonIntegerReferencedInput;
-	private int stringReferencedInput;
+	public int totalReferencedInput;
+	public int booleanReferencedInput;
+	public int dateReferencedInput;
+	public int errorReferencedInput;
+	public int integerReferencedInput;
+	public int nonIntegerReferencedInput;
+	public int stringReferencedInput;
 	
-	private int totalFormulas;
-	private int booleanFormulas;
-	private int dateTimeFormulas;
-	private int errorFormulas;
-	private int integerFormulas;
-	private int nonIntegerFormulas;
-	private int stringFormulas;
-	private int blankFormulas;
+	public int totalFormulas;
+	public int booleanFormulas;
+	public int dateTimeFormulas;
+	public int errorFormulas;
+	public int integerFormulas;
+	public int nonIntegerFormulas;
+	public int stringFormulas;
+	public int blankFormulas;
 	
-	private int formulaCellsReferencingOthers;
-	private int formulaCellsReferencedByOthers;
+	public int formulaCellsReferencingOthers;
+	public int formulaCellsReferencedByOthers;
 	
-	private int formulaCellsOccuringOnce;
-	private int formulaCellsOccuring2Plus;
-	private int formulaCellsOccuring5Plus;
-	private int formulaCellsOccuring10Plus;
-	private int formulaCellsOccuring25Plus;
-	private int formulaCellsOccuring50Plus;
-	private int formulaCellsOccuring100Plus;
+	public int formulaCellsOccuringOnce;
+	public int formulaCellsOccuring2Plus;
+	public int formulaCellsOccuring5Plus;
+	public int formulaCellsOccuring10Plus;
+	public int formulaCellsOccuring25Plus;
+	public int formulaCellsOccuring50Plus;
+	public int formulaCellsOccuring100Plus;
 	
-	private int mostFrequentFormulaCount;
+	public int mostFrequentFormulaCount;
 
-	private String mostFrequentFormula;
-	private int numCharts;
-	private Boolean containsMacros;
+	public String mostFrequentFormula;
+	public int numCharts;
+	public Boolean containsMacros;
 	
-	private int sumifCount;
-	private int countifCount;
-	private int chooseCount;
-	private int hlookupCount;
-	private int indexCount;
-	private int indirectCount;
-	private int lookupCount;
-	private int matchCount;
-	private int offsetCount;
-	private int ifCount;
+	public int sumifCount;
+	public int countifCount;
+	public int chooseCount;
+	public int hlookupCount;
+	public int indexCount;
+	public int indirectCount;
+	public int lookupCount;
+	public int matchCount;
+	public int offsetCount;
+	public int ifCount;
 	
 	public AnalysisOutput(String fileName,
 			int sizeInBytes,
@@ -153,6 +153,13 @@ public class AnalysisOutput {
 		this.ifCount = functionCounts.get("IF");
 
 		
+	}
+	
+	private static int nonNull(Integer i) {
+		if (i == null) {
+			return 0;
+		}
+		return i.intValue();
 	}
 
 	private static int total(Map<?, Integer> inputCounts) {
