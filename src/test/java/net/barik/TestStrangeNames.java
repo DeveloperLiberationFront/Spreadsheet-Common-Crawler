@@ -29,7 +29,7 @@ public class TestStrangeNames {
 		assertEquals(Integer.valueOf(1), functionCounts.get("Z.TEST"));
 		assertEquals(Integer.valueOf(1), functionCounts.get("SUMX2MY2"));
 		assertEquals(Integer.valueOf(1), functionCounts.get("T.TEST"));
-		assertNull(functionCounts.get("STRANGE"));		//this is in a sheet name, shouldn't be afunction
+		assertNull(functionCounts.get("STRANGE"));		//this is in a sheet name, shouldn't be a function
 	}
 	
 	@Test
@@ -39,6 +39,7 @@ public class TestStrangeNames {
 	
 	@Test
 	public void testInputCellsReferenced() throws Exception {
+		System.out.println(analyzer.getInputReferences());
 		Integer actual = analyzer.getInputReferences().get(InputCellType.INTEGER);
 		assertNotNull(actual);
 		assertEquals(22, actual.intValue());

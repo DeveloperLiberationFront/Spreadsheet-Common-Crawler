@@ -51,7 +51,7 @@ public class SpreadsheetAnalyzer {
 	private Map<FunctionEvalType, Integer> evalTypeCounts = new EnumMap<>(FunctionEvalType.class);
 	private boolean containsMacros = false;
 	
-	private final Pattern findFunctions = Pattern.compile("\\p{Upper}+\\(");
+	private final Pattern findFunctions = Pattern.compile("[A-Z][A-Z\\.0-9]*\\(");
 	private Pattern findPotentialCellReferences;
 
 	private Sheet currentSheet;
@@ -88,6 +88,7 @@ public class SpreadsheetAnalyzer {
 				sheetsBuilder.append('|');
 			}
 			String sheetName = wb.getSheetName(i);
+			sheetName = sheetName.replace("'","''");	//in our search, single quotes will be escaped by putting two of them together
 			sheetsBuilder.append("(\\\'?");
 			sheetsBuilder.append(Pattern.quote(sheetName)); //escapes things like () and \
 			sheetsBuilder.append("\\\'?!)");
@@ -489,10 +490,14 @@ public class SpreadsheetAnalyzer {
 		boolean wasThereAReference = false;
 		while (m.find()) {
 			String maybeCell = m.group();
+			
+			if (maybeCell.length() <= 1 || isInQuotes(m.start(), formula)) {		//skip quoted things
+				continue;
+			}
 			try {
 				//look for colon to detect range
 				if (maybeCell.indexOf(':') == -1) {
-					if (maybeCell.matches("[A-Z]+")) {	// skip LOG, SUM and other functions
+					if (maybeCell.matches("([A-Z]+)||([0-9]+)")) {	// skip LOG, SUM and other functions and numbers
 						continue;
 					}
 					CellReference cr = new CellReference(maybeCell);
@@ -502,14 +507,13 @@ public class SpreadsheetAnalyzer {
 					checkFormulaCellReferences(cr);
 				}
 				else {
+					CellReferencePair crp = parseCellRange(maybeCell);				//to get the sheet name			
 					CellRangeAddress cra = CellRangeAddress.valueOf(maybeCell);
 					wasThereAReference = true;
-					int index = maybeCell.indexOf('!');
-					String sheetName;
-					if (index != -1) {
-						 sheetName = maybeCell.substring(0, index);
-					} else {
-						// otherwise, we are in the current sheet.
+					
+					String sheetName = crp.first.getSheetName();
+					if (sheetName == null) {
+						// we are in the current sheet.
 						sheetName = cell.getSheet().getSheetName();
 					}
 					
