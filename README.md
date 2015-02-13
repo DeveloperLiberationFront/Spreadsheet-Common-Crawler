@@ -4,10 +4,13 @@
 
 Dependencies (and the rest of the build process) are managed by Maven.  To build:   
 1. Install Maven.  
-2. Clone repository.  
-3. Run `mvn package`, which will download the dependencies  
-4. Run `mvn eclipse:eclipse` to build the Eclipse project  
-5. Import this project into Eclipse.  
+2. Clone repository.  Navigate a command prompt to the folder.  
+3. Run `mvn clean install`, which will build and install all three projects.
+
+Useful Maven Commands:  
+- Run `mvn eclipse:eclipse` to build an Eclipse project for one of the modules
+- Run `mvn eclipse:eclipse -DdownloadSources=true  -DdownloadJavadocs=true` to build an Eclipse project with javadocs and sources linked 
+- Run `mvn clean compile assembly:single` to build a jar with dependencies included [src](http://stackoverflow.com/a/574650/1447621)
 
 **Travis CI**
 Initially we configured our build to run on 
@@ -34,6 +37,3 @@ Here is a screenshot of the log when "slave 3" picked up a build job:
 
 Our Jenkins config file and the config file for our job are found under `jenkins/`.
 
-
-To make an Eclipse project with the sources and javadocs linked:  
-`mvn eclipse:eclipse -DdownloadSources=true  -DdownloadJavadocs=true`
