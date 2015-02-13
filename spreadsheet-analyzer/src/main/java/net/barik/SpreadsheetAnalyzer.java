@@ -145,7 +145,8 @@ public class SpreadsheetAnalyzer {
 					analyzer.getFunctionCounts());
 		}
 		catch (Exception e) {
-			return new AnalysisOutput(identifier, e.getMessage());
+			e.printStackTrace();
+			return new AnalysisOutput(identifier, e.toString());
 		}
 		
 		
@@ -175,7 +176,7 @@ public class SpreadsheetAnalyzer {
 	}
 
 
-	private void analyzeEUSESMetrics(InputStream inputStream) throws IOException {
+	private void analyzeEUSESMetrics(InputStream inputStreamForMacroChecking) throws IOException {
 		clearPreviousMetrics();
 
 		checkForMacros(inputStreamForMacroChecking);
