@@ -6,6 +6,8 @@ import net.barik.SpreadsheetAnalyzer.FunctionEvalType;
 import net.barik.SpreadsheetAnalyzer.InputCellType;
 
 public class AnalysisOutput {
+	public String errorNotification = "OK";
+	
 	public String fileName;
 	public int sizeInBytes;
 	
@@ -1023,6 +1025,11 @@ public class AnalysisOutput {
 		this.countZ_TEST = nonNull(functionCounts.get("Z.TEST"));
 
 		
+	}
+	
+	public AnalysisOutput(String identifier, String error) {
+		this.fileName = identifier;
+		this.errorNotification = error;
 	}
 	
 	private static int nonNull(Integer i) {

@@ -39,7 +39,6 @@ public class TestStrangeNames {
 	
 	@Test
 	public void testInputCellsReferenced() throws Exception {
-		System.out.println(analyzer.getInputReferences());
 		Integer actual = analyzer.getInputReferences().get(InputCellType.INTEGER);
 		assertNotNull(actual);
 		assertEquals(22, actual.intValue());

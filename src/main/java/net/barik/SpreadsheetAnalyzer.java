@@ -120,6 +120,36 @@ public class SpreadsheetAnalyzer {
 
 		return analyzer;
 	}
+	
+	public static AnalysisOutput doAnalysisAndGetObject(InputStream is, String identifier) {
+		try {
+			SpreadsheetAnalyzer analyzer = doEUSESAnalysis(is);
+			return new AnalysisOutput(identifier, 
+					analyzer.getSizeInBytes(), 
+					analyzer.getInputCellCounts(), 
+					analyzer.getInputReferences(), 
+					analyzer.getFormulaCellCounts(), 
+					analyzer.getFormulaReferencingOtherCells(), 
+					analyzer.getFormulasReferenced(), 
+					analyzer.getFormulasUsedOnce(), 
+					analyzer.getFormulasUsedNOrMoreTimes(2), 
+					analyzer.getFormulasUsedNOrMoreTimes(5), 
+					analyzer.getFormulasUsedNOrMoreTimes(10), 
+					analyzer.getFormulasUsedNOrMoreTimes(25), 
+					analyzer.getFormulasUsedNOrMoreTimes(50), 
+					analyzer.getFormulasUsedNOrMoreTimes(100),
+					analyzer.getMostTimesMostFrequentlyOccurringFormulaWasUsed(), 
+					analyzer.getMostFrequentlyOccurringFormula(), 
+					analyzer.getNumCharts(), 
+					analyzer.containsMacros, 
+					analyzer.getFunctionCounts());
+		}
+		catch (Exception e) {
+			return new AnalysisOutput(identifier, e.getMessage());
+		}
+		
+		
+	}
 
 	private static byte[] readInInputStream(InputStream is) throws IOException {
 		//a very trival way to read in an input stream to bytes.
