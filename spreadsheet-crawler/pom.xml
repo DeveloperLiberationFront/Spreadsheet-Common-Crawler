@@ -3,18 +3,18 @@
   <modelVersion>4.0.0</modelVersion>
 
 
-	<properties>
-  	<maven.compiler.source>1.7</maven.compiler.source>
-  	<maven.compiler.target>1.7</maven.compiler.target>
-	</properties>
   <groupId>net.barik</groupId>
   <artifactId>spreadsheet-crawler</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Spreadsheet Common Crawler</name>
-  <url>https://github.com/DeveloperLiberationFront/Spreadsheet-Common-Crawler</url>
-
+  <name>Spreadsheet Crawler (using Hadoop and Common Crawl)</name>
+     <parent>
+      <groupId>net.barik</groupId>
+      <artifactId>spreadsheet-parent</artifactId>
+      <version>1.0-SNAPSHOT</version>
+   </parent>
+  
   <dependencies>
     <dependency>
       <groupId>com.amazonaws</groupId>
@@ -43,24 +43,20 @@
   </dependencies>
 
   <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2.1</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>java</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-		  <source>1.7</source>
-          <target>1.7</target>
-          <mainClass>net.barik.spreadsheet.SpreadsheetJob</mainClass>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+      <plugins>
+         <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+               <archive>
+                  <manifest>
+                     <mainClass>net.barik.spreadsheet.SpreadsheetJob</mainClass>
+                  </manifest>
+               </archive>
+               <descriptorRefs>
+                  <descriptorRef>jar-with-dependencies</descriptorRef>
+               </descriptorRefs>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
 </project>
