@@ -1,87 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+   <modelVersion>4.0.0</modelVersion>
 
-	<properties>
-  	<maven.compiler.source>1.7</maven.compiler.source>
-  	<maven.compiler.target>1.7</maven.compiler.target>
-	</properties>
-
-  <groupId>net.barik</groupId>
-  <artifactId>spreadsheet-hadoop</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
-
-  <name>AWS SDK for Java Sample</name>
-  <url>http://aws.amazon.com/sdkforjava</url>
-
-  <dependencies>
-    <dependency>
-      <groupId>com.amazonaws</groupId>
-      <artifactId>aws-java-sdk</artifactId>
-      <version>[1.7.2,2.0.0)</version>
-    </dependency>
-    
-    <dependency>
-	<groupId>com.fasterxml.jackson.core</groupId>
-	<artifactId>jackson-core</artifactId>
-	<version>2.5.0</version>
-</dependency>
-
-<dependency>
-	<groupId>org.apache.hadoop</groupId>
-	<artifactId>hadoop-core</artifactId>
-	<version>1.2.1</version>
-</dependency>
-
-<dependency>
-	<groupId>org.netpreserve.commons</groupId>
-	<artifactId>webarchive-commons</artifactId>
-	<version>1.1.4</version>
-</dependency>
-
-<dependency>
-      <groupId>net.barik</groupId>  
-       <artifactId>spreadsheet-analyzer</artifactId>  
-       <version>1.0</version> 
-      <scope>system</scope>
-<systemPath>${project.basedir}/src/main/resources/spreadsheet-analyzer-1.0-SNAPSHOT.jar</systemPath>
-</dependency>
-
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi</artifactId>
-      <version>3.11</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml</artifactId>
-      <version>3.11</version>
-    </dependency>
-
-	<dependency>
-		<groupId>org.apache.poi</groupId>
-		<artifactId>poi-scratchpad</artifactId>
-		<version>3.11</version>
-	</dependency>
-  </dependencies>
-
-  <build>
-  <plugins>
-    <plugin>
-      <artifactId>maven-assembly-plugin</artifactId>
-      <configuration>
-        <archive>
-          <manifest>
-            <mainClass>net.barik.spreadsheet.AnalysisJob</mainClass>
-          </manifest>
-        </archive>
-        <descriptorRefs>
-          <descriptorRef>jar-with-dependencies</descriptorRef>
-        </descriptorRefs>
-      </configuration>
-    </plugin>
-  </plugins>
-</build>
+   <groupId>net.barik</groupId>
+   <artifactId>spreadsheet-hadoop</artifactId>
+   <version>1.0-SNAPSHOT</version>
+   <packaging>jar</packaging>
+   <name>Spreadsheet Analysis in Hadoop</name>
+   
+   <parent>
+      <groupId>net.barik</groupId>
+      <artifactId>spreadsheet-parent</artifactId>
+      <version>1.0-SNAPSHOT</version>
+   </parent>
+   
+   <dependencies>
+      <dependency>
+         <groupId>com.amazonaws</groupId>
+         <artifactId>aws-java-sdk</artifactId>
+         <version>[1.7.2,2.0.0)</version>
+      </dependency>
+      <dependency>
+         <groupId>com.fasterxml.jackson.core</groupId>
+         <artifactId>jackson-core</artifactId>
+         <version>2.5.0</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.hadoop</groupId>
+         <artifactId>hadoop-core</artifactId>
+         <version>1.2.1</version>
+      </dependency>
+      <dependency>
+         <groupId>org.netpreserve.commons</groupId>
+         <artifactId>webarchive-commons</artifactId>
+         <version>1.1.4</version>
+      </dependency>
+      <dependency>
+         <groupId>net.barik</groupId>
+         <artifactId>spreadsheet-analyzer</artifactId>
+         <version>1.0</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.poi</groupId>
+         <artifactId>poi</artifactId>
+         <version>3.11</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.poi</groupId>
+         <artifactId>poi-ooxml</artifactId>
+         <version>3.11</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.poi</groupId>
+         <artifactId>poi-scratchpad</artifactId>
+         <version>3.11</version>
+      </dependency>
+   </dependencies>
+   <build>
+      <plugins>
+         <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+               <archive>
+                  <manifest>
+                     <mainClass>net.barik.spreadsheet.AnalysisJob</mainClass>
+                  </manifest>
+               </archive>
+               <descriptorRefs>
+                  <descriptorRef>jar-with-dependencies</descriptorRef>
+               </descriptorRefs>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
 </project>
