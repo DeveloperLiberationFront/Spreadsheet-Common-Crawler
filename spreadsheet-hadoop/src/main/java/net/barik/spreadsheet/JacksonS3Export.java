@@ -24,7 +24,7 @@ public class JacksonS3Export {
     
     public static void exportItem(AnalysisOutput ao) throws IOException {
             byte[] data = serializeModel(ao);
-            putObjectS3(BUCKET_NAME, "analysis/output/" + ao.fileName , data);
+            putObjectS3(BUCKET_NAME, "analysis/output/" + ao.fileName+".json" , data);
 
     }
 
