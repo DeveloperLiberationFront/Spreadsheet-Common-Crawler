@@ -30,6 +30,13 @@ public class TestEusesAnalysis_r1c1 {
 		analyzer = SpreadsheetAnalyzer.doEUSESAnalysis(is);
 		assertNotNull(analyzer);
 	}
+	
+	@Test
+	public void testAnalysisOutput() throws Exception {
+		InputStream is = TestEusesAnalysis_small.class.getResourceAsStream("/r1c1.xlsx");
+		AnalysisOutput ao = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "r1c1");
+		assertNotNull(ao);
+	}
 
 	@Test
 	public void testGetFunctionCounts() {
