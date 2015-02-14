@@ -145,8 +145,8 @@ public class SpreadsheetAnalyzer {
 					analyzer.getFunctionCounts());
 		}
 		catch (Exception e) {
-			throw new RuntimeException("Problem with analysis", e);
-			//return new AnalysisOutput(identifier, e.toString());
+			//throw new RuntimeException("Problem with analysis", e);
+			return new AnalysisOutput(identifier, e.toString());
 		}
 		
 		
