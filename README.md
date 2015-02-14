@@ -10,7 +10,7 @@ Dependencies (and the rest of the build process) are managed by Maven.  To build
 Useful Maven Commands:  
 - Run `mvn eclipse:eclipse` to build an Eclipse project for one of the modules
 - Run `mvn eclipse:eclipse -DdownloadSources=true  -DdownloadJavadocs=true` to build an Eclipse project with javadocs and sources linked 
-- Run `mvn clean compile assembly:single` to build a jar with dependencies included [src](http://stackoverflow.com/a/574650/1447621)
+- Run `mvn clean compile assembly:single` in one of the module folders to build a jar with dependencies included [source](http://stackoverflow.com/a/574650/1447621)
 
 **Travis CI**
 Initially we configured our build to run on 
