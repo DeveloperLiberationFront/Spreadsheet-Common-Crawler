@@ -528,37 +528,37 @@ public class AnalysisOutput {
 		//INPUT CELLS
 		this.totalInputCells = total(inputCounts);
 		
-		this.booleanInputCells = inputCounts.get(InputCellType.BOOLEAN);
-		this.dateTimeInputCells = inputCounts.get(InputCellType.DATE);
-		this.errorInputCells = inputCounts.get(InputCellType.ERROR);
-		this.integerInputCells = inputCounts.get(InputCellType.INTEGER);
-		this.nonIntegerInputCells = inputCounts.get(InputCellType.NON_INTEGER_NUMBER);
-		this.stringInputCells = inputCounts.get(InputCellType.STRING);
+		this.booleanInputCells = nonNull(inputCounts.get(InputCellType.BOOLEAN));
+		this.dateTimeInputCells = nonNull(inputCounts.get(InputCellType.DATE));
+		this.errorInputCells = nonNull(inputCounts.get(InputCellType.ERROR));
+		this.integerInputCells = nonNull(inputCounts.get(InputCellType.INTEGER));
+		this.nonIntegerInputCells = nonNull(inputCounts.get(InputCellType.NON_INTEGER_NUMBER));
+		this.stringInputCells = nonNull(inputCounts.get(InputCellType.STRING));
 		//-------------------------------------------------------
 		
 		
 		//References
 		this.totalReferencedInput = total(inputReferences);
 		
-		this.booleanReferencedInput = inputReferences.get(InputCellType.BOOLEAN);
-		this.dateReferencedInput = inputReferences.get(InputCellType.DATE);
-		this.errorReferencedInput = inputReferences.get(InputCellType.ERROR);
-		this.integerReferencedInput = inputReferences.get(InputCellType.INTEGER);
-		this.nonIntegerReferencedInput = inputReferences.get(InputCellType.NON_INTEGER_NUMBER);
-		this.stringReferencedInput = inputReferences.get(InputCellType.STRING);
+		this.booleanReferencedInput = nonNull(inputReferences.get(InputCellType.BOOLEAN));
+		this.dateReferencedInput = nonNull(inputReferences.get(InputCellType.DATE));
+		this.errorReferencedInput = nonNull(inputReferences.get(InputCellType.ERROR));
+		this.integerReferencedInput = nonNull(inputReferences.get(InputCellType.INTEGER));
+		this.nonIntegerReferencedInput = nonNull(inputReferences.get(InputCellType.NON_INTEGER_NUMBER));
+		this.stringReferencedInput = nonNull(inputReferences.get(InputCellType.STRING));
 		//----------------------------------------------------------
 		
 		
 		//Formula Eval Types
 		this.totalFormulas = total(formulaCells);
 
-		this.booleanFormulas = formulaCells.get(FunctionEvalType.BOOLEAN);
-		this.dateTimeFormulas = formulaCells.get(FunctionEvalType.DATE);
-		this.errorFormulas = formulaCells.get(FunctionEvalType.ERROR);
-		this.integerFormulas = formulaCells.get(FunctionEvalType.INTEGER);
-		this.nonIntegerFormulas = formulaCells.get(FunctionEvalType.NON_INTEGER_NUMBER);
-		this.stringFormulas = formulaCells.get(FunctionEvalType.STRING);
-		this.blankFormulas = formulaCells.get(FunctionEvalType.BLANK);
+		this.booleanFormulas = nonNull(formulaCells.get(FunctionEvalType.BOOLEAN));
+		this.dateTimeFormulas = nonNull(formulaCells.get(FunctionEvalType.DATE));
+		this.errorFormulas = nonNull(formulaCells.get(FunctionEvalType.ERROR));
+		this.integerFormulas = nonNull(formulaCells.get(FunctionEvalType.INTEGER));
+		this.nonIntegerFormulas = nonNull(formulaCells.get(FunctionEvalType.NON_INTEGER_NUMBER));
+		this.stringFormulas = nonNull(formulaCells.get(FunctionEvalType.STRING));
+		this.blankFormulas = nonNull(formulaCells.get(FunctionEvalType.BLANK));
 		//--------------------------------------------------------
 		
 		
