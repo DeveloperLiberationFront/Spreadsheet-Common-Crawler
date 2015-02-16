@@ -1031,8 +1031,9 @@ public class AnalysisOutput {
 		
 	}
 	
-	public AnalysisOutput(String identifier, String error) {
+	public AnalysisOutput(String identifier, String fileHash, String error) {
 		this.fileName = identifier;
+		this.fileHash = fileHash;
 		this.errorNotification = error;
 	}
 	

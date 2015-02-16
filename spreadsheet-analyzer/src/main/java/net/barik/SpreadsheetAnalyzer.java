@@ -106,23 +106,25 @@ public class SpreadsheetAnalyzer {
 		findPotentialCellReferences = Pattern.compile(builder.toString());
 	}
 
-	public static SpreadsheetAnalyzer doEUSESAnalysis(InputStream is) throws IOException {
+	public static SpreadsheetAnalyzer doEUSESAnalysis(InputStream is) throws IOException, ParsingException {
 		byte[] byteArray = readInInputStream(is);
 		InputStream inputStreamForWorkbook = new ByteArrayInputStream(byteArray); 
 		InputStream inputStreamForMacro = new ByteArrayInputStream(byteArray); 
 		InputStream inputStreamForHash = new ByteArrayInputStream(byteArray);
 		 
-        
+		// Calculates the sha512 digest of the given InputStream object.
+        // It will generate a 32 characters hex string.        
+		String digest = DigestUtils.sha512Hex(inputStreamForHash);
+		
+		
 		SpreadsheetAnalyzer analyzer;
 		try {
 			analyzer = new SpreadsheetAnalyzer(WorkbookFactory.create(inputStreamForWorkbook));
 		} catch (InvalidFormatException e) {
-			throw new IOException("Problem reading in the workbook", e);
+			throw new ParsingException("Problem reading in the workbook", e, digest);
 		}
 		
-		// Calculates the sha512 digest of the given InputStream object.
-        // It will generate a 32 characters hex string.        
-		String digest = DigestUtils.sha512Hex(inputStreamForHash);
+		
 		analyzer.fileHash = digest;
 		analyzer.sizeInBytes = byteArray.length;
 		analyzer.analyzeEUSESMetrics(inputStreamForMacro);
@@ -154,9 +156,11 @@ public class SpreadsheetAnalyzer {
 					analyzer.containsMacros, 
 					analyzer.getFunctionCounts());
 		}
+		catch (ParsingException e) {
+			return new AnalysisOutput(identifier, e.fileHashOfFailedParse, e.toString());
+		}
 		catch (Exception e) {
-			//throw new RuntimeException("Problem with analysis", e);
-			return new AnalysisOutput(identifier, e.toString());
+			return new AnalysisOutput(identifier, "[error before computed]", e.toString());
 		}
 		
 		
@@ -854,6 +858,16 @@ public class SpreadsheetAnalyzer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	static class ParsingException extends Exception {
+		String fileHashOfFailedParse;
+
+		public ParsingException(String string, Exception e, String fileHash) {
+			super(string ,e);
+			fileHashOfFailedParse = fileHash;
+		}
+		
 	}
 
 

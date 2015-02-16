@@ -60,7 +60,7 @@ public class CSVScanner {
 	protected static void scanOneFile(String file) {
 		try {
 			parseSpreadSheet(new File(file));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -92,7 +92,7 @@ public class CSVScanner {
 	    }
 	}
 
-	private static void parseSpreadSheet(File file) throws IOException {
+	private static void parseSpreadSheet(File file) throws Exception {
 		SpreadsheetAnalyzer analyzer = SpreadsheetAnalyzer.doEUSESAnalysis(new FileInputStream(file));
 		try {
 			writeOutAnalysisLine(file.getParent()+File.separator+file.getName(), analyzer);
