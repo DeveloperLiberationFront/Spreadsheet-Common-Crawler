@@ -124,7 +124,6 @@ public class SpreadsheetAnalyzer {
         // It will generate a 32 characters hex string.        
 		String digest = DigestUtils.sha512Hex(inputStreamForHash);
 		analyzer.fileHash = digest;
-		System.out.println(digest);
 		analyzer.sizeInBytes = byteArray.length;
 		analyzer.analyzeEUSESMetrics(inputStreamForMacro);
 
