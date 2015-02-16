@@ -10,6 +10,7 @@ public class AnalysisOutput {
 	
 	public String fileName;
 	public int sizeInBytes;
+	public String fileHash;
 	
 	public int totalInputCells;
 	public int booleanInputCells;
@@ -502,6 +503,7 @@ public class AnalysisOutput {
 	
 	public AnalysisOutput(String fileName,
 			int sizeInBytes,
+			String fileHash,
 			Map<InputCellType, Integer> inputCounts,
 			Map<InputCellType, Integer> inputReferences,
 			Map<FunctionEvalType, Integer> formulaCells,
@@ -524,6 +526,8 @@ public class AnalysisOutput {
 		this.fileName = fileName; 
 		
 		this.sizeInBytes = sizeInBytes; 
+		
+		this.fileHash = fileHash;
 		
 		//INPUT CELLS
 		this.totalInputCells = total(inputCounts);

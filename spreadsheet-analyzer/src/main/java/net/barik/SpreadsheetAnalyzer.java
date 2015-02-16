@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.poi.hssf.usermodel.HSSFChart;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -68,6 +69,8 @@ public class SpreadsheetAnalyzer {
 
 	private int sizeInBytes ;
 
+	private String fileHash;
+
 	private SpreadsheetAnalyzer(Workbook wb) {
 		setWorkBook(wb);
 	}
@@ -107,7 +110,9 @@ public class SpreadsheetAnalyzer {
 		byte[] byteArray = readInInputStream(is);
 		InputStream inputStreamForWorkbook = new ByteArrayInputStream(byteArray); 
 		InputStream inputStreamForMacro = new ByteArrayInputStream(byteArray); 
-		
+		InputStream inputStreamForHash = new ByteArrayInputStream(byteArray);
+		 
+        
 		SpreadsheetAnalyzer analyzer;
 		try {
 			analyzer = new SpreadsheetAnalyzer(WorkbookFactory.create(inputStreamForWorkbook));
@@ -115,6 +120,10 @@ public class SpreadsheetAnalyzer {
 			throw new IOException("Problem reading in the workbook", e);
 		}
 		
+		// Calculates the sha512 digest of the given InputStream object.
+        // It will generate a 32 characters hex string.        
+		String digest = DigestUtils.sha512Hex(inputStreamForHash);
+		analyzer.fileHash = digest;
 		analyzer.sizeInBytes = byteArray.length;
 		analyzer.analyzeEUSESMetrics(inputStreamForMacro);
 
@@ -126,6 +135,7 @@ public class SpreadsheetAnalyzer {
 			SpreadsheetAnalyzer analyzer = doEUSESAnalysis(is);
 			return new AnalysisOutput(identifier, 
 					analyzer.getSizeInBytes(), 
+					analyzer.getFileHash(),
 					analyzer.getInputCellCounts(), 
 					analyzer.getInputReferences(), 
 					analyzer.getFormulaCellCounts(), 
@@ -602,6 +612,10 @@ public class SpreadsheetAnalyzer {
 				}
 			}
 		}
+	}
+	
+	public String getFileHash(){
+		return fileHash;
 	}
 
 	public boolean getContainsMacro(){
