@@ -1,15 +1,14 @@
 package net.barik.spreadsheet;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import net.barik.AnalysisOutput;
 import net.barik.SpreadsheetAnalyzer;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
 public class AnalysisMapper extends Mapper<LongWritable, Text, Text, Text> {
 

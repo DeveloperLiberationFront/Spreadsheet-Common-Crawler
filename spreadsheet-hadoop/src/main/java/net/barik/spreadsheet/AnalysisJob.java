@@ -1,11 +1,11 @@
 package net.barik.spreadsheet;
 
+import java.io.IOException;
+
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.lib.input.NLineInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-import java.io.IOException;
 
 public class AnalysisJob {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
