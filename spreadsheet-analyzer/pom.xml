@@ -42,7 +42,7 @@
             <configuration>
                <archive>
                   <manifest>
-                     <mainClass>net.barik.spreadsheet.AnalysisJob</mainClass>
+                     <mainClass>net.barik.spreadsheet.analysis.CSVScanner</mainClass>
                   </manifest>
                </archive>
                <descriptorRefs>
