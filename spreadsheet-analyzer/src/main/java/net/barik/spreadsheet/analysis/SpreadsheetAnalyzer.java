@@ -134,8 +134,9 @@ public class SpreadsheetAnalyzer {
 	}
 	
 	public static AnalysisOutput doAnalysisAndGetObject(InputStream is, String corpusName, String identifier) {
+		SpreadsheetAnalyzer analyzer = null;
 		try {
-			SpreadsheetAnalyzer analyzer = doEUSESAnalysis(is);
+			analyzer = doEUSESAnalysis(is);
 			return new AnalysisOutput(corpusName, identifier, 
 					analyzer.getSizeInBytes(), 
 					analyzer.getFileHash(),
@@ -164,6 +165,11 @@ public class SpreadsheetAnalyzer {
 		catch (Exception e) {
 			return new AnalysisOutput(corpusName, identifier, "[error before computed]",
 					e.toString()+" : "+Arrays.toString(e.getStackTrace()));
+		}
+		finally {
+			if (analyzer != null) {
+				analyzer.close();
+			}
 		}
 		
 		
