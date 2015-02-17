@@ -205,7 +205,7 @@ public class CSVScanner {
 	}
 	
 	private static void append(Integer i) {
-		thisLine.append(i == null ? "0" : i.intValue());
+		thisLine.append(i == null ? "0" : i.toString());
 		thisLine.append(',');
 	}
 
