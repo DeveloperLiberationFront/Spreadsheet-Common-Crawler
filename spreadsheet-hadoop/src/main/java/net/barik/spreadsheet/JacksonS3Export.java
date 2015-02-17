@@ -17,7 +17,9 @@ public class JacksonS3Export {
     
     public static void exportItem(AnalysisOutput ao) throws IOException {
             byte[] data = serializeModel(ao);
-            putObjectS3(BUCKET_NAME, S3OutputPath + ao.fileName + ".json" , data);
+            String outputname = ao.fileName.replace('\\', '.').replace('/','.');
+            System.out.println("Writing to " + S3OutputPath + outputname + ".json");
+            putObjectS3(BUCKET_NAME, S3OutputPath + outputname + ".json" , data);
 
     }
 
