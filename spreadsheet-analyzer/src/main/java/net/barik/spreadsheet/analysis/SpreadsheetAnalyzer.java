@@ -1,7 +1,6 @@
 package net.barik.spreadsheet.analysis;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -35,6 +34,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -176,19 +176,10 @@ public class SpreadsheetAnalyzer {
 	}
 
 	private static byte[] readInInputStream(InputStream is) throws IOException {
-		//a very trival way to read in an input stream to bytes.
-		//Because we don't expect our spreadsheets to be too big (<100MB), we can get away with this copying to memory
-		// from http://stackoverflow.com/questions/5923817/how-to-clone-an-inputstream
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-		byte[] buffer = new byte[1024];
-		int len;
-		while ((len = is.read(buffer)) > -1 ) {
-			baos.write(buffer, 0, len);
-		}
-		baos.flush();
-
-		return baos.toByteArray();
+		byte[] ba =  IOUtils.toByteArray(is);
+		IOUtils.closeQuietly(is);
+		return ba;
+		
 	}
 	
 	private static Integer incrementOrInitialize(Integer i) {
