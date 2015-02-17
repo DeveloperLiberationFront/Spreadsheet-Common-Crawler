@@ -10,8 +10,6 @@ public class AnalysisOutput {
 	
 	public String corpusName;
 	public String identifier;
-	public int sizeInBytes;
-	public String fileHash;
 	
 	public int totalInputCells;
 	public int booleanInputCells;
@@ -502,8 +500,6 @@ public class AnalysisOutput {
 
 	
 	public AnalysisOutput(String corpusName, String identifier,
-			int sizeInBytes,
-			String fileHash,
 			Map<InputCellType, Integer> inputCounts,
 			Map<InputCellType, Integer> inputReferences,
 			Map<FunctionEvalType, Integer> formulaCells,
@@ -525,8 +521,6 @@ public class AnalysisOutput {
 
 		this.corpusName = corpusName;
 		this.identifier = identifier; 
-		this.sizeInBytes = sizeInBytes; 
-		this.fileHash = fileHash;
 		
 		//INPUT CELLS
 		this.totalInputCells = total(inputCounts);
@@ -1030,10 +1024,9 @@ public class AnalysisOutput {
 		
 	}
 	
-	public AnalysisOutput(String corpusName, String identifier, String fileHash, String error) {
+	public AnalysisOutput(String corpusName, String identifier, String error) {
 		this.corpusName = corpusName;
 		this.identifier = identifier;
-		this.fileHash = fileHash;
 		this.errorNotification = error;
 	}
 	

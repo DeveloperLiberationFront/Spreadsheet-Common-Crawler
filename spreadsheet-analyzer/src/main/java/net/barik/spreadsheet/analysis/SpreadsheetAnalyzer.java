@@ -26,6 +26,7 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
 import org.apache.poi.poifs.filesystem.POIFSDocumentPath;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.formula.FormulaParseException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
@@ -109,6 +110,7 @@ public class SpreadsheetAnalyzer {
 
 	public static SpreadsheetAnalyzer doEUSESAnalysis(InputStream is) throws IOException, ParsingException {
 		byte[] byteArray = readInInputStream(is);
+		//can't use a bufferedInputStream and reset it because WorkbookFactory.create closes the stream
 		InputStream inputStreamForWorkbook = new ByteArrayInputStream(byteArray); 
 		InputStream inputStreamForMacro = new ByteArrayInputStream(byteArray); 
 		InputStream inputStreamForHash = new ByteArrayInputStream(byteArray);
@@ -122,7 +124,7 @@ public class SpreadsheetAnalyzer {
 		try {
 			analyzer = new SpreadsheetAnalyzer(WorkbookFactory.create(inputStreamForWorkbook));
 		} catch (InvalidFormatException e) {
-			throw new ParsingException("Problem reading in the workbook", e, digest);
+			throw new ParsingException("Problem reading in the workbook", e);
 		}
 		
 		
@@ -137,9 +139,7 @@ public class SpreadsheetAnalyzer {
 		SpreadsheetAnalyzer analyzer = null;
 		try {
 			analyzer = doEUSESAnalysis(is);
-			return new AnalysisOutput(corpusName, identifier, 
-					analyzer.getSizeInBytes(), 
-					analyzer.getFileHash(),
+			return new AnalysisOutput(corpusName, identifier,
 					analyzer.getInputCellCounts(), 
 					analyzer.getInputReferences(), 
 					analyzer.getFormulaCellCounts(), 
@@ -158,12 +158,8 @@ public class SpreadsheetAnalyzer {
 					analyzer.containsMacros, 
 					analyzer.getFunctionCounts());
 		}
-		catch (ParsingException e) {
-			return new AnalysisOutput(corpusName, identifier, e.fileHashOfFailedParse,
-					e.toString()+" : "+Arrays.toString(e.getStackTrace()));
-		}
 		catch (Exception e) {
-			return new AnalysisOutput(corpusName, identifier, "[error before computed]",
+			return new AnalysisOutput(corpusName, identifier,
 					e.toString()+" : "+Arrays.toString(e.getStackTrace()));
 		}
 		finally {
@@ -237,7 +233,13 @@ public class SpreadsheetAnalyzer {
 						break;
 
 					case Cell.CELL_TYPE_FORMULA:
-						handleFormulas(cell);
+						try {
+							handleFormulas(cell);
+						} catch (ParsingException e) {
+							//ignore bad formulas
+						}
+						break;
+					default:
 						break;
 					}
 
@@ -256,6 +258,7 @@ public class SpreadsheetAnalyzer {
 						
 						inputCellByReferenceMap.put(new SheetLocation(cell), inputCellPackage);
 					}
+					
 				}
 
 			}
@@ -279,7 +282,7 @@ public class SpreadsheetAnalyzer {
 		}
 	}
 	
-	private void handleFormulas(Cell cell) {
+	private void handleFormulas(Cell cell) throws ParsingException {
 		addFormulaToReferenceMaps(cell);
 		addFormulaToUniqueFormulas(cell);
 		
@@ -289,22 +292,41 @@ public class SpreadsheetAnalyzer {
 			evalTypeCounts.put(evaluatingType,incrementOrInitialize(evalTypeCounts.get(evaluatingType)));
 		}
 		
-		String functionString = cell.getCellFormula();
-    	if (functionString.startsWith("#")) {
+		String cellFormula = null;
+		try {
+			 cellFormula = cell.getCellFormula();
+		}
+		catch (FormulaParseException fpe) {
+			throw new ParsingException("Problem with cell formula", fpe);
+		}
+    	if (cellFormula.startsWith("#")) {
     		lastInputCellType = InputCellType.ERROR;
 		} else {
-			findFunctionsUsed(functionString);
+			findFunctionsUsed(cellFormula);
 			
 		}
 	}
 
 	private void addFormulaToUniqueFormulas(Cell formulaCell) {
-		String formulaString = convertToR1C1(formulaCell);
+		String formulaString;
+		try {
+			formulaString = convertToR1C1(formulaCell);
+		} catch (ParsingException e) {
+			return;		//skip this because it was badly parsed
+		}
 		r1c1FormulaToCountMap.put(formulaString, incrementOrInitialize(r1c1FormulaToCountMap.get(formulaString)));
 	}
 
-	String convertToR1C1(Cell formulaCell) {
-		String cellFormula = formulaCell.getCellFormula();
+	
+	String convertToR1C1(Cell formulaCell) throws ParsingException {
+		String cellFormula = null;
+		try {
+			 cellFormula = formulaCell.getCellFormula();
+		}
+		catch (FormulaParseException fpe) {
+			throw new ParsingException("Problem with cell formula", fpe);
+		}
+
 		String adjustedFormula = cellFormula;
 		
 		Matcher m = findPotentialCellReferences.matcher(cellFormula);
@@ -509,7 +531,12 @@ public class SpreadsheetAnalyzer {
 					Cell cell = cellIterator.next();
 
 					if(cell.getCellType()==Cell.CELL_TYPE_FORMULA) {
-						processFormulaReferences(cell);
+						try {
+							processFormulaReferences(cell);
+						} catch (ParsingException e) {
+							//ignore bad formulas
+							continue;
+						}
 					}
 				}
 			}
@@ -526,8 +553,14 @@ public class SpreadsheetAnalyzer {
 		
 	}
 
-	private void processFormulaReferences(Cell cell) {
-		String formula = cell.getCellFormula();
+	private void processFormulaReferences(Cell cell) throws ParsingException {
+		String formula = null;
+		try {
+			 formula = cell.getCellFormula();
+		}
+		catch (FormulaParseException fpe) {
+			throw new ParsingException("Problem with cell formula", fpe);
+		}
 		//we look for anything that might be a cell reference and use
 		// POI's parsers to see if they are valid references
 		Matcher m = findPotentialCellReferences.matcher(formula);
@@ -749,7 +782,7 @@ public class SpreadsheetAnalyzer {
 			
 	}
 	
-	public class MacroListener implements POIFSReaderListener {
+	public static class MacroListener implements POIFSReaderListener {
 		//From http://www.rgagnon.com/javadetails/java-detect-if-xls-excel-file-contains-a-macro.html
 		boolean macroDetected = false;
 
@@ -861,13 +894,25 @@ public class SpreadsheetAnalyzer {
 	}
 	
 	static class ParsingException extends Exception {
-		String fileHashOfFailedParse;
 
-		public ParsingException(String string, Exception e, String fileHash) {
-			super(string ,e);
-			fileHashOfFailedParse = fileHash;
+		private static final long serialVersionUID = -3707695603582413832L;
+
+		public ParsingException() {
+			super();
 		}
-		
+
+		public ParsingException(String arg0, Throwable arg1) {
+			super(arg0, arg1);
+		}
+
+		public ParsingException(String arg0) {
+			super(arg0);
+		}
+
+		public ParsingException(Throwable arg0) {
+			super(arg0);
+		}
+	
 	}
 
 
