@@ -1,65 +1,52 @@
 package net.barik.spreadsheet;
 
+import org.json.JSONObject;
+
+import java.io.*;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 public class WATExportModel {
 
-    private String path;
-    private String warcTargetURI;
-    private String warcDate;
-    private String warcRecordId;
-    private String warcRefersTo;
-    private String warcContentType;
-    private long contentLength;
+    private RecordIO importIO;
+    private RecordIO exportIO;
 
-    private String content;
-
-    public WATExportModel(
-            String path,
-            String warcTargetURI,
-            String warcDate,
-            String warcRecordId,
-            String warcRefersTo,
-            String warcContentType,
-            long contentLength,
-            String content) {
-        this.path = path;
-        this.warcTargetURI = warcTargetURI;
-        this.warcDate = warcDate;
-        this.warcRecordId = warcRecordId;
-        this.warcRefersTo = warcRefersTo;
-        this.warcContentType = warcContentType;
-        this.contentLength = contentLength;
-        this.content = content;
+    public WATExportModel(RecordIO importIO, RecordIO exportIO) {
+        this.importIO = importIO;
+        this.exportIO = exportIO;
     }
 
-    public String getPath() {
-        return path;
+    public void exportItems(List<WATExportDataModel> items) throws IOException {
+        for (WATExportDataModel watExportDataModel : items) {
+            byte[] data = serializeModel(watExportDataModel);
+            exportIO.save(getKeyForURI(watExportDataModel.getWarcRecordId()), data);
+        }
     }
 
-    public String getWarcTargetURI() {
-        return warcTargetURI;
+    public List<WATExportDataModel> parse(String resourceKey) throws IOException {
+        InputStream inputStream = importIO.loadIntoMemory(resourceKey);
+        List<WATExportDataModel> list = WATParser.parse(resourceKey, inputStream);
+
+        return list;
     }
 
-    public String getWarcDate() {
-        return warcDate;
+    public static byte[] serializeModel(WATExportDataModel model) throws IOException {
+        JSONObject json = new JSONObject();
+
+        json.put("Path", model.getPath());
+        json.put("WARC-Target-URI", model.getWarcTargetURI());
+        json.put("WARC-Date", model.getWarcDate());
+        json.put("WARC-Record-ID", model.getWarcRecordId());
+        json.put("WARC-Refers-To", model.getWarcRefersTo());
+        json.put("WARC-Content-Type", model.getWarcContentType());
+        json.put("Content-Length", model.getContentLength());
+        json.put("Content", model.getContent());
+
+        return json.toString().getBytes("UTF-8");
     }
 
-    public String getWarcRecordId() {
-        return warcRecordId;
-    }
 
-    public String getWarcRefersTo() {
-        return warcRefersTo;
-    }
-
-    public String getWarcContentType() {
-        return warcContentType;
-    }
-
-    public long getContentLength() {
-        return contentLength;
-    }
-
-    public String getContent() {
-        return content;
+    public static String getKeyForURI(String uri) {
+        return uri.substring(10, uri.length() - 1);
     }
 }
