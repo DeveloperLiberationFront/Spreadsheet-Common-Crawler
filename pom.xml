@@ -15,6 +15,6 @@
    <modules>
       <module>spreadsheet-analyzer</module>
       <module>spreadsheet-crawler</module>
-      <module>spreadsheet-hadoop</module>
+      <module>spreadsheet-analyzer-hadoop</module>
    </modules>
 </project>

@@ -10,7 +10,7 @@
       <artifactId>spreadsheet-parent</artifactId>
       <version>1.0-SNAPSHOT</version>
    </parent>
-   <name>Spreadsheet Analysis package</name>
+   <name>Spreadsheet Analysis Package</name>
    <dependencies>
       <dependency>
          <groupId>junit</groupId>
