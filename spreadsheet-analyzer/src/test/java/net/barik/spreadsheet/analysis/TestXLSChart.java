@@ -1,19 +1,21 @@
-package net.barik;
+package net.barik.spreadsheet.analysis;
 
 import static org.junit.Assert.*;
 
 import java.io.InputStream;
 
+import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestXLSXChart {
+public class TestXLSChart {
 
 	private static SpreadsheetAnalyzer analyzer;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		InputStream is = TestXLSXChart.class.getResourceAsStream("/chart.xlsx");
+		InputStream is = TestXLSChart.class.getResourceAsStream("/chart.xls");
 		assertNotNull(is);
 		analyzer = SpreadsheetAnalyzer.doEUSESAnalysis(is);
 		assertNotNull(analyzer);

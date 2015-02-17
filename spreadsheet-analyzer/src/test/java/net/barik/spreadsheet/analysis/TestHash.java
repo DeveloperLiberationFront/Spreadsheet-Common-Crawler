@@ -1,8 +1,10 @@
-package net.barik;
+package net.barik.spreadsheet.analysis;
 
 import static org.junit.Assert.*;
 
 import java.io.InputStream;
+
+import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

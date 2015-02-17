@@ -1,4 +1,4 @@
-package net.barik;
+package net.barik.spreadsheet.analysis;
 
 import static org.junit.Assert.*;
 
@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import net.barik.SpreadsheetAnalyzer.FunctionEvalType;
-import net.barik.SpreadsheetAnalyzer.InputCellType;
+import net.barik.spreadsheet.analysis.AnalysisOutput;
+import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer;
+import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.FunctionEvalType;
+import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.InputCellType;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CreationHelper;

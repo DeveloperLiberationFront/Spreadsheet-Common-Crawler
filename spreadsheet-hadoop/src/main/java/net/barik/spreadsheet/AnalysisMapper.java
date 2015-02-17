@@ -2,10 +2,11 @@ package net.barik.spreadsheet;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.apache.hadoop.conf.Configuration;
 
-import net.barik.AnalysisOutput;
-import net.barik.SpreadsheetAnalyzer;
+import net.barik.spreadsheet.analysis.AnalysisOutput;
+import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;

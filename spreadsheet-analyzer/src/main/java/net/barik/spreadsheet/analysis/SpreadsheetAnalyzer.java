@@ -1,4 +1,4 @@
-package net.barik;
+package net.barik.spreadsheet.analysis;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

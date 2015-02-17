@@ -1,4 +1,4 @@
-package net.barik;
+package net.barik.spreadsheet.analysis;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,9 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 
-import net.barik.SpreadsheetAnalyzer;
-import net.barik.SpreadsheetAnalyzer.FunctionEvalType;
-import net.barik.SpreadsheetAnalyzer.InputCellType;
+import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer;
+import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.FunctionEvalType;
+import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.InputCellType;
 
 /**
  * Runs analysis of a folder and spits out a csv with the meta data.

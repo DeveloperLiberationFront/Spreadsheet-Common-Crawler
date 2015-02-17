@@ -1,9 +1,9 @@
-package net.barik;
+package net.barik.spreadsheet.analysis;
 
 import java.util.Map;
 
-import net.barik.SpreadsheetAnalyzer.FunctionEvalType;
-import net.barik.SpreadsheetAnalyzer.InputCellType;
+import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.FunctionEvalType;
+import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.InputCellType;
 
 public class AnalysisOutput {
 	public String errorNotification = "OK";

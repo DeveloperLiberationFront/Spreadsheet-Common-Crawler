@@ -1,11 +1,12 @@
-package net.barik;
+package net.barik.spreadsheet.analysis;
 
 import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.util.Map;
 
-import net.barik.SpreadsheetAnalyzer.InputCellType;
+import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer;
+import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.InputCellType;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
