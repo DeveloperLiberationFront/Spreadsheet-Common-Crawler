@@ -51,7 +51,7 @@ public class AnalysisOutput {
 
 	public String mostFrequentFormula;
 	public int numCharts;
-	public Boolean containsMacros;
+	public boolean containsMacros;
 	
 	public int countABS;
 	public int countACOS;
