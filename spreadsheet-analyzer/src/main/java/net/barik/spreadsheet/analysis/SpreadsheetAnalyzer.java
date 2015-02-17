@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -157,10 +158,12 @@ public class SpreadsheetAnalyzer {
 					analyzer.getFunctionCounts());
 		}
 		catch (ParsingException e) {
-			return new AnalysisOutput(corpusName, identifier, e.fileHashOfFailedParse, e.toString());
+			return new AnalysisOutput(corpusName, identifier, e.fileHashOfFailedParse,
+					e.toString()+" : "+Arrays.toString(e.getStackTrace()));
 		}
 		catch (Exception e) {
-			return new AnalysisOutput(corpusName, identifier, "[error before computed]", e.toString());
+			return new AnalysisOutput(corpusName, identifier, "[error before computed]",
+					e.toString()+" : "+Arrays.toString(e.getStackTrace()));
 		}
 		
 		

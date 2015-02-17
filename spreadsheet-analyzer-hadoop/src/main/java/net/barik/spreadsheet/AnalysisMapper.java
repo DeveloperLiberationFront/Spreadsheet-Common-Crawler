@@ -3,6 +3,7 @@ package net.barik.spreadsheet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.Arrays;
 
 import org.apache.hadoop.conf.Configuration;
 
@@ -46,8 +47,7 @@ public class AnalysisMapper extends Mapper<LongWritable, Text, Text, Text> {
 	        context.write(new Text(path), new Text(ao.errorNotification));
     	}
     	catch (Exception e) {
-    		throw new IOException(String.format("Problem with %s;%s;%s;%s;",fileName, path, importKeyPrefix, exportKeyPrefix)
-    				, e);
+    		context.write(new Text(path), new Text(e.toString()+" : "+Arrays.toString(e.getStackTrace())));
     	}
 
     }
