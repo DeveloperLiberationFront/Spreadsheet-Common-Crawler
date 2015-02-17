@@ -8,7 +8,8 @@ import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.InputCellType;
 public class AnalysisOutput {
 	public String errorNotification = "OK";
 	
-	public String fileName;
+	public String corpusName;
+	public String identifier;
 	public int sizeInBytes;
 	public String fileHash;
 	
@@ -498,10 +499,9 @@ public class AnalysisOutput {
 	public int countYIELDMAT;
 	public int countZTEST;
 	public int countZ_TEST;
+
 	
-	
-	
-	public AnalysisOutput(String fileName,
+	public AnalysisOutput(String corpusName, String identifier,
 			int sizeInBytes,
 			String fileHash,
 			Map<InputCellType, Integer> inputCounts,
@@ -523,10 +523,9 @@ public class AnalysisOutput {
 			Map<String, Integer> functionCounts
 			){
 
-		this.fileName = fileName; 
-		
+		this.corpusName = corpusName;
+		this.identifier = identifier; 
 		this.sizeInBytes = sizeInBytes; 
-		
 		this.fileHash = fileHash;
 		
 		//INPUT CELLS
@@ -1031,8 +1030,9 @@ public class AnalysisOutput {
 		
 	}
 	
-	public AnalysisOutput(String identifier, String fileHash, String error) {
-		this.fileName = identifier;
+	public AnalysisOutput(String corpusName, String identifier, String fileHash, String error) {
+		this.corpusName = corpusName;
+		this.identifier = identifier;
 		this.fileHash = fileHash;
 		this.errorNotification = error;
 	}

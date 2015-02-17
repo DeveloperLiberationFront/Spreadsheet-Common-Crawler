@@ -17,6 +17,8 @@ public class AnalysisMapper extends Mapper<LongWritable, Text, Text, Text> {
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
     	Configuration conf = context.getConfiguration();
+    	
+    	String corpusName = conf.get("corpus.name", "[unspecified]");
 
         String importBucket = conf.get("import.bucket", "barik-cc");
         String importKeyPrefix = conf.get("import.keyprefix", "analysis/binaries/");
@@ -25,13 +27,14 @@ public class AnalysisMapper extends Mapper<LongWritable, Text, Text, Text> {
         String exportKeyPrefix = conf.get("export.keyprefix", "analysis/output/");
     	
     	
-    	String path = importKeyPrefix + value.toString();
+    	String fileName = value.toString();
+		String path = importKeyPrefix + fileName;
 
         InputStream is = S3Load.loadSpreadsheet(importBucket, path);
         
-        AnalysisOutput ao = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, path);
+        AnalysisOutput ao = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, corpusName, fileName);
 
-        JacksonS3Export.exportItem(ao, exportBucket, exportKeyPrefix, value.toString());
+        JacksonS3Export.exportItem(ao, exportBucket, exportKeyPrefix, fileName);
         is.close();
 
         context.write(new Text(path), new Text(ao.errorNotification));

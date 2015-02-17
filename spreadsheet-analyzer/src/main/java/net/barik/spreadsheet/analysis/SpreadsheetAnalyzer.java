@@ -132,10 +132,10 @@ public class SpreadsheetAnalyzer {
 		return analyzer;
 	}
 	
-	public static AnalysisOutput doAnalysisAndGetObject(InputStream is, String identifier) {
+	public static AnalysisOutput doAnalysisAndGetObject(InputStream is, String corpusName, String identifier) {
 		try {
 			SpreadsheetAnalyzer analyzer = doEUSESAnalysis(is);
-			return new AnalysisOutput(identifier, 
+			return new AnalysisOutput(corpusName, identifier, 
 					analyzer.getSizeInBytes(), 
 					analyzer.getFileHash(),
 					analyzer.getInputCellCounts(), 
@@ -157,10 +157,10 @@ public class SpreadsheetAnalyzer {
 					analyzer.getFunctionCounts());
 		}
 		catch (ParsingException e) {
-			return new AnalysisOutput(identifier, e.fileHashOfFailedParse, e.toString());
+			return new AnalysisOutput(corpusName, identifier, e.fileHashOfFailedParse, e.toString());
 		}
 		catch (Exception e) {
-			return new AnalysisOutput(identifier, "[error before computed]", e.toString());
+			return new AnalysisOutput(corpusName, identifier, "[error before computed]", e.toString());
 		}
 		
 		

@@ -36,7 +36,7 @@ public class TestEusesAnalysis_r1c1 {
 	@Test
 	public void testAnalysisOutput() throws Exception {
 		InputStream is = TestEusesAnalysis_small.class.getResourceAsStream("/r1c1.xlsx");
-		AnalysisOutput ao = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "r1c1");
+		AnalysisOutput ao = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "tests", "r1c1");
 		assertNotNull(ao);
 	}
 
