@@ -28,21 +28,27 @@ public class AnalysisMapper extends Mapper<LongWritable, Text, Text, Text> {
         String exportKeyPrefix = conf.get("export.keyprefix", "analysis/output/");
     	
     	
-    	String fileName = URLEncoder.encode(value.toString().trim(), "UTF-8");
+    	String fileName = value.toString().trim();
     	String path = importKeyPrefix + fileName;
     	if (fileName.isEmpty()) {
     		context.write(new Text(path), new Text("[Empty Path Name]"));
     		return;
     	}
 
-        InputStream is = S3Load.loadSpreadsheet(importBucket, path);
-        
-        AnalysisOutput ao = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, corpusName, fileName);
-
-        JacksonS3Export.exportItem(ao, exportBucket, exportKeyPrefix, fileName);
-        is.close();
-
-        context.write(new Text(path), new Text(ao.errorNotification));
+    	try {
+	        InputStream is = S3Load.loadSpreadsheet(importBucket, path);
+	        
+	        AnalysisOutput ao = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, corpusName, fileName);
+	
+	        JacksonS3Export.exportItem(ao, exportBucket, exportKeyPrefix, fileName);
+	        is.close();
+	
+	        context.write(new Text(path), new Text(ao.errorNotification));
+    	}
+    	catch (Exception e) {
+    		throw new IOException(String.format("Problem with %s;%s;%s;%s;",fileName, path, importKeyPrefix, exportKeyPrefix)
+    				, e);
+    	}
 
     }
 }
