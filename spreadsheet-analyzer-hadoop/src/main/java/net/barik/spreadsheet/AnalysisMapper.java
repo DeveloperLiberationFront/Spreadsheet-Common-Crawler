@@ -2,6 +2,7 @@ package net.barik.spreadsheet;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 
 import org.apache.hadoop.conf.Configuration;
 
@@ -27,8 +28,12 @@ public class AnalysisMapper extends Mapper<LongWritable, Text, Text, Text> {
         String exportKeyPrefix = conf.get("export.keyprefix", "analysis/output/");
     	
     	
-    	String fileName = value.toString();
-		String path = importKeyPrefix + fileName;
+    	String fileName = URLEncoder.encode(value.toString().trim(), "UTF-8");
+    	String path = importKeyPrefix + fileName;
+    	if (fileName.isEmpty()) {
+    		context.write(new Text(path), new Text("[Empty Path Name]"));
+    		return;
+    	}
 
         InputStream is = S3Load.loadSpreadsheet(importBucket, path);
         
