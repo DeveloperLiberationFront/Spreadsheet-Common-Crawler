@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.hssf.usermodel.HSSFChart;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -36,6 +37,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.util.IOUtils;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -868,7 +870,7 @@ public class SpreadsheetAnalyzer {
 		if (workbook instanceof XSSFWorkbook) {
 			XSSFWorkbook xWorkbook = (XSSFWorkbook) workbook;
 			for (XSSFSheet sheet : xWorkbook) {
-				numCharts += sheet.createDrawingPatriarch().getCharts().size();
+				numCharts += countCharts(sheet);
 			}
 		}
 		//Check for charts in xls 
@@ -881,6 +883,17 @@ public class SpreadsheetAnalyzer {
 		}
 		
 
+		return numCharts;
+	}
+
+	private int countCharts(XSSFSheet sheet) {
+		int numCharts = 0;
+		for(POIXMLDocumentPart p : sheet.getRelations()){
+            if(p instanceof XSSFDrawing) {
+                numCharts += ((XSSFDrawing) p).getCharts().size();
+                break;
+            }
+        }
 		return numCharts;
 	}
 
