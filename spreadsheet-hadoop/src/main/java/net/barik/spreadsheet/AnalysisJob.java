@@ -13,7 +13,7 @@ import org.apache.hadoop.util.ToolRunner;
 public class AnalysisJob extends Configured implements Tool {
 	/**
 	 * Usage:
-	 * AnalysisJob listOfQualifiedS3Paths S3OutputDir outputPathForJobStatus
+	 * AnalysisJob listOfQualifiedS3Paths outputPathForJobStatus
 	 */
     public static void main(String[] args) throws Exception {
         int exitCode = ToolRunner.run(new AnalysisJob(), args);
@@ -23,12 +23,11 @@ public class AnalysisJob extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {    
     	Configuration conf = getConf();
-    	//use 400 lines per job instead of one.  It's fine for smaller jobs
-        conf.set("mapreduce.input.lineinputformat.linespermap", "400");
+    	//use 100 lines per job instead of one.  It's fine for smaller jobs
+        conf.set("mapreduce.input.lineinputformat.linespermap", "100");
  
         Job job = new Job(conf);
         
-        JacksonS3Export.setS3OutputPath(args[1]);
         job.setJarByClass(AnalysisJob.class);
 
         job.setInputFormatClass(NLineInputFormat.class);
@@ -38,7 +37,7 @@ public class AnalysisJob extends Configured implements Tool {
         job.setOutputValueClass(Text.class);
 
         NLineInputFormat.setInputPaths(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[2]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
         return job.waitForCompletion(true) ? 0 : 1;
     }

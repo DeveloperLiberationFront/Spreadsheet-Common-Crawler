@@ -12,14 +12,10 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JacksonS3Export {
-    public static final String BUCKET_NAME = "barik-cc";
-    public static String S3OutputPath = "analysis/output/";
     
-    public static void exportItem(AnalysisOutput ao) throws IOException {
+    public static void exportItem(AnalysisOutput ao, String exportBucket, String exportKeyPrefix, String relativeFilename) throws IOException {
             byte[] data = serializeModel(ao);
-            String outputname = ao.fileName.replace('\\', '.').replace('/','.');
-            System.out.println("Writing to " + S3OutputPath + outputname + ".json");
-            putObjectS3(BUCKET_NAME, S3OutputPath + outputname + ".json" , data);
+            putObjectS3(exportBucket, exportKeyPrefix + relativeFilename , data);
 
     }
 
@@ -47,8 +43,5 @@ public class JacksonS3Export {
         s3client.putObject(bucket, key, is, objectMetadata);
     }
 
-	public static void setS3OutputPath(String path) {
-		S3OutputPath = path;
-	}
 
 }
