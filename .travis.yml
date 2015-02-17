@@ -3,6 +3,9 @@ sudo: false
 
 language: java
 
+# Run memory test 1000 times in a row
+env: BARIK_MEMORY_TEST_LIMIT=1000
+
 # Cache maven
 cache:
   directories:

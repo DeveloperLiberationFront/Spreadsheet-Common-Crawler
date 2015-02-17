@@ -35,5 +35,30 @@ public class TestBadEnronSheets {
 		assertNotNull(analysis);
 		assertEquals("OK", analysis.errorNotification);
 	}
+	
+	@Test
+	public void testMemoryConsumption() throws Exception {
+		String memoryTestLimit = System.getenv("BARIK_MEMORY_TEST_LIMIT");
+		int memoryLimit = 50;
+		if (memoryTestLimit != null) {
+			System.out.println("BARIK_MEMORY_TEST_LIMIT was "+ memoryTestLimit +" using that");
+			try {
+				memoryLimit = Integer.parseInt(memoryTestLimit);
+			}
+			catch (NumberFormatException e) {
+				e.printStackTrace();		//possibly a conflict
+			}
+		} else {
+			System.out.println("BARIK_MEMORY_TEST_LIMIT was null.  Defaulting to run "+memoryLimit+" times");
+		}
+		for (int i = 0; i < memoryLimit; i++) {
+			System.out.println("Memory test: "+(i+1));
+			InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_1.xlsx");
+			assertNotNull(is);
+			AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad_enron_1.xlsx");
+			assertNotNull(analysis);
+			is.close();
+		}
+	}
 
 }
