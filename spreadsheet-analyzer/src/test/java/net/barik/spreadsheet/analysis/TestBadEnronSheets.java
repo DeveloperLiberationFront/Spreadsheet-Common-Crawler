@@ -248,4 +248,13 @@ public class TestBadEnronSheets {
 		assertEquals(528, analysis.countLINEST);
 		//every thing else is 0
 	}
+	
+	@Test
+	public void testBadEnron5() throws Exception {
+		InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_5.xlsx");
+		assertNotNull(is);
+		AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad_enron_5.xlsx");
+		assertNotNull(analysis);
+		assertEquals("OK", analysis.errorNotification);
+	}
 }
