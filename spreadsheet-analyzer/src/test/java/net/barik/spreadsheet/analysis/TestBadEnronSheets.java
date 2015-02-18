@@ -258,5 +258,50 @@ public class TestBadEnronSheets {
 		AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad_enron_5.xlsx");
 		assertNotNull(analysis);
 		assertEquals("OK", analysis.errorNotification);
+		assertEquals(56044, analysis.totalInputCells);
+		assertEquals(0, analysis.booleanInputCells);
+		assertEquals(14021, analysis.dateTimeInputCells);
+		assertEquals(0, analysis.errorInputCells);
+		assertEquals(34610, analysis.integerInputCells);
+		assertEquals(0, analysis.nonIntegerInputCells);
+		assertEquals(7413, analysis.stringInputCells);
+		assertEquals(48570, analysis.totalReferencedInput);
+		assertEquals(0, analysis.booleanReferencedInput);
+		assertEquals(13960, analysis.dateReferencedInput);
+		assertEquals(0, analysis.errorReferencedInput);
+		assertEquals(34610, analysis.integerReferencedInput);
+		assertEquals(0, analysis.nonIntegerReferencedInput);
+		assertEquals(0, analysis.stringReferencedInput);
+		assertEquals(83081, analysis.totalFormulas);
+		assertEquals(0, analysis.booleanFormulas);
+		assertEquals(0, analysis.dateTimeFormulas);
+		assertEquals(0, analysis.errorFormulas);
+		assertEquals(76963, analysis.integerFormulas);
+		assertEquals(0, analysis.nonIntegerFormulas);
+		assertEquals(6118, analysis.stringFormulas);
+		assertEquals(0, analysis.blankFormulas);
+		assertEquals(83081, analysis.formulaCellsReferencingOthers);
+		assertEquals(82798, analysis.formulaCellsReferencedByOthers);
+		assertEquals(1008, analysis.formulaCellsOccuringOnce);
+		assertEquals(219, analysis.formulaCellsOccuring2Plus);
+		assertEquals(218, analysis.formulaCellsOccuring5Plus);
+		assertEquals(218, analysis.formulaCellsOccuring10Plus);
+		assertEquals(218, analysis.formulaCellsOccuring25Plus);
+		assertEquals(218, analysis.formulaCellsOccuring50Plus);
+		assertEquals(8, analysis.formulaCellsOccuring100Plus);
+		assertEquals(20841, analysis.mostFrequentFormulaCount);
+		assertEquals("IF(R[0]C1=R[-1]C1,R[-1]C[0]+R[0]C[-1],R[0]C[-1])", analysis.mostFrequentFormula);
+		assertEquals(0, analysis.numCharts);
+		assertFalse(analysis.containsMacros);
+		assertEquals(47928, analysis.countCONCATENATE);
+		assertEquals(83017, analysis.countIF);
+		assertEquals(13542, analysis.countISNA);
+		assertEquals(6948, analysis.countMAX);
+		assertEquals(61, analysis.countSUM);
+		assertEquals(27084, analysis.countVLOOKUP);
+		assertEquals(3, analysis.numSheets);
+		assertEquals(0, analysis.numFormulasThatArePartOfArrayFormulaGroup);
+		//all others are 0
+
 	}
 }
