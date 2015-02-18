@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.hssf.usermodel.HSSFChart;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -71,10 +70,6 @@ public class SpreadsheetAnalyzer {
 	
 	private int formulasReferencedByOtherCells;
 
-	private int sizeInBytes ;
-
-	private String fileHash;
-
 	private int numFormulasThatArePartOfArrayFormulaGroup;
 
 	private SpreadsheetAnalyzer(Workbook wb) {
@@ -117,12 +112,6 @@ public class SpreadsheetAnalyzer {
 		//can't use a bufferedInputStream and reset it because WorkbookFactory.create closes the stream
 		InputStream inputStreamForWorkbook = new ByteArrayInputStream(byteArray); 
 		InputStream inputStreamForMacro = new ByteArrayInputStream(byteArray); 
-		InputStream inputStreamForHash = new ByteArrayInputStream(byteArray);
-		 
-		// Calculates the sha512 digest of the given InputStream object.
-        // It will generate a 32 characters hex string.        
-		String digest = DigestUtils.sha512Hex(inputStreamForHash);
-		
 		
 		SpreadsheetAnalyzer analyzer;
 		try {
@@ -131,9 +120,6 @@ public class SpreadsheetAnalyzer {
 			throw new ParsingException("Problem reading in the workbook", e);
 		}
 		
-		
-		analyzer.fileHash = digest;
-		analyzer.sizeInBytes = byteArray.length;
 		analyzer.analyzeEUSESMetrics(inputStreamForMacro);
 
 		return analyzer;
@@ -573,8 +559,6 @@ public class SpreadsheetAnalyzer {
 		formulasThatReferenceOtherCells=0;
 		referencedInputCells.clear();	
 		formulasReferencedByOtherCells=0;
-		sizeInBytes = 0;
-		fileHash = "";
 		numFormulasThatArePartOfArrayFormulaGroup = 0;	
 		formulasThatReferenceOtherCells = 0;
 		formulasReferencedByOtherCells = 0;
@@ -713,20 +697,12 @@ public class SpreadsheetAnalyzer {
 		}
 	}
 	
-	public String getFileHash(){
-		return fileHash;
-	}
-
 	public boolean getContainsMacro(){
 		return containsMacros;
 	}
 	
 	public Map<String, Integer> getFunctionCounts() {
 		return functionCounts;
-	}
-
-	public int getSizeInBytes() {
-		return sizeInBytes;
 	}
 
 	public Map<InputCellType, Integer> getInputCellCounts() {

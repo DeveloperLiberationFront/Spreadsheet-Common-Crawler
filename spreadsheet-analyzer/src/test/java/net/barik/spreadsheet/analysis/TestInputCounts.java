@@ -1,12 +1,13 @@
 package net.barik.spreadsheet.analysis;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.InputStream;
 import java.util.Map;
 
-import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer;
-import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.FunctionEvalType;
 import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.InputCellType;
 
 import org.junit.BeforeClass;

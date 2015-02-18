@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 
-import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer;
 import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.FunctionEvalType;
 import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.InputCellType;
 
@@ -55,7 +54,7 @@ public class CSVScanner extends AbstractScanner {
 
 	private void printFirstLine() throws IOException {
 		csvWriter = new FileWriter(outputFile);
-		csvWriter.write("File Name,Size (bytes),Total Input Cells,Boolean Input Cells,Date Input Cells,"
+		csvWriter.write("File Name,Total Input Cells,Boolean Input Cells,Date Input Cells,"
 				+ "Error Input Cells,Integer Input Cells,Non-Integer Input Cells,String Input Cells,"
 				+ "Total Referenced Input Cells,Boolean Referenced Input Cells,Date Referenced Input Cells,"
 				+ "Error Referenced Input Cells,Integer Referenced Input Cells,Non-Integer Referenced Input Cells,"
@@ -78,7 +77,6 @@ public class CSVScanner extends AbstractScanner {
 		thisLine = new StringBuilder();
 
 		append(fileName);
-		append(analyzer.getSizeInBytes());
 
 		Map<InputCellType, Integer> inputCounts = analyzer.getInputCellCounts();
 		append(total(inputCounts));

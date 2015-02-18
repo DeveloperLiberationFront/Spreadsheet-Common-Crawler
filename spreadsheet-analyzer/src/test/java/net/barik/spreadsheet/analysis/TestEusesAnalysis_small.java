@@ -1,11 +1,13 @@
 package net.barik.spreadsheet.analysis;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.InputStream;
 import java.util.Map;
 
-import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer;
 import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.FunctionEvalType;
 import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.InputCellType;
 
@@ -257,11 +259,6 @@ public class TestEusesAnalysis_small {
 	@Test
 	public void testNoChart() throws Exception {
 		assertFalse(analyzer.containsChart());
-	}
-	
-	@Test
-	public void testSizeInBytes() throws Exception {
-		assertEquals(12522, analyzer.getSizeInBytes());
 	}
 	
 }
