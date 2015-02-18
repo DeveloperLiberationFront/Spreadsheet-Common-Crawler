@@ -23,7 +23,10 @@ public abstract class AbstractScanner {
 			return;
 		}
 	
-		setupOutputFile(dirOrFileToScan);
+		if (!setupOutputFile(dirOrFileToScan)) {
+			System.err.println("There was a problem setting up the output");
+			return;
+		}
 	
 		if (args.length == 1) {
 			scanDirectory(dirOrFileToScan);
