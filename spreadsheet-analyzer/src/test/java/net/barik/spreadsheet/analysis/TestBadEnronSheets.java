@@ -249,7 +249,7 @@ public class TestBadEnronSheets {
 		//every thing else is 0
 	}
 	
-	@Test
+	@Test(timeout=120000)		//two minutes
 	public void testBadEnron5() throws Exception {
 		InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_5.xlsx");
 		assertNotNull(is);
