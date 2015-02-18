@@ -9,18 +9,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JSONScanner extends AbstractScanner {
 
+	private String corpusName;
+
 	private File outputDirectory;
 
-	ObjectMapper mapper = new ObjectMapper();
+	private ObjectMapper mapper = new ObjectMapper();
 	
 	public static void main(String[] args) {
+		
 		AbstractScanner scanner = new JSONScanner();
 		scanner.scan(args);
+	}
+	
+	public JSONScanner() {
+		corpusName = System.getenv("BARIK_CORPUS_NAME");
+		if (corpusName == null) {
+			corpusName = "[none]";
+		}
 	}
 
 	@Override
 	protected void parseSpreadSheet(File file) throws Exception {
-		AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(new FileInputStream(file), "[none]", file.getName());
+		
+		AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(new FileInputStream(file), corpusName, file.getName());
 
 		try (FileWriter outputWriter = new FileWriter(outputDirectory.getAbsolutePath() + "/" + file.getName());) {
 			System.out.println("Writing to "+outputDirectory.getAbsolutePath() + "/" + file.getName());
