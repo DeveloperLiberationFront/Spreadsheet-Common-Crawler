@@ -173,7 +173,7 @@ public class TestBadEnronSheets {
 	@Test
 	public void testMemoryConsumption() throws Exception {
 		String memoryTestLimit = System.getenv("BARIK_MEMORY_TEST_LIMIT");
-		int memoryLimit = 50;
+		int memoryLimit = 20;
 		if (memoryTestLimit != null) {
 			System.out.println("BARIK_MEMORY_TEST_LIMIT was " + memoryTestLimit + " using that");
 			try {
@@ -193,5 +193,13 @@ public class TestBadEnronSheets {
 			is.close();
 		}
 	}
-
+	
+	@Test
+	public void testBadEnron4() throws Exception {
+		InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_4.xlsx");
+		assertNotNull(is);
+		AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad_enron_4.xlsx");
+		assertNotNull(analysis);
+		assertEquals("OK", analysis.errorNotification);
+	}
 }
