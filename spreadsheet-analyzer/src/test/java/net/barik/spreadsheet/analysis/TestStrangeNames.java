@@ -19,7 +19,7 @@ public class TestStrangeNames {
 	public static void setUpBeforeClass() throws Exception {
 		InputStream is = TestInputCounts.class.getResourceAsStream("/weirdNames.xlsx");
 		assertNotNull(is);
-		analyzer = SpreadsheetAnalyzer.doEUSESAnalysis(is);
+		analyzer = SpreadsheetAnalyzer.doAnalysis(is);
 		assertNotNull(analyzer);
 	}
 

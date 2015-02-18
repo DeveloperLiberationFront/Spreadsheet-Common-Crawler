@@ -19,7 +19,7 @@ public class TestEusesAnalysis_macroXLSXM {
 	public static void loadSmallWorksheet() throws Exception{
 		InputStream is = TestEusesAnalysis_macroXLSXM.class.getResourceAsStream("/wmacro.xlsm");
 		assertNotNull(is);
-		analyzer = SpreadsheetAnalyzer.doEUSESAnalysis(is);
+		analyzer = SpreadsheetAnalyzer.doAnalysis(is);
 		assertNotNull(analyzer);
 		
 	}

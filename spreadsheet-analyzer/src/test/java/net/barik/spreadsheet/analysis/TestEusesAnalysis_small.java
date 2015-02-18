@@ -20,7 +20,7 @@ public class TestEusesAnalysis_small {
 	public static void loadSmallWorksheet() throws Exception{
 		InputStream is = TestEusesAnalysis_small.class.getResourceAsStream("/small-worksheet.xlsx");
 		assertNotNull(is);
-		analyzer = SpreadsheetAnalyzer.doEUSESAnalysis(is);
+		analyzer = SpreadsheetAnalyzer.doAnalysis(is);
 		assertNotNull(analyzer);
 		
 	}

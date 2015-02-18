@@ -20,7 +20,7 @@ public class TestInputCounts {
 	public static void loadSmallWorksheet() throws Exception{
 		InputStream is = TestInputCounts.class.getResourceAsStream("/non-integer.xlsm");
 		assertNotNull(is);
-		analyzer = SpreadsheetAnalyzer.doEUSESAnalysis(is);
+		analyzer = SpreadsheetAnalyzer.doAnalysis(is);
 		assertNotNull(analyzer);
 		
 	}

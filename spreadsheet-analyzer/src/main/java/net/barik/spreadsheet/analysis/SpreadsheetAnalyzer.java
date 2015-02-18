@@ -75,6 +75,8 @@ public class SpreadsheetAnalyzer {
 
 	private String fileHash;
 
+	private int numFormulasThatArePartOfArrayFormulaGroup;
+
 	private SpreadsheetAnalyzer(Workbook wb) {
 		setWorkBook(wb);
 	}
@@ -110,7 +112,7 @@ public class SpreadsheetAnalyzer {
 		findPotentialCellReferences = Pattern.compile(builder.toString());
 	}
 
-	public static SpreadsheetAnalyzer doEUSESAnalysis(InputStream is) throws IOException, ParsingException {
+	public static SpreadsheetAnalyzer doAnalysis(InputStream is) throws IOException, ParsingException {
 		byte[] byteArray = readInInputStream(is);
 		//can't use a bufferedInputStream and reset it because WorkbookFactory.create closes the stream
 		InputStream inputStreamForWorkbook = new ByteArrayInputStream(byteArray); 
@@ -140,7 +142,7 @@ public class SpreadsheetAnalyzer {
 	public static AnalysisOutput doAnalysisAndGetObject(InputStream is, String corpusName, String identifier) {
 		SpreadsheetAnalyzer analyzer = null;
 		try {
-			analyzer = doEUSESAnalysis(is);
+			analyzer = doAnalysis(is);
 			return new AnalysisOutput(corpusName, identifier,
 					analyzer.getInputCellCounts(), 
 					analyzer.getInputReferences(), 
@@ -158,6 +160,8 @@ public class SpreadsheetAnalyzer {
 					analyzer.getMostFrequentlyOccurringFormula(), 
 					analyzer.getNumCharts(), 
 					analyzer.containsMacros, 
+					analyzer.getNumSheets(),
+					analyzer.getNumFormulasThatArePartOfArrayFormulaGroup(),
 					analyzer.getFunctionCounts());
 		}
 		catch (Exception e) {
@@ -171,6 +175,14 @@ public class SpreadsheetAnalyzer {
 		}
 		
 		
+	}
+
+	private int getNumSheets() {
+		return workbook.getNumberOfSheets();
+	}
+	
+	private int getNumFormulasThatArePartOfArrayFormulaGroup() {
+		return numFormulasThatArePartOfArrayFormulaGroup;
 	}
 
 	private static byte[] readInInputStream(InputStream is) throws IOException {
@@ -268,6 +280,10 @@ public class SpreadsheetAnalyzer {
 	}
 
 	private FunctionEvalType getAndConvertCachedType(Cell cell){
+		
+		if (cell.isPartOfArrayFormulaGroup()) {
+			this.numFormulasThatArePartOfArrayFormulaGroup++;
+		}
 		//Helper for handling evaluation types can return BLANK
 		if (cell.getCachedFormulaResultType() == Cell.CELL_TYPE_NUMERIC) {
 			if (DateUtil.isCellDateFormatted(cell)) {
@@ -519,6 +535,7 @@ public class SpreadsheetAnalyzer {
 		r1c1FormulaToCountMap.clear();
 		formulasThatReferenceOtherCells = 0;
 		formulasReferencedByOtherCells = 0;
+		numFormulasThatArePartOfArrayFormulaGroup = 0;
 	}
 
 	private void findReferencedCells() {

@@ -17,7 +17,7 @@ public class TestHash {
 	public static void setUpBeforeClass() throws Exception {
 		InputStream is = TestEusesAnalysis_small.class.getResourceAsStream("/r1c1.xlsx");
 		assertNotNull(is);
-		analyzer = SpreadsheetAnalyzer.doEUSESAnalysis(is);
+		analyzer = SpreadsheetAnalyzer.doAnalysis(is);
 		assertNotNull(analyzer);
 	}
 	

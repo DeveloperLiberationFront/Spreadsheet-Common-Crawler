@@ -498,6 +498,10 @@ public class AnalysisOutput {
 	public int countZTEST;
 	public int countZ_TEST;
 
+	public int numFormulasThatArePartOfArrayFormulaGroup;
+
+	public int numSheets;
+
 	
 	public AnalysisOutput(String corpusName, String identifier,
 			Map<InputCellType, Integer> inputCounts,
@@ -516,11 +520,15 @@ public class AnalysisOutput {
 			String mostFreqFormula,
 			int numCharts,
 			Boolean containsMacro,
+			int numSheets,
+			int numFormulasThatArePartOfArray,
 			Map<String, Integer> functionCounts
 			){
 
 		this.corpusName = corpusName;
 		this.identifier = identifier; 
+		this.numSheets = numSheets;
+		this.numFormulasThatArePartOfArrayFormulaGroup = numFormulasThatArePartOfArray;
 		
 		//INPUT CELLS
 		this.totalInputCells = total(inputCounts);
@@ -2013,6 +2021,10 @@ public class AnalysisOutput {
 		builder.append(countZTEST);
 		builder.append(", countZ_TEST=");
 		builder.append(countZ_TEST);
+		builder.append(", numFormulasThatArePartOfArray=");
+		builder.append(numFormulasThatArePartOfArrayFormulaGroup);
+		builder.append(", numSheets=");
+		builder.append(numSheets);
 		builder.append("]");
 		return builder.toString();
 	}

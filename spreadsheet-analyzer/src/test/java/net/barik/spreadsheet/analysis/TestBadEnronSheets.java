@@ -167,6 +167,8 @@ public class TestBadEnronSheets {
 		assertEquals(24, analysis.countROWS);
 		assertEquals(981, analysis.countSUM);
 		assertEquals(84, analysis.countSUMIF);
+		assertEquals(18, analysis.numSheets);
+		assertEquals(0, analysis.numFormulasThatArePartOfArrayFormulaGroup);
 		// all others are 0
 	}
 
@@ -201,5 +203,7 @@ public class TestBadEnronSheets {
 		AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad_enron_4.xlsx");
 		assertNotNull(analysis);
 		assertEquals("OK", analysis.errorNotification);
+		assertEquals(3, analysis.numSheets);
+		assertEquals(72, analysis.numFormulasThatArePartOfArrayFormulaGroup);
 	}
 }

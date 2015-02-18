@@ -93,7 +93,7 @@ public class CSVScanner {
 	}
 
 	private static void parseSpreadSheet(File file) throws Exception {
-		SpreadsheetAnalyzer analyzer = SpreadsheetAnalyzer.doEUSESAnalysis(new FileInputStream(file));
+		SpreadsheetAnalyzer analyzer = SpreadsheetAnalyzer.doAnalysis(new FileInputStream(file));
 		try {
 			writeOutAnalysisLine(file.getParent()+File.separator+file.getName(), analyzer);
 		} finally {
