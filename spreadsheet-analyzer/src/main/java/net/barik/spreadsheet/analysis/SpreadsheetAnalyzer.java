@@ -284,20 +284,52 @@ public class SpreadsheetAnalyzer {
 		if (cell.isPartOfArrayFormulaGroup()) {
 			this.numFormulasThatArePartOfArrayFormulaGroup++;
 		}
-		//Helper for handling evaluation types can return BLANK
-		if (cell.getCachedFormulaResultType() == Cell.CELL_TYPE_NUMERIC) {
+		
+		// this is better than checking cell.getCachedFormulaResultType(), which doesn't
+		// handle arrayFormulaGroups
+		try {
+			String s = cell.getStringCellValue();		//do String first to ferret out blank cells
+			if (s.isEmpty()) {
+				return FunctionEvalType.BLANK;
+			}
+			return FunctionEvalType.STRING;
+		} catch (IllegalStateException e) {
+			//squash and move on
+		}
+		
+		try {
+			cell.getErrorCellValue();
+			return FunctionEvalType.ERROR;
+		} catch (IllegalStateException e) {
+			//squash and move on
+		}
+		
+		try {
+			int cachedFormulaResultType = cell.getCachedFormulaResultType();
+			if ( cachedFormulaResultType != Cell.CELL_TYPE_NUMERIC) {
+				return FunctionEvalType.fromCellType(cachedFormulaResultType);
+			}
+
+		} catch (IllegalStateException e) {
+			//squash and move on
+		}
+		
+		try {
+			double number = cell.getNumericCellValue();
 			if (DateUtil.isCellDateFormatted(cell)) {
 				return FunctionEvalType.DATE;
 			}
-			double d = cell.getNumericCellValue();
-	    	if (Math.rint(d) == d) {  //integer check from http://stackoverflow.com/a/9898613/1447621
+			if (Math.rint(number) == number) {  //integer check from http://stackoverflow.com/a/9898613/1447621
 	    		return FunctionEvalType.INTEGER;
 	    	} else {
 	    		return FunctionEvalType.NON_INTEGER_NUMBER;
 	    	}
-		} else {
-			return FunctionEvalType.fromCellType(cell.getCachedFormulaResultType());
+		} catch (IllegalStateException e) {
+			//squash and move on
 		}
+
+		return FunctionEvalType.ERROR;			// we have no idea what this is
+		
 	}
 	
 	private void handleFormulas(Cell cell) throws ParsingException {

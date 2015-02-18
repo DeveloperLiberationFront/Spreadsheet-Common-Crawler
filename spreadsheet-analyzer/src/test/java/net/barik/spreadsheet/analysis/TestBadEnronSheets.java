@@ -58,6 +58,8 @@ public class TestBadEnronSheets {
 		assertEquals(1, analysis.countSUM);
 		assertEquals(251, analysis.countVLOOKUP);
 		assertEquals(288, analysis.countYEAR);
+		assertEquals(6, analysis.numSheets);
+		assertEquals(0, analysis.numFormulasThatArePartOfArrayFormulaGroup);
 		// everything else is 0
 	}
 
@@ -88,8 +90,8 @@ public class TestBadEnronSheets {
 		assertEquals(0, analysis.errorFormulas);
 		assertEquals(3520, analysis.integerFormulas);
 		assertEquals(816, analysis.nonIntegerFormulas);
-		assertEquals(886, analysis.stringFormulas);
-		assertEquals(0, analysis.blankFormulas);
+		assertEquals(718, analysis.stringFormulas);
+		assertEquals(168, analysis.blankFormulas);
 		assertEquals(5426, analysis.formulaCellsReferencingOthers);
 		assertEquals(2616, analysis.formulaCellsReferencedByOthers);
 		assertEquals(480, analysis.formulaCellsOccuringOnce);
@@ -112,6 +114,8 @@ public class TestBadEnronSheets {
 		assertEquals(1, analysis.countTODAY);
 		assertEquals(4, analysis.countVLOOKUP);
 		assertEquals(4, analysis.countYEAR);
+		assertEquals(14, analysis.numSheets);
+		assertEquals(0, analysis.numFormulasThatArePartOfArrayFormulaGroup);
 		// everything else is 0
 	}
 
@@ -167,8 +171,8 @@ public class TestBadEnronSheets {
 		assertEquals(24, analysis.countROWS);
 		assertEquals(981, analysis.countSUM);
 		assertEquals(84, analysis.countSUMIF);
-		assertEquals(18, analysis.numSheets);
-		assertEquals(0, analysis.numFormulasThatArePartOfArrayFormulaGroup);
+		assertEquals(11, analysis.numSheets);
+		assertEquals(440, analysis.numFormulasThatArePartOfArrayFormulaGroup);
 		// all others are 0
 	}
 
@@ -204,6 +208,44 @@ public class TestBadEnronSheets {
 		assertNotNull(analysis);
 		assertEquals("OK", analysis.errorNotification);
 		assertEquals(3, analysis.numSheets);
-		assertEquals(72, analysis.numFormulasThatArePartOfArrayFormulaGroup);
+		assertEquals(528, analysis.numFormulasThatArePartOfArrayFormulaGroup);
+		assertEquals(5707, analysis.totalInputCells);
+		assertEquals(0, analysis.booleanInputCells);
+		assertEquals(707, analysis.dateTimeInputCells);
+		assertEquals(0, analysis.errorInputCells);
+		assertEquals(4725, analysis.integerInputCells);
+		assertEquals(0, analysis.nonIntegerInputCells);
+		assertEquals(275, analysis.stringInputCells);
+		assertEquals(4714, analysis.totalReferencedInput);
+		assertEquals(0, analysis.booleanReferencedInput);
+		assertEquals(0, analysis.dateReferencedInput);
+		assertEquals(0, analysis.errorReferencedInput);
+		assertEquals(4714, analysis.integerReferencedInput);
+		assertEquals(0, analysis.nonIntegerReferencedInput);
+		assertEquals(0, analysis.stringReferencedInput);
+		assertEquals(3242, analysis.totalFormulas);
+		assertEquals(0, analysis.booleanFormulas);
+		assertEquals(0, analysis.dateTimeFormulas);
+		assertEquals(399, analysis.errorFormulas);
+		assertEquals(2456, analysis.integerFormulas);
+		assertEquals(387, analysis.nonIntegerFormulas);
+		assertEquals(0, analysis.stringFormulas);
+		assertEquals(0, analysis.blankFormulas);
+		assertEquals(3242, analysis.formulaCellsReferencingOthers);
+		assertEquals(2442, analysis.formulaCellsReferencedByOthers);
+		assertEquals(528, analysis.formulaCellsOccuringOnce);
+		assertEquals(29, analysis.formulaCellsOccuring2Plus);
+		assertEquals(28, analysis.formulaCellsOccuring5Plus);
+		assertEquals(28, analysis.formulaCellsOccuring10Plus);
+		assertEquals(1, analysis.formulaCellsOccuring25Plus);
+		assertEquals(1, analysis.formulaCellsOccuring50Plus);
+		assertEquals(1, analysis.formulaCellsOccuring100Plus);
+		assertEquals(2442, analysis.mostFrequentFormulaCount);
+		assertEquals("R[0]C[-14]-R[-1]C[-14]", analysis.mostFrequentFormula);
+		assertEquals(0, analysis.numCharts);
+		assertFalse(analysis.containsMacros);
+		assertEquals(270, analysis.countCORREL);
+		assertEquals(528, analysis.countLINEST);
+		//every thing else is 0
 	}
 }
