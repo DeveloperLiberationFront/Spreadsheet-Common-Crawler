@@ -154,7 +154,7 @@ public class SpreadsheetAnalyzer {
 					analyzer.getNumFormulasThatArePartOfArrayFormulaGroup(),
 					analyzer.getFunctionCounts());
 			
-			return new AnalysisOutputAndFormulas(analysisOutput, analyzer.r1c1FormulaToCountMap.keySet());
+			return new AnalysisOutputAndFormulas(analysisOutput, new HashSet<>(analyzer.r1c1FormulaToCountMap.keySet()));
 		}
 		catch (Exception e) {
 			return new AnalysisOutputAndFormulas(new AnalysisOutput(corpusName, identifier,

@@ -50,6 +50,7 @@ public class AnalysisMapper extends Mapper<LongWritable, Text, Text, Text> {
 	        if (! "true".equals(skipUniqueFormulas)) {
 		        JacksonS3Export.exportItem(aof.uniqueFormulas, uniqueFormulasBucket, uniqueFormulasKeyPrefix, fileName);
 	        }
+	        aof.uniqueFormulas.clear(); 		//reduce memory footprint
 	        
 	        is.close();
 	
