@@ -1034,10 +1034,11 @@ public class AnalysisOutput {
 		
 	}
 	
-	public AnalysisOutput(String corpusName, String identifier, String error) {
+	public AnalysisOutput(String corpusName, String identifier, String error, String stacktrace) {
 		this.corpusName = corpusName;
 		this.identifier = identifier;
 		this.errorNotification = error;
+		this.stackTrace = stacktrace;
 	}
 	
 	private static int nonNull(Integer i) {
@@ -2023,10 +2024,12 @@ public class AnalysisOutput {
 		builder.append(countZTEST);
 		builder.append(", countZ_TEST=");
 		builder.append(countZ_TEST);
-		builder.append(", numFormulasThatArePartOfArray=");
+		builder.append(", numFormulasThatArePartOfArrayFormulaGroup=");
 		builder.append(numFormulasThatArePartOfArrayFormulaGroup);
 		builder.append(", numSheets=");
 		builder.append(numSheets);
+		builder.append(", stackTrace=");
+		builder.append(stackTrace);
 		builder.append("]");
 		return builder.toString();
 	}

@@ -36,8 +36,11 @@ public class TestEncryptedAndOldBooks {
 		assertNotNull(is);
 		AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad");
 		assertNotNull(analysis);
-		assertEquals("ENCRYPTED", analysis.errorNotification);
-		assertNotNull(analysis.stackTrace);
+		assertEquals("OK", analysis.errorNotification);
+		assertNull(analysis.stackTrace);
+		//everything is read in fine, just one page can't be changed
+		assertEquals(6, analysis.totalInputCells);
+		assertEquals(2, analysis.totalFormulas);
 	}
 	
 	@Test

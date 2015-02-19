@@ -16,7 +16,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.POIXMLDocumentPart;
+import org.apache.poi.hssf.OldExcelFormatException;
 import org.apache.poi.hssf.usermodel.HSSFChart;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -36,6 +38,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.util.IOUtils;
+import org.apache.poi.xssf.XLSBUnsupportedException;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -156,8 +159,24 @@ public class SpreadsheetAnalyzer {
 			
 			return new AnalysisOutputAndFormulas(analysisOutput, new HashSet<>(analyzer.r1c1FormulaToCountMap.keySet()));
 		}
+		catch (OldExcelFormatException e) {
+			return new AnalysisOutputAndFormulas(new AnalysisOutput(corpusName, identifier, "BIFF5",
+					e.toString()+" : "+Arrays.toString(e.getStackTrace())), Collections.<String>emptySet());
+		}
+		catch (XLSBUnsupportedException e) {
+			return new AnalysisOutputAndFormulas(new AnalysisOutput(corpusName, identifier, "XLSB",
+					e.toString()+" : "+Arrays.toString(e.getStackTrace())), Collections.<String>emptySet());
+		}
+		catch (EncryptedDocumentException e) {
+			return new AnalysisOutputAndFormulas(new AnalysisOutput(corpusName, identifier, "ENCRYPTED",
+					e.toString()+" : "+Arrays.toString(e.getStackTrace())), Collections.<String>emptySet());
+		}
+		catch (IllegalArgumentException e) {
+			return new AnalysisOutputAndFormulas(new AnalysisOutput(corpusName, identifier, "CORRUPT",
+					e.toString()+" : "+Arrays.toString(e.getStackTrace())), Collections.<String>emptySet());
+		}
 		catch (Exception e) {
-			return new AnalysisOutputAndFormulas(new AnalysisOutput(corpusName, identifier,
+			return new AnalysisOutputAndFormulas(new AnalysisOutput(corpusName, identifier, "OTHER",
 					e.toString()+" : "+Arrays.toString(e.getStackTrace())), Collections.<String>emptySet());
 		}
 		finally {
