@@ -502,6 +502,8 @@ public class AnalysisOutput {
 
 	public int numSheets;
 
+	public String stackTrace;
+
 	
 	public AnalysisOutput(String corpusName, String identifier,
 			Map<InputCellType, Integer> inputCounts,
