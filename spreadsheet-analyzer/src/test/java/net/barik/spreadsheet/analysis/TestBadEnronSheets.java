@@ -14,7 +14,8 @@ public class TestBadEnronSheets {
 	public void testBadEnron1() throws Exception {
 		InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_1.xlsx");
 		assertNotNull(is);
-		AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad_enron_1.xlsx");
+		AnalysisOutputAndFormulas aof = SpreadsheetAnalyzer.doAnalysisAndGetObjectAndFormulas(is, "[test]", "bad_enron_1.xlsx");
+		AnalysisOutput analysis = aof.analysisObject;
 		assertNotNull(analysis);
 		assertEquals("OK", analysis.errorNotification);
 		assertEquals(12646, analysis.totalInputCells);
@@ -63,6 +64,7 @@ public class TestBadEnronSheets {
 		assertEquals(6, analysis.numSheets);
 		assertEquals(0, analysis.numFormulasThatArePartOfArrayFormulaGroup);
 		// everything else is 0
+		assertEquals(394, aof.uniqueFormulas.size());
 	}
 
 	@Test
@@ -255,7 +257,8 @@ public class TestBadEnronSheets {
 	public void testBadEnron5() throws Exception {
 		InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_5.xlsx");
 		assertNotNull(is);
-		AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad_enron_5.xlsx");
+		AnalysisOutputAndFormulas aof = SpreadsheetAnalyzer.doAnalysisAndGetObjectAndFormulas(is, "[test]", "bad_enron_5.xlsx");
+		AnalysisOutput analysis = aof.analysisObject;
 		assertNotNull(analysis);
 		assertEquals("OK", analysis.errorNotification);
 		assertEquals(56044, analysis.totalInputCells);
@@ -303,5 +306,6 @@ public class TestBadEnronSheets {
 		assertEquals(0, analysis.numFormulasThatArePartOfArrayFormulaGroup);
 		//all others are 0
 
+		assertEquals(1227, aof.uniqueFormulas.size());
 	}
 }
