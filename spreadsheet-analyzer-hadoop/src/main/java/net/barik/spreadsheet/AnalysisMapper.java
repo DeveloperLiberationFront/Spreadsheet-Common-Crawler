@@ -8,6 +8,7 @@ import java.util.Arrays;
 import org.apache.hadoop.conf.Configuration;
 
 import net.barik.spreadsheet.analysis.AnalysisOutput;
+import net.barik.spreadsheet.analysis.AnalysisOutputAndFormulas;
 import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer;
 
 import org.apache.hadoop.io.LongWritable;
@@ -27,7 +28,11 @@ public class AnalysisMapper extends Mapper<LongWritable, Text, Text, Text> {
  
         String exportBucket = conf.get("export.bucket", "barik-cc");
         String exportKeyPrefix = conf.get("export.keyprefix", "analysis/output/");
+        
+        String skipUniqueFormulas = conf.get("skip.formulas", "false");
     	
+        String uniqueFormulasBucket = conf.get("formulas.bucket", "barik-cc");
+        String uniqueFormulasKeyPrefix = conf.get("formulas.keyprefix", "analysis/formulas/");
     	
     	String fileName = value.toString().trim();
     	String path = importKeyPrefix + fileName;
@@ -39,12 +44,16 @@ public class AnalysisMapper extends Mapper<LongWritable, Text, Text, Text> {
     	try {
 	        InputStream is = S3Load.loadSpreadsheet(importBucket, path);
 	        
-	        AnalysisOutput ao = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, corpusName, fileName);
+	        AnalysisOutputAndFormulas aof = SpreadsheetAnalyzer.doAnalysisAndGetObjectAndFormulas(is, corpusName, fileName);
 	
-	        JacksonS3Export.exportItem(ao, exportBucket, exportKeyPrefix, fileName);
+	        JacksonS3Export.exportItem(aof.analysisObject, exportBucket, exportKeyPrefix, fileName);
+	        if (! "true".equals(skipUniqueFormulas)) {
+		        JacksonS3Export.exportItem(aof.uniqueFormulas, uniqueFormulasBucket, uniqueFormulasKeyPrefix, fileName);
+	        }
+	        
 	        is.close();
 	
-	        context.write(new Text(path), new Text(ao.errorNotification));
+	        context.write(new Text(path), new Text(aof.analysisObject.errorNotification));
     	}
     	catch (Exception e) {
     		context.write(new Text(path), new Text(e.toString()+" : "+Arrays.toString(e.getStackTrace())));

@@ -3,6 +3,7 @@ package net.barik.spreadsheet;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Set;
 
 import net.barik.spreadsheet.analysis.AnalysisOutput;
 
@@ -13,11 +14,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JacksonS3Export {
     
-    public static void exportItem(AnalysisOutput ao, String exportBucket, String exportKeyPrefix, String relativeFilename) throws IOException {
-            byte[] data = serializeModel(ao);
-            putObjectS3(exportBucket, exportKeyPrefix + relativeFilename , data);
+	public static void exportItem(AnalysisOutput ao, String exportBucket, String exportKeyPrefix, String relativeFilename) throws IOException {
+		byte[] data = serializeModel(ao);
+		putObjectS3(exportBucket, exportKeyPrefix + relativeFilename, data);
 
-    }
+	}
+
+	public static void exportItem(Set<String> uniqueFormulas, String uniqueFormulasBucket, String uniqueFormulasKeyPrefix, String fileName) throws IOException {
+		byte[] data = serializeModel(uniqueFormulas);
+        putObjectS3(uniqueFormulasBucket, uniqueFormulasKeyPrefix + fileName , data);
+	}
 
 	public static String getKeyForURI(String uri) {
         return uri.substring(10, uri.length() - 1);

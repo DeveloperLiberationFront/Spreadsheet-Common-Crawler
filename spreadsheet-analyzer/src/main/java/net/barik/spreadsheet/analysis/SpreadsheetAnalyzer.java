@@ -126,10 +126,14 @@ public class SpreadsheetAnalyzer {
 	}
 	
 	public static AnalysisOutput doAnalysisAndGetObject(InputStream is, String corpusName, String identifier) {
+		return doAnalysisAndGetObjectAndFormulas(is, corpusName, identifier).analysisObject;
+	}
+	
+	public static AnalysisOutputAndFormulas doAnalysisAndGetObjectAndFormulas(InputStream is, String corpusName, String identifier) {
 		SpreadsheetAnalyzer analyzer = null;
 		try {
 			analyzer = doAnalysis(is);
-			return new AnalysisOutput(corpusName, identifier,
+			AnalysisOutput analysisOutput = new AnalysisOutput(corpusName, identifier,
 					analyzer.getInputCellCounts(), 
 					analyzer.getInputReferences(), 
 					analyzer.getFormulaCellCounts(), 
@@ -149,18 +153,18 @@ public class SpreadsheetAnalyzer {
 					analyzer.getNumSheets(),
 					analyzer.getNumFormulasThatArePartOfArrayFormulaGroup(),
 					analyzer.getFunctionCounts());
+			
+			return new AnalysisOutputAndFormulas(analysisOutput, analyzer.r1c1FormulaToCountMap.keySet());
 		}
 		catch (Exception e) {
-			return new AnalysisOutput(corpusName, identifier,
-					e.toString()+" : "+Arrays.toString(e.getStackTrace()));
+			return new AnalysisOutputAndFormulas(new AnalysisOutput(corpusName, identifier,
+					e.toString()+" : "+Arrays.toString(e.getStackTrace())), Collections.<String>emptySet());
 		}
 		finally {
 			if (analyzer != null) {
 				analyzer.close();
 			}
 		}
-		
-		
 	}
 
 	private int getNumSheets() {
