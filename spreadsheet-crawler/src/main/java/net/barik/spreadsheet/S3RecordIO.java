@@ -33,6 +33,14 @@ public class S3RecordIO implements RecordIO {
         this.tmpDirectory = tmpDirectory;
     }
 
+    public String getBucketName() {
+        return bucketName;
+    }
+
+    public String getKeyPrefix() {
+        return keyPrefix;
+    }
+
     @Override
     public File loadIntoFile(String resourceKey) throws IOException {
         AmazonS3 s3client = new AmazonS3Client();
@@ -72,15 +80,17 @@ public class S3RecordIO implements RecordIO {
     }
 
     @Override
-    public InputStream load(String resourceKey, long start, long end) {
+    public InputStream load(String resourceKey, long start, long end) throws IOException {
         AmazonS3 s3client = new AmazonS3Client();
 
         GetObjectRequest rangeObjectRequest = new GetObjectRequest(bucketName, keyPrefix + resourceKey);
         rangeObjectRequest.setRange(start, end);
 
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         S3Object objectPortion = s3client.getObject(rangeObjectRequest);
+        IOUtils.copy(objectPortion.getObjectContent(), byteArrayOutputStream);
 
-        return objectPortion.getObjectContent();
+        return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
     }
 
     @Override

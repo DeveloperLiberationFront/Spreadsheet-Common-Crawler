@@ -1,5 +1,7 @@
 package net.barik.spreadsheet;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
@@ -58,7 +60,18 @@ public class WARCExportMapper extends Mapper<LongWritable, Text, Text, Text> {
 
         try {
             WARCExportModel model = new WARCExportModel(json, importIO, exportIO);
-            model.process();
+
+            while (true) {
+                try {
+                    model.process();
+                }
+                catch (AmazonClientException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+
+                break;
+            }
 
             // Let the reducer know we've processed this one.
             context.write(value, new Text(model.getTargetResourceKey()));

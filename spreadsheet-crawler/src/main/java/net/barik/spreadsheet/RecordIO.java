@@ -8,7 +8,7 @@ import java.io.InputStream;
 
 interface RecordIO {
     InputStream load(String resourceKey);
-    InputStream load(String resourceKey, long start, long end);
+    InputStream load(String resourceKey, long start, long end) throws IOException;
     InputStream loadIntoMemory(String resourceKey) throws IOException;
     File loadIntoFile(String resourceKey) throws IOException;
     void save(String resourceKey, byte[] data);
