@@ -2,7 +2,10 @@ package net.barik.spreadsheet;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 import net.barik.spreadsheet.analysis.AnalysisOutput;
@@ -21,8 +24,13 @@ public class JacksonS3Export {
 	}
 
 	public static void exportItem(Set<String> uniqueFormulas, String uniqueFormulasBucket, String uniqueFormulasKeyPrefix, String fileName) throws IOException {
-		byte[] data = serializeModel(uniqueFormulas);
-        putObjectS3(uniqueFormulasBucket, uniqueFormulasKeyPrefix + fileName , data);
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		for(String f:uniqueFormulas) {
+			os.write(f.getBytes(StandardCharsets.UTF_8));
+			os.write("\n".getBytes(StandardCharsets.UTF_8));
+		}
+		
+        putObjectS3(uniqueFormulasBucket, uniqueFormulasKeyPrefix + fileName , os.toByteArray());
 	}
 
 	public static String getKeyForURI(String uri) {

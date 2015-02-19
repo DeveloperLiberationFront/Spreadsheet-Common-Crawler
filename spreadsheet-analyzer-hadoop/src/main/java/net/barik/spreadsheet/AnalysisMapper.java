@@ -29,7 +29,7 @@ public class AnalysisMapper extends Mapper<LongWritable, Text, Text, Text> {
         String exportBucket = conf.get("export.bucket", "barik-cc");
         String exportKeyPrefix = conf.get("export.keyprefix", "analysis/output/");
         
-        String skipUniqueFormulas = conf.get("skip.formulas", "false");
+        String skipUniqueFormulas = conf.get("skip.formulas", "true"); //skip by default
     	
         String uniqueFormulasBucket = conf.get("formulas.bucket", "barik-cc");
         String uniqueFormulasKeyPrefix = conf.get("formulas.keyprefix", "analysis/formulas/");
