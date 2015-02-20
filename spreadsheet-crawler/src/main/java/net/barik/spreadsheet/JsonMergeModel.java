@@ -1,8 +1,8 @@
 package net.barik.spreadsheet;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
+
+import org.json.JSONObject;
 
 public class JsonMergeModel {
     private RecordIO exportIO;

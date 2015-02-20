@@ -1,17 +1,16 @@
 package net.barik.spreadsheet;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
+import java.io.IOException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.tika.mime.MimeTypeException;
 
-import java.io.IOException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
+import com.amazonaws.AmazonClientException;
 
 public class POIFastFilterMapper extends Mapper<LongWritable, Text, Text, Text> {
 

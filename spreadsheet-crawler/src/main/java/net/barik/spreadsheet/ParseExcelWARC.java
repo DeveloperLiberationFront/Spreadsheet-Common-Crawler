@@ -1,21 +1,15 @@
 package net.barik.spreadsheet;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpResponseFactory;
-import org.apache.http.impl.DefaultHttpResponseFactory;
-import org.archive.format.http.HttpResponseMessage;
-import org.archive.format.http.HttpResponseMessageParser;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import org.archive.io.ArchiveReader;
 import org.archive.io.ArchiveRecord;
 import org.archive.io.ArchiveRecordHeader;
 import org.archive.io.HeaderedArchiveRecord;
 import org.archive.io.warc.WARCReaderFactory;
-import org.eclipse.jdt.internal.core.SourceType;
-
-import java.io.*;
-import java.util.Iterator;
-import java.util.UUID;
 
 public class ParseExcelWARC {
     public static void main(String[] args) {

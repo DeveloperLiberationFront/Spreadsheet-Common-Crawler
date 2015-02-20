@@ -1,17 +1,16 @@
 package net.barik.spreadsheet;
 
-import com.amazonaws.AmazonClientException;
+import java.io.IOException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.util.List;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import com.amazonaws.AmazonClientException;
 
 public class WATExportMapper extends Mapper<LongWritable, Text, Text, Text> {
 

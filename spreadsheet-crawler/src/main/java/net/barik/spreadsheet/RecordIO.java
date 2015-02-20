@@ -1,10 +1,10 @@
 package net.barik.spreadsheet;
 
-import org.archive.io.ArchiveRecord;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.archive.io.ArchiveRecord;
 
 interface RecordIO {
     InputStream load(String resourceKey);

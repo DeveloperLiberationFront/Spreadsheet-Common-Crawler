@@ -1,5 +1,8 @@
 package net.barik.spreadsheet;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.config.TikaConfig;
@@ -10,8 +13,6 @@ import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.json.JSONObject;
-
-import java.io.*;
 
 // http://standards.freedesktop.org/shared-mime-info-spec/
 public class POIFastFilterModel {

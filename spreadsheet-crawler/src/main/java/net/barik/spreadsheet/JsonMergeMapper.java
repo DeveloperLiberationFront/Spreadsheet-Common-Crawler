@@ -1,6 +1,9 @@
 package net.barik.spreadsheet;
 
-import com.amazonaws.AmazonClientException;
+import java.io.IOException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
@@ -8,9 +11,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
+import com.amazonaws.AmazonClientException;
 
 public class JsonMergeMapper extends Mapper<LongWritable, Text, Text, Text> {
 
