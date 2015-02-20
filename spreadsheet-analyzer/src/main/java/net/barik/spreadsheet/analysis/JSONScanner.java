@@ -73,10 +73,11 @@ public class JSONScanner extends AbstractScanner {
 			} else if (!(outputDirectory.delete() && outputDirectory.mkdirs())) {
 				throw new IOException();
 			}
-			return true;
 		} catch (IOException e) {
 			System.err.println("Could not write output to " + outputDirectory.getAbsolutePath());
+			return false;
 		}
+		
 		formulasDirectory = new File("formulas/");
 		try {
 			if (!formulasDirectory.exists()) {
