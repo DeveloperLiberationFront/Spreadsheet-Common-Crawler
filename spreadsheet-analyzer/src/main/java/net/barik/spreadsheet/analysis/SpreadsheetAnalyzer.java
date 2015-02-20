@@ -777,14 +777,12 @@ public class SpreadsheetAnalyzer {
 	}
 
 	private static class CellReferencePackage {
-		public Cell cell;
 		public boolean isReferenced;
 		public int rowIndex;
 		public int colIndex;
 		
 		
 		public CellReferencePackage(Cell cell) {
-			this.cell = cell;
 			this.rowIndex = cell.getRowIndex();
 			this.colIndex = cell.getColumnIndex();
 		}
