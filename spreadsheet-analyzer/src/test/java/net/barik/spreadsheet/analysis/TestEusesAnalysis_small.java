@@ -82,7 +82,7 @@ public class TestEusesAnalysis_small {
 		Map<String, Integer> counts = analyzer.getFunctionCounts();
 		Integer count = counts.get("SUM");
 		assertNotNull(count);
-		assertEquals(13, count.intValue());
+		assertEquals(14, count.intValue());
 	}
 	
 	@Test
@@ -170,7 +170,7 @@ public class TestEusesAnalysis_small {
 		Map<SpreadsheetAnalyzer.FunctionEvalType, Integer> counts = analyzer.getFormulaCellCounts();
 		Integer count = counts.get(FunctionEvalType.INTEGER);
 		assertNotNull(count);
-		assertEquals(145, count.intValue());
+		assertEquals(146, count.intValue());
 	}
 	
 	@Test
