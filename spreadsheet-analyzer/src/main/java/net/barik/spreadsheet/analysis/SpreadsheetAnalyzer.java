@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,6 +26,9 @@ import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.POIXMLProperties;
 import org.apache.poi.POIXMLProperties.CoreProperties;
 import org.apache.poi.POIXMLProperties.ExtendedProperties;
+import org.apache.poi.hpsf.DocumentSummaryInformation;
+import org.apache.poi.hpsf.PropertySetFactory;
+import org.apache.poi.hpsf.SummaryInformation;
 import org.apache.poi.hssf.OldExcelFormatException;
 import org.apache.poi.hssf.usermodel.HSSFChart;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -101,24 +104,6 @@ public class SpreadsheetAnalyzer {
 		this.workbook = wb;
 		
 		compileReferenceRegexFromSheetNames(wb);
-		getMetaData(wb);
-	}
-
-	private void getMetaData(Workbook wb) {
-		if (wb instanceof XSSFWorkbook) {
-			POIXMLProperties thing = ((XSSFWorkbook) wb).getProperties();
-			CoreProperties cp = thing.getCoreProperties();
-			ExtendedProperties ep = thing.getExtendedProperties();
-			DocumentMetadata dm = new DocumentMetadata();
-			dm.setCreator(cp.getCreator());
-			dm.setCreatedOn(cp.getCreated());
-			dm.setModifiedOn(cp.getModified());
-			dm.setModifiedBy(cp.getUnderlyingProperties().getLastModifiedByProperty().getValue());
-			dm.setLastPrinted(cp.getLastPrinted());
-			dm.setCompany(ep.getCompany());
-			dm.setKeywords(cp.getKeywords());
-			this.documentMetadata = dm;
-		}
 	}
 
 	private void compileReferenceRegexFromSheetNames(Workbook wb) {
@@ -254,27 +239,50 @@ public class SpreadsheetAnalyzer {
 	private void analyzeEUSESMetrics(InputStream inputStreamForMacroChecking) throws IOException {
 		clearPreviousMetrics();
 
-		checkForMacros(inputStreamForMacroChecking);
+		checkForMacrosAndMetadata(inputStreamForMacroChecking);
 		
 		findInputCells();
 		
 		findReferencedCells();
 	}
 
-	private void checkForMacros(InputStream inputStream) throws IOException {
+	private void checkForMacrosAndMetadata(InputStream inputStream) throws IOException {
 		if (this.workbook instanceof XSSFWorkbook) {
-			this.containsMacros = ((XSSFWorkbook) workbook).isMacroEnabled();
+			XSSFWorkbook xwb = (XSSFWorkbook) workbook;
+			this.containsMacros = xwb.isMacroEnabled();
+			getMetaData(xwb);
 		} else if (POIFSFileSystem.hasPOIFSHeader(inputStream)) {
 			// Looking at HSSF
 			POIFSReader r = new POIFSReader();
 			MacroListener ml = new MacroListener();
+			MetadataListener metadata = new MetadataListener();
 			r.registerListener(ml);
+			r.registerListener(metadata,"\005SummaryInformation");
+			r.registerListener(metadata,"\005DocumentSummaryInformation");
 			r.read(inputStream);
 			this.containsMacros = ml.isMacroDetected();
+			this.documentMetadata = metadata.metadata ;
 		}
 		inputStream.close();
 	}
 			
+
+	private void getMetaData(Workbook wb) {
+		if (wb instanceof XSSFWorkbook) {
+			POIXMLProperties thing = ((XSSFWorkbook) wb).getProperties();
+			CoreProperties cp = thing.getCoreProperties();
+			ExtendedProperties ep = thing.getExtendedProperties();
+			DocumentMetadata dm = new DocumentMetadata();
+			dm.setCreator(cp.getCreator());
+			dm.setCreatedOn(cp.getCreated());
+			dm.setModifiedOn(cp.getModified());
+			dm.setModifiedBy(cp.getUnderlyingProperties().getLastModifiedByProperty().getValue());
+			dm.setLastPrinted(cp.getLastPrinted());
+			dm.setCompany(ep.getCompany());
+			dm.setKeywords(cp.getKeywords());
+			this.documentMetadata = dm;
+		} 
+	}
 
 	private void findInputCells() {
 		for(int i = 0; i< workbook.getNumberOfSheets();i++) {
@@ -949,6 +957,47 @@ public class SpreadsheetAnalyzer {
 			}
 		}
 	}
+	
+	public static class MetadataListener implements POIFSReaderListener {
+		public DocumentMetadata metadata = new DocumentMetadata();
+
+		// from http://poi.apache.org/hpsf/how-to.html#sec1
+		@Override
+		public void processPOIFSReaderEvent(POIFSReaderEvent event) {
+			if (event.getName().contains("Document")) {
+				handleDocumentSummaryInformation(event);
+			} else {
+				handleSummaryInformation(event);
+			}
+		}
+
+		private void handleDocumentSummaryInformation(POIFSReaderEvent event) {
+			DocumentSummaryInformation si = null;
+			try {
+				si = (DocumentSummaryInformation) PropertySetFactory.create(event.getStream());
+				metadata.setCompany(si.getCompany());
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		private void handleSummaryInformation(POIFSReaderEvent event) {
+			SummaryInformation si = null;
+			try {
+				si = (SummaryInformation) PropertySetFactory.create(event.getStream());
+				metadata.setCreator(si.getAuthor());
+				metadata.setCreatedOn(si.getCreateDateTime());
+				metadata.setLastPrinted(si.getLastPrinted());
+				metadata.setModifiedOn(si.getLastSaveDateTime());
+				metadata.setModifiedBy(si.getLastAuthor());
+				metadata.setKeywords(si.getKeywords());
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+
+	}
+	
 	private static class CellReferencePair {
 		public final CellReference first, second;
 		public CellReferencePair(CellReference first, CellReference second) {
