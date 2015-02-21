@@ -59,6 +59,8 @@ public class SpreadsheetAnalyzer {
 	private boolean containsMacros = false;
 	
 	private final Pattern findFunctions = Pattern.compile("[A-Z][A-Z\\.0-9]*\\(");
+	private final Pattern findOperations = Pattern.compile("["+Pattern.quote("+*\\-") + "]");
+	
 	private Pattern findPotentialCellReferences;
 
 	private Sheet currentSheet;
@@ -537,16 +539,24 @@ public class SpreadsheetAnalyzer {
 		formulaCellByReferenceMap.put(new SheetLocation(cell), inputCellPackage);
 	}
 
-	private void findFunctionsUsed(String functionString) {
-		Matcher m = findFunctions.matcher(functionString);
+	private void findFunctionsUsed(String formulaString) {
+		Matcher m = findFunctions.matcher(formulaString);
 		while(m.find()) {
 			String function = m.group();
-			if (isInQuotes(m.start(), functionString)) {
+			if (isInQuotes(m.start(), formulaString)) {
 				continue;
 			}
 			function = function.substring(0, function.length()-1);
 			functionCounts.put(function, incrementOrInitialize(functionCounts.get(function)));
 		}
+		m = findOperations.matcher(formulaString);
+		while(m.find()) {
+			String operation = m.group();
+			if (isInQuotes(m.start(), formulaString)) {
+				continue;
+			}
+			functionCounts.put(operation, incrementOrInitialize(functionCounts.get(operation)));
+		}		
 	}
 
 	private void handleInputCell(Cell cell) {

@@ -53,6 +53,11 @@ public class AnalysisOutput {
 	public int numCharts;
 	public boolean containsMacros;
 	
+	public int countPlus;
+	public int countMinus;
+	public int countDivide;
+	public int countMultiply;
+	
 	public int countABS;
 	public int countACOS;
 	public int countACOSH;
@@ -1031,7 +1036,10 @@ public class AnalysisOutput {
 		this.countZTEST = nonNull(functionCounts.get("ZTEST"));
 		this.countZ_TEST = nonNull(functionCounts.get("Z.TEST"));
 
-		
+		this.countPlus = nonNull(functionCounts.get("+"));
+		this.countMinus = nonNull(functionCounts.get("-"));
+		this.countDivide = nonNull(functionCounts.get("\\"));
+		this.countMultiply = nonNull(functionCounts.get("*"));
 	}
 	
 	public AnalysisOutput(String corpusName, String identifier, String error, String stacktrace) {

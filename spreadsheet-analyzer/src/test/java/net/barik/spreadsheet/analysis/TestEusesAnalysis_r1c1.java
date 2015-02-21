@@ -47,7 +47,7 @@ public class TestEusesAnalysis_r1c1 {
 		assertNotNull(count);
 		assertEquals(1, count.intValue());
 		
-		assertEquals(2,counts.keySet().size());//sum and average are the only input
+		assertEquals(3,counts.keySet().size());//sum, average, and + are the only input
 	}
 
 	@Test
