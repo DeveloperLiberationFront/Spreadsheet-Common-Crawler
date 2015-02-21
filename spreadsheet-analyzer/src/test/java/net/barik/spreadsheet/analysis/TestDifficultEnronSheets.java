@@ -165,6 +165,14 @@ public class TestDifficultEnronSheets {
 		assertEquals(14, analysis.numSheets);
 		assertNull(analysis.stackTrace);
 		//everything else is 0
+		
+		assertEquals("", analysis.createdBy);
+		assertEquals("Felienne", analysis.lastModifiedBy);
+		assertEquals("1997-09-15T20:07:49Z", analysis.createdDate);
+		assertEquals("2001-12-31T15:55:52Z", analysis.lastPrintedDate);
+		assertEquals("2014-09-03T12:03:17Z", analysis.lastModifiedDate);
+		assertEquals("", analysis.company);
+		assertEquals("",analysis.keywords);
 	}
 
 	@Test
@@ -231,6 +239,14 @@ public class TestDifficultEnronSheets {
 		assertNull(analysis.stackTrace);
 		//everything else is 0
 		
+		assertEquals("", analysis.createdBy);
+		assertEquals("Felienne", analysis.lastModifiedBy);
+		assertEquals("1998-02-07T06:53:21Z", analysis.createdDate);
+		assertEquals("2002-01-03T16:25:16Z", analysis.lastPrintedDate);
+		assertEquals("2014-09-03T13:26:12Z", analysis.lastModifiedDate);
+		assertEquals("", analysis.company);
+		assertEquals("",analysis.keywords);
+		
 	}
 
 	@Test
@@ -287,6 +303,14 @@ public class TestDifficultEnronSheets {
 		assertEquals(3, analysis.numSheets);
 		assertNull(analysis.stackTrace);
 		//everything else is 0		 
+
+		assertEquals("mcaushol", analysis.createdBy);
+		assertEquals("Felienne", analysis.lastModifiedBy);
+		assertEquals("2001-08-06T21:11:38Z", analysis.createdDate);
+		assertEquals("2001-08-07T13:44:58Z", analysis.lastPrintedDate);
+		assertEquals("2014-09-05T10:38:27Z", analysis.lastModifiedDate);
+		assertEquals("Enron Corp", analysis.company);
+		assertEquals("",analysis.keywords);
 	}
 	
 	@Test(timeout=120000)		//two minutes or less
@@ -347,5 +371,13 @@ public class TestDifficultEnronSheets {
 		assertEquals(13542, analysis.countVLOOKUP);
 		assertEquals(3, analysis.numSheets);
 		assertNull(analysis.stackTrace);
+		
+		assertEquals("jwebb", analysis.createdBy);
+		assertEquals("Felienne", analysis.lastModifiedBy);
+		assertEquals("2001-10-28T04:41:41Z", analysis.createdDate);
+		assertEquals("", analysis.lastPrintedDate);
+		assertEquals("2014-09-03T20:03:56Z", analysis.lastModifiedDate);
+		assertEquals("ect", analysis.company);
+		assertEquals("",analysis.keywords);
 	}
 }
