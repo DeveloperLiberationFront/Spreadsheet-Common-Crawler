@@ -1144,6 +1144,14 @@ public class AnalysisOutput {
 		builder.append(numCharts);
 		builder.append(", containsMacros=");
 		builder.append(containsMacros);
+		builder.append(", countPlus=");
+		builder.append(countPlus);
+		builder.append(", countMinus=");
+		builder.append(countMinus);
+		builder.append(", countDivide=");
+		builder.append(countDivide);
+		builder.append(", countMultiply=");
+		builder.append(countMultiply);
 		builder.append(", countABS=");
 		builder.append(countABS);
 		builder.append(", countACOS=");

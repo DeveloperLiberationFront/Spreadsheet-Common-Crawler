@@ -1,8 +1,6 @@
 package net.barik.spreadsheet.analysis;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.InputStream;
 
@@ -40,31 +38,37 @@ public class TestBadEnronSheets {
 		assertEquals(1927, analysis.nonIntegerFormulas);
 		assertEquals(24, analysis.stringFormulas);
 		assertEquals(0, analysis.blankFormulas);
-		assertEquals(4048, analysis.formulaCellsReferencingOthers);
-		assertEquals(1828, analysis.formulaCellsReferencedByOthers);
-		assertEquals(121, analysis.formulaCellsOccuringOnce);
-		assertEquals(273, analysis.formulaCellsOccuring2Plus);
-		assertEquals(21, analysis.formulaCellsOccuring5Plus);
+		assertEquals(4843, analysis.formulaCellsReferencingOthers);
+		assertEquals(1832, analysis.formulaCellsReferencedByOthers);
+		assertEquals(163, analysis.formulaCellsOccuringOnce);
+		assertEquals(401, analysis.formulaCellsOccuring2Plus);
+		assertEquals(85, analysis.formulaCellsOccuring5Plus);
 		assertEquals(19, analysis.formulaCellsOccuring10Plus);
 		assertEquals(19, analysis.formulaCellsOccuring25Plus);
 		assertEquals(17, analysis.formulaCellsOccuring50Plus);
 		assertEquals(11, analysis.formulaCellsOccuring100Plus);
 		assertEquals(521, analysis.mostFrequentFormulaCount);
 		assertEquals("R[0]C[19]", analysis.mostFrequentFormula);
+		assertEquals(0, analysis.numCharts);
 		assertFalse(analysis.containsMacros);
+		assertEquals(1363, analysis.countPlus);
+		assertEquals(933, analysis.countMinus);
+		assertEquals(0, analysis.countDivide);
+		assertEquals(531, analysis.countMultiply);
+		assertEquals(0, analysis.numFormulasThatArePartOfArrayFormulaGroup);
+		
 		assertEquals(2, analysis.countCEILING);
 		assertEquals(272, analysis.countDATE);
-		assertEquals(17, analysis.countDAY);
-		assertEquals(32, analysis.countIF);
+		assertEquals(3, analysis.countDAY);
+		assertEquals(18, analysis.countIF);
 		assertEquals(23, analysis.countMAX);
-		assertEquals(292, analysis.countMONTH);
+		assertEquals(282, analysis.countMONTH);
 		assertEquals(1, analysis.countSUM);
 		assertEquals(251, analysis.countVLOOKUP);
-		assertEquals(288, analysis.countYEAR);
+		assertEquals(280, analysis.countYEAR);
 		assertEquals(6, analysis.numSheets);
-		assertEquals(0, analysis.numFormulasThatArePartOfArrayFormulaGroup);
-		// everything else is 0
-		assertEquals(394, aof.uniqueFormulas.size());
+		assertNull(analysis.stackTrace);
+		//everything else is 0
 	}
 
 	@Test
@@ -107,9 +111,15 @@ public class TestBadEnronSheets {
 		assertEquals(11, analysis.formulaCellsOccuring100Plus);
 		assertEquals(1145, analysis.mostFrequentFormulaCount);
 		assertEquals("Data!R[76]C[0]", analysis.mostFrequentFormula);
-		assertFalse(analysis.containsMacros);
 		assertEquals(15, analysis.numCharts);
-		assertEquals(832, analysis.countAVERAGE);
+		assertFalse(analysis.containsMacros);
+		assertEquals(208, analysis.countPlus);
+		assertEquals(2512, analysis.countMinus);
+		assertEquals(0, analysis.countDivide);
+		assertEquals(0, analysis.countMultiply);
+		assertEquals(0, analysis.numFormulasThatArePartOfArrayFormulaGroup);
+
+		assertEquals(416, analysis.countAVERAGE);
 		assertEquals(4, analysis.countDATE);
 		assertEquals(4, analysis.countDAY);
 		assertEquals(1576, analysis.countIF);
@@ -119,8 +129,8 @@ public class TestBadEnronSheets {
 		assertEquals(4, analysis.countVLOOKUP);
 		assertEquals(4, analysis.countYEAR);
 		assertEquals(14, analysis.numSheets);
-		assertEquals(0, analysis.numFormulasThatArePartOfArrayFormulaGroup);
-		// everything else is 0
+		assertNull(analysis.stackTrace);
+		//everything else is 0
 	}
 
 	@Test
@@ -152,10 +162,10 @@ public class TestBadEnronSheets {
 		assertEquals(102, analysis.nonIntegerFormulas);
 		assertEquals(96, analysis.stringFormulas);
 		assertEquals(0, analysis.blankFormulas);
-		assertEquals(2661, analysis.formulaCellsReferencingOthers);
+		assertEquals(3210, analysis.formulaCellsReferencingOthers);
 		assertEquals(2452, analysis.formulaCellsReferencedByOthers);
-		assertEquals(134, analysis.formulaCellsOccuringOnce);
-		assertEquals(111, analysis.formulaCellsOccuring2Plus);
+		assertEquals(636, analysis.formulaCellsOccuringOnce);
+		assertEquals(134, analysis.formulaCellsOccuring2Plus);
 		assertEquals(89, analysis.formulaCellsOccuring5Plus);
 		assertEquals(80, analysis.formulaCellsOccuring10Plus);
 		assertEquals(10, analysis.formulaCellsOccuring25Plus);
@@ -163,21 +173,29 @@ public class TestBadEnronSheets {
 		assertEquals(2, analysis.formulaCellsOccuring100Plus);
 		assertEquals(288, analysis.mostFrequentFormulaCount);
 		assertEquals("R[-1]C[0]-R[-3]C[0]", analysis.mostFrequentFormula);
+		assertEquals(0, analysis.numCharts);
 		assertFalse(analysis.containsMacros);
-		assertEquals(1389, analysis.countIF);
+		assertEquals(677, analysis.countPlus);
+		assertEquals(1286, analysis.countMinus);
+		assertEquals(0, analysis.countDivide);
+		assertEquals(629, analysis.countMultiply);
+		
+		assertEquals(690, analysis.countIF);
 		assertEquals(45, analysis.countINDEX);
 		assertEquals(24, analysis.countISTEXT);
-		assertEquals(60, analysis.countMATCH);
-		assertEquals(384, analysis.countMIN);
-		assertEquals(780, analysis.countOFFSET);
+		assertEquals(609, analysis.countMATCH);
+		assertEquals(48, analysis.countMIN);
+		assertEquals(994, analysis.countOFFSET);
 		assertEquals(12, analysis.countOR);
 		assertEquals(24, analysis.countROUND);
-		assertEquals(24, analysis.countROWS);
-		assertEquals(981, analysis.countSUM);
+		assertEquals(12, analysis.countROWS);
+		assertEquals(782, analysis.countSUM);
 		assertEquals(84, analysis.countSUMIF);
-		assertEquals(11, analysis.numSheets);
 		assertEquals(440, analysis.numFormulasThatArePartOfArrayFormulaGroup);
-		// all others are 0
+		assertEquals(11, analysis.numSheets);
+		assertNull(analysis.stackTrace);
+		//everything else is 0
+		
 	}
 
 	@Test
@@ -211,8 +229,6 @@ public class TestBadEnronSheets {
 		AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad_enron_4.xlsx");
 		assertNotNull(analysis);
 		assertEquals("OK", analysis.errorNotification);
-		assertEquals(3, analysis.numSheets);
-		assertEquals(528, analysis.numFormulasThatArePartOfArrayFormulaGroup);
 		assertEquals(5707, analysis.totalInputCells);
 		assertEquals(0, analysis.booleanInputCells);
 		assertEquals(707, analysis.dateTimeInputCells);
@@ -248,12 +264,20 @@ public class TestBadEnronSheets {
 		assertEquals("R[0]C[-14]-R[-1]C[-14]", analysis.mostFrequentFormula);
 		assertEquals(0, analysis.numCharts);
 		assertFalse(analysis.containsMacros);
+		assertEquals(0, analysis.countPlus);
+		assertEquals(2442, analysis.countMinus);
+		assertEquals(0, analysis.countDivide);
+		assertEquals(0, analysis.countMultiply);
+		 
 		assertEquals(270, analysis.countCORREL);
 		assertEquals(528, analysis.countLINEST);
-		//every thing else is 0
+		assertEquals(528, analysis.numFormulasThatArePartOfArrayFormulaGroup);
+		assertEquals(3, analysis.numSheets);
+		assertNull(analysis.stackTrace);
+		//everything else is 0		 
 	}
 	
-	@Test(timeout=120000)		//two minutes
+	@Test(timeout=120000)		//two minutes or less
 	public void testBadEnron5() throws Exception {
 		InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_5.xlsx");
 		assertNotNull(is);
@@ -261,6 +285,7 @@ public class TestBadEnronSheets {
 		AnalysisOutput analysis = aof.analysisObject;
 		assertNotNull(analysis);
 		assertEquals("OK", analysis.errorNotification);
+		assertEquals(1227, aof.uniqueFormulas.size());
 		assertEquals(56044, analysis.totalInputCells);
 		assertEquals(0, analysis.booleanInputCells);
 		assertEquals(14021, analysis.dateTimeInputCells);
@@ -296,16 +321,18 @@ public class TestBadEnronSheets {
 		assertEquals("IF(R[0]C1=R[-1]C1,R[-1]C[0]+R[0]C[-1],R[0]C[-1])", analysis.mostFrequentFormula);
 		assertEquals(0, analysis.numCharts);
 		assertFalse(analysis.containsMacros);
-		assertEquals(47928, analysis.countCONCATENATE);
-		assertEquals(83017, analysis.countIF);
+		assertEquals(27789, analysis.countPlus);
+		assertEquals(6948, analysis.countMinus);
+		assertEquals(0, analysis.countDivide);
+		assertEquals(0, analysis.countMultiply);
+		
+		assertEquals(20490, analysis.countCONCATENATE);
+		assertEquals(69121, analysis.countIF);
 		assertEquals(13542, analysis.countISNA);
 		assertEquals(6948, analysis.countMAX);
 		assertEquals(61, analysis.countSUM);
-		assertEquals(27084, analysis.countVLOOKUP);
+		assertEquals(13542, analysis.countVLOOKUP);
 		assertEquals(3, analysis.numSheets);
-		assertEquals(0, analysis.numFormulasThatArePartOfArrayFormulaGroup);
-		//all others are 0
-
-		assertEquals(1227, aof.uniqueFormulas.size());
+		assertNull(analysis.stackTrace);
 	}
 }
