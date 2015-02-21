@@ -9,6 +9,30 @@ import org.junit.Test;
 public class TestDifficultEnronSheets {
 
 	@Test
+	public void testMemoryConsumption() throws Exception {
+		String memoryTestLimit = System.getenv("BARIK_MEMORY_TEST_LIMIT");
+		int memoryLimit = 20;
+		if (memoryTestLimit != null) {
+			System.out.println("BARIK_MEMORY_TEST_LIMIT was " + memoryTestLimit + " using that");
+			try {
+				memoryLimit = Integer.parseInt(memoryTestLimit);
+			} catch (NumberFormatException e) {
+				e.printStackTrace(); // possibly a conflict
+			}
+		} else {
+			System.out.println("BARIK_MEMORY_TEST_LIMIT was null.  Defaulting to run " + memoryLimit + " times");
+		}
+		for (int i = 0; i < memoryLimit; i++) {
+			System.out.println("Memory test: " + (i + 1));
+			InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_1.xlsx");
+			assertNotNull(is);
+			AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad_enron_1.xlsx");
+			assertNotNull(analysis);
+			is.close();
+		}
+	}
+
+	@Test
 	public void testDifficultEnron1() throws Exception {
 		InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_1.xlsx");
 		assertNotNull(is);
@@ -70,6 +94,14 @@ public class TestDifficultEnronSheets {
 		assertEquals(6, analysis.numSheets);
 		assertNull(analysis.stackTrace);
 		//everything else is 0
+		
+		assertEquals("ahuang2", analysis.createdBy);
+		assertEquals("Felienne", analysis.lastModifiedBy);
+		assertEquals("2000-01-10T18:59:16Z", analysis.createdDate);
+		assertEquals("2000-03-07T14:28:52Z", analysis.lastPrintedDate);
+		assertEquals("2014-09-03T10:59:03Z", analysis.lastModifiedDate);
+		assertEquals("ect", analysis.company);
+		assertEquals("",analysis.keywords);
 	}
 
 	@Test
@@ -201,30 +233,6 @@ public class TestDifficultEnronSheets {
 		
 	}
 
-	@Test
-	public void testMemoryConsumption() throws Exception {
-		String memoryTestLimit = System.getenv("BARIK_MEMORY_TEST_LIMIT");
-		int memoryLimit = 20;
-		if (memoryTestLimit != null) {
-			System.out.println("BARIK_MEMORY_TEST_LIMIT was " + memoryTestLimit + " using that");
-			try {
-				memoryLimit = Integer.parseInt(memoryTestLimit);
-			} catch (NumberFormatException e) {
-				e.printStackTrace(); // possibly a conflict
-			}
-		} else {
-			System.out.println("BARIK_MEMORY_TEST_LIMIT was null.  Defaulting to run " + memoryLimit + " times");
-		}
-		for (int i = 0; i < memoryLimit; i++) {
-			System.out.println("Memory test: " + (i + 1));
-			InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_1.xlsx");
-			assertNotNull(is);
-			AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad_enron_1.xlsx");
-			assertNotNull(analysis);
-			is.close();
-		}
-	}
-	
 	@Test
 	public void testDifficultEnron4() throws Exception {
 		InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_4.xlsx");

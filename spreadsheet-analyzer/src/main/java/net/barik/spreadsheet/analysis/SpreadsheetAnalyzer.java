@@ -5,14 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -20,6 +23,9 @@ import java.util.regex.Pattern;
 
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.POIXMLDocumentPart;
+import org.apache.poi.POIXMLProperties;
+import org.apache.poi.POIXMLProperties.CoreProperties;
+import org.apache.poi.POIXMLProperties.ExtendedProperties;
 import org.apache.poi.hssf.OldExcelFormatException;
 import org.apache.poi.hssf.usermodel.HSSFChart;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -85,6 +91,8 @@ public class SpreadsheetAnalyzer {
 
 	private boolean containsThirdPartyFunctions;
 
+	private DocumentMetadata documentMetadata;
+
 	private SpreadsheetAnalyzer(Workbook wb) {
 		setWorkBook(wb);
 	}
@@ -93,6 +101,24 @@ public class SpreadsheetAnalyzer {
 		this.workbook = wb;
 		
 		compileReferenceRegexFromSheetNames(wb);
+		getMetaData(wb);
+	}
+
+	private void getMetaData(Workbook wb) {
+		if (wb instanceof XSSFWorkbook) {
+			POIXMLProperties thing = ((XSSFWorkbook) wb).getProperties();
+			CoreProperties cp = thing.getCoreProperties();
+			ExtendedProperties ep = thing.getExtendedProperties();
+			DocumentMetadata dm = new DocumentMetadata();
+			dm.setCreator(cp.getCreator());
+			dm.setCreatedOn(cp.getCreated());
+			dm.setModifiedOn(cp.getModified());
+			dm.setModifiedBy(cp.getUnderlyingProperties().getLastModifiedByProperty().getValue());
+			dm.setLastPrinted(cp.getLastPrinted());
+			dm.setCompany(ep.getCompany());
+			dm.setKeywords(cp.getKeywords());
+			this.documentMetadata = dm;
+		}
 	}
 
 	private void compileReferenceRegexFromSheetNames(Workbook wb) {
@@ -166,7 +192,8 @@ public class SpreadsheetAnalyzer {
 					analyzer.containsThirdPartyFunctions,
 					analyzer.getNumSheets(),
 					analyzer.getNumFormulasThatArePartOfArrayFormulaGroup(),
-					analyzer.getFunctionCounts());
+					analyzer.getFunctionCounts(),
+					analyzer.getDocumentMetadata());
 			
 			return new AnalysisOutputAndFormulas(analysisOutput, new HashSet<>(analyzer.r1c1FormulaToCountMap.keySet()));
 		}
@@ -195,6 +222,10 @@ public class SpreadsheetAnalyzer {
 				analyzer.close();
 			}
 		}
+	}
+
+	private DocumentMetadata getDocumentMetadata() {
+		return this.documentMetadata;
 	}
 
 	private int getNumSheets() {
@@ -1045,6 +1076,66 @@ public class SpreadsheetAnalyzer {
 			super(arg0);
 		}
 	
+	}
+	
+	static class DocumentMetadata {
+
+		public String creator;
+		public String createdOn;
+		public String modifiedBy;
+		public String modifiedOn;
+		public String lastPrinted;
+		public String keywords;
+		public String company;
+		
+		private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+		
+		public DocumentMetadata() {
+			df.setTimeZone(TimeZone.getTimeZone("UTC"));
+		}
+		
+		public void setCompany(String company) {
+			this.company = company == null? "":company;
+		}
+
+		public void setKeywords(String keywords) {
+			this.keywords = keywords == null? "":keywords;
+		}
+
+		public void setModifiedBy(String modifiedBy) {
+			this.modifiedBy = modifiedBy == null ? "": modifiedBy;
+		}
+
+
+		public void setCreator(String creator) {
+			this.creator = creator == null ? "": creator;
+		}
+
+		public void setModifiedOn(Date modified) {
+			if (modified == null) {
+				modifiedOn = "";
+				return;
+			}
+			modifiedOn = df.format(modified);
+		}
+
+		public void setCreatedOn(Date created) {
+			if (created == null) {
+				createdOn = "";
+				return;
+			}
+			createdOn = df.format(created);
+		}
+		
+		public void setLastPrinted(Date lastPrinted) {
+			if (lastPrinted == null) {
+				this.lastPrinted = "";
+				return;
+			}
+			this.lastPrinted = df.format(lastPrinted);
+		}
+		
 	}
 
 

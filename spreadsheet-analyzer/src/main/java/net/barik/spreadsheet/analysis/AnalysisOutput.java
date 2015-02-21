@@ -2,6 +2,7 @@ package net.barik.spreadsheet.analysis;
 
 import java.util.Map;
 
+import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.DocumentMetadata;
 import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.FunctionEvalType;
 import net.barik.spreadsheet.analysis.SpreadsheetAnalyzer.InputCellType;
 
@@ -511,6 +512,20 @@ public class AnalysisOutput {
 
 	public boolean containsThirdPartyFunctions;
 
+	public String createdBy;
+
+	public String lastModifiedBy;
+
+	public String createdDate;
+
+	public String lastPrintedDate;
+
+	public String lastModifiedDate;
+
+	public String company;
+
+	public String keywords;
+
 	
 	public AnalysisOutput(String corpusName, String identifier,
 			Map<InputCellType, Integer> inputCounts,
@@ -532,13 +547,23 @@ public class AnalysisOutput {
 			boolean containsThirdPartyFunctions,
 			int numSheets,
 			int numFormulasThatArePartOfArray,
-			Map<String, Integer> functionCounts
+			Map<String, Integer> functionCounts,
+			DocumentMetadata metadata
 			){
 
 		this.corpusName = corpusName;
 		this.identifier = identifier; 
 		this.numSheets = numSheets;
 		this.numFormulasThatArePartOfArrayFormulaGroup = numFormulasThatArePartOfArray;
+		
+		//metadata
+		this.createdBy = metadata.creator;
+		this.lastModifiedBy= metadata.modifiedBy;
+		this.createdDate= metadata.createdOn;
+		this.lastPrintedDate= metadata.lastPrinted;
+		this.lastModifiedDate= metadata.modifiedOn;
+		this.company= metadata.company;
+		this.keywords= metadata.keywords;
 		
 		//INPUT CELLS
 		this.totalInputCells = total(inputCounts);
@@ -2052,6 +2077,20 @@ public class AnalysisOutput {
 		builder.append(stackTrace);
 		builder.append(", containsThirdPartyFunctions=");
 		builder.append(containsThirdPartyFunctions);
+		builder.append(", createdBy=");
+		builder.append(createdBy);
+		builder.append(", lastModifiedBy=");
+		builder.append(lastModifiedBy);
+		builder.append(", createdDate=");
+		builder.append(createdDate);
+		builder.append(", lastPrintedDate=");
+		builder.append(lastPrintedDate);
+		builder.append(", lastModifiedDate=");
+		builder.append(lastModifiedDate);
+		builder.append(", company=");
+		builder.append(company);
+		builder.append(", keywords=");
+		builder.append(keywords);
 		builder.append("]");
 		return builder.toString();
 	}
