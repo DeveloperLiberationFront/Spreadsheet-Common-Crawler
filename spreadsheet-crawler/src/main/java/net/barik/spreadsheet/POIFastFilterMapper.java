@@ -56,7 +56,7 @@ public class POIFastFilterMapper extends Mapper<LongWritable, Text, Text, Text> 
             try {
                 POIFastFilterDataModel dataModel = model.parse(resourceKey);
 
-                if (model.isValidSpreadsheet(dataModel)) {
+                if (POIFastFilterModel.isValidSpreadsheet(dataModel)) {
                     // Save the JSON data model.
                     model.export(dataModel);
                 }

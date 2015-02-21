@@ -69,7 +69,7 @@ public class JsonMergeMapper extends Mapper<LongWritable, Text, Text, Text> {
                 JSONObject jsonSource = new JSONObject(source);
                 JSONObject jsonDest = new JSONObject(dest);
 
-                JSONObject result = model.merge(jsonSource, jsonDest, "Tika");
+                JSONObject result = JsonMergeModel.merge(jsonSource, jsonDest, "Tika");
                 model.export(resourceKey, result);
 
             }
