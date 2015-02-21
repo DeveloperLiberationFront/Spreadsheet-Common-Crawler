@@ -182,7 +182,7 @@ public class SpreadsheetAnalyzer {
 			return new AnalysisOutputAndFormulas(new AnalysisOutput(corpusName, identifier, "ENCRYPTED",
 					e.toString()+" : "+Arrays.toString(e.getStackTrace())), Collections.<String>emptySet());
 		}
-		catch (IllegalArgumentException e) {
+		catch (IllegalArgumentException | IOException e) {
 			return new AnalysisOutputAndFormulas(new AnalysisOutput(corpusName, identifier, "CORRUPT",
 					e.toString()+" : "+Arrays.toString(e.getStackTrace())), Collections.<String>emptySet());
 		}
