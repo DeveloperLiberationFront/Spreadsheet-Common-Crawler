@@ -3,6 +3,7 @@ package net.barik.spreadsheet.analysis;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,9 +40,12 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.XLSBUnsupportedException;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCell;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCellFormula;
 
 public class SpreadsheetAnalyzer {
 	
@@ -353,13 +357,7 @@ public class SpreadsheetAnalyzer {
 			evalTypeCounts.put(evaluatingType,incrementOrInitialize(evalTypeCounts.get(evaluatingType)));
 		}
 		
-		String cellFormula = null;
-		try {
-			 cellFormula = cell.getCellFormula();
-		}
-		catch (FormulaParseException fpe) {
-			throw new ParsingException("Problem with cell formula", fpe);
-		}
+		String cellFormula = extractFormula(cell);
     	if (cellFormula.startsWith("#")) {
     		lastInputCellType = InputCellType.ERROR;
 		} else {
@@ -380,13 +378,7 @@ public class SpreadsheetAnalyzer {
 
 	
 	String convertToR1C1(Cell formulaCell) throws ParsingException {
-		String cellFormula = null;
-		try {
-			 cellFormula = formulaCell.getCellFormula();
-		}
-		catch (FormulaParseException fpe) {
-			throw new ParsingException("Problem with cell formula", fpe);
-		}
+		String cellFormula = extractFormula(formulaCell);
 
 		String adjustedFormula = cellFormula;
 		
@@ -450,6 +442,31 @@ public class SpreadsheetAnalyzer {
 		}
 		
 		return adjustedFormula;
+	}
+
+	private String extractFormula(Cell formulaCell) throws ParsingException {
+		String cellFormula = null;
+		try {
+			 cellFormula = formulaCell.getCellFormula();
+		}
+		catch (FormulaParseException fpe) {
+			if (formulaCell instanceof XSSFCell) {
+				try {
+					//this bypasses the formula parsing which can fail for user-defined functions
+					// or for functions of third-party functions
+					Field f = formulaCell.getClass().getDeclaredField("_cell");
+					f.setAccessible(true);
+					CTCell cell = (CTCell) f.get(formulaCell);
+					CTCellFormula formula = cell.getF();
+					return formula.getStringValue();
+				} catch (Exception e) {
+					throw new ParsingException("Reflection extraction of cel formula failed", new ParsingException(e));
+				}
+				
+			}
+			throw new ParsingException("Problem with cell formula", fpe);
+		}
+		return cellFormula;
 	}
 
 	private boolean isInQuotes(int start, String cellFormula) {
@@ -644,13 +661,7 @@ public class SpreadsheetAnalyzer {
 	}
 
 	private void processFormulaReferences(Cell cell) throws ParsingException {
-		String formula = null;
-		try {
-			 formula = cell.getCellFormula();
-		}
-		catch (FormulaParseException fpe) {
-			throw new ParsingException("Problem with cell formula", fpe);
-		}
+		String formula = extractFormula(cell);
 		//we look for anything that might be a cell reference and use
 		// POI's parsers to see if they are valid references
 		Matcher m = findPotentialCellReferences.matcher(formula);
