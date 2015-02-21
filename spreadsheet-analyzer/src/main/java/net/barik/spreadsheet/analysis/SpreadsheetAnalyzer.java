@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,6 +47,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCell;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCellFormula;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.STCellFormulaType;
 
 public class SpreadsheetAnalyzer {
 	
@@ -451,16 +453,31 @@ public class SpreadsheetAnalyzer {
 		}
 		catch (FormulaParseException fpe) {
 			if (formulaCell instanceof XSSFCell) {
+				XSSFCell xFormulaCell = (XSSFCell) formulaCell;
 				try {
 					//this bypasses the formula parsing which can fail for user-defined functions
 					// or for functions of third-party functions
-					Field f = formulaCell.getClass().getDeclaredField("_cell");
-					f.setAccessible(true);
-					CTCell cell = (CTCell) f.get(formulaCell);
+					Field _cellField = formulaCell.getClass().getDeclaredField("_cell");
+					_cellField.setAccessible(true);
+					CTCell cell = (CTCell) _cellField.get(formulaCell);
 					CTCellFormula formula = cell.getF();
-					return formula.getStringValue();
+					XSSFSheet sheet = xFormulaCell.getSheet();
+					if (xFormulaCell.isPartOfArrayFormulaGroup() && formula == null) {
+						Method method = sheet.getClass().getDeclaredMethod("getFirstCellInArrayFormula");
+						method.setAccessible(true);
+						XSSFCell masterCell = (XSSFCell) method.invoke(xFormulaCell);
+			            return extractFormula(masterCell);
+			        }
+			        if (formula.getT() == STCellFormulaType.SHARED) {
+			            CTCellFormula f = sheet.getSharedFormula((int)formula.getSi());
+			            if(f == null) 
+			            	throw new ParsingException("No shared formula found, despite one being promised.");
+
+			            return f.getStringValue();
+			        }
+			        return formula.getStringValue();
 				} catch (Exception e) {
-					throw new ParsingException("Reflection extraction of cel formula failed", new ParsingException(e));
+					throw new ParsingException("Reflection extraction of cell formula failed", new ParsingException(e));
 				}
 				
 			}
