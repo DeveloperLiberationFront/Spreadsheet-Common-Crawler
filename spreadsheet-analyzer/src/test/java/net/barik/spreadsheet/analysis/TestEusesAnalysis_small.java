@@ -261,4 +261,8 @@ public class TestEusesAnalysis_small {
 		assertFalse(analyzer.containsChart());
 	}
 	
+	@Test
+	public void testNoThirdPartyFunctions() throws Exception {
+		assertFalse(analyzer.containsThirdPartyFunctions());
+	}
 }

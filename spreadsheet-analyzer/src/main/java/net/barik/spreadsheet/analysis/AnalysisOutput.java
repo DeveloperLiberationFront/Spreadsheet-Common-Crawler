@@ -509,6 +509,8 @@ public class AnalysisOutput {
 
 	public String stackTrace;
 
+	public boolean containsThirdPartyFunctions;
+
 	
 	public AnalysisOutput(String corpusName, String identifier,
 			Map<InputCellType, Integer> inputCounts,
@@ -526,7 +528,8 @@ public class AnalysisOutput {
 			int mostFreqFormulaCount,
 			String mostFreqFormula,
 			int numCharts,
-			Boolean containsMacro,
+			boolean containsMacro,
+			boolean containsThirdPartyFunctions,
 			int numSheets,
 			int numFormulasThatArePartOfArray,
 			Map<String, Integer> functionCounts
@@ -590,6 +593,7 @@ public class AnalysisOutput {
 		this.mostFrequentFormula= mostFreqFormula;
 		this.numCharts = numCharts;
 		this.containsMacros = containsMacro;
+		this.containsThirdPartyFunctions = containsThirdPartyFunctions;
 		
 		this.countABS = nonNull(functionCounts.get("ABS"));
 		this.countACOS = nonNull(functionCounts.get("ACOS"));
@@ -2046,6 +2050,8 @@ public class AnalysisOutput {
 		builder.append(numSheets);
 		builder.append(", stackTrace=");
 		builder.append(stackTrace);
+		builder.append(", containsThirdPartyFunctions=");
+		builder.append(containsThirdPartyFunctions);
 		builder.append("]");
 		return builder.toString();
 	}

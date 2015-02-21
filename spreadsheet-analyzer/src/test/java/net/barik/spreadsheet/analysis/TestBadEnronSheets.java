@@ -51,6 +51,7 @@ public class TestBadEnronSheets {
 		assertEquals("R[0]C[19]", analysis.mostFrequentFormula);
 		assertEquals(0, analysis.numCharts);
 		assertFalse(analysis.containsMacros);
+		assertTrue(analysis.containsThirdPartyFunctions);
 		assertEquals(1363, analysis.countPlus);
 		assertEquals(933, analysis.countMinus);
 		assertEquals(0, analysis.countDivide);
@@ -113,6 +114,7 @@ public class TestBadEnronSheets {
 		assertEquals("Data!R[76]C[0]", analysis.mostFrequentFormula);
 		assertEquals(15, analysis.numCharts);
 		assertFalse(analysis.containsMacros);
+		assertFalse(analysis.containsThirdPartyFunctions);
 		assertEquals(208, analysis.countPlus);
 		assertEquals(2512, analysis.countMinus);
 		assertEquals(0, analysis.countDivide);
@@ -175,6 +177,7 @@ public class TestBadEnronSheets {
 		assertEquals("R[-1]C[0]-R[-3]C[0]", analysis.mostFrequentFormula);
 		assertEquals(0, analysis.numCharts);
 		assertFalse(analysis.containsMacros);
+		assertTrue(analysis.containsThirdPartyFunctions);
 		assertEquals(677, analysis.countPlus);
 		assertEquals(1286, analysis.countMinus);
 		assertEquals(0, analysis.countDivide);
@@ -264,6 +267,7 @@ public class TestBadEnronSheets {
 		assertEquals("R[0]C[-14]-R[-1]C[-14]", analysis.mostFrequentFormula);
 		assertEquals(0, analysis.numCharts);
 		assertFalse(analysis.containsMacros);
+		assertFalse(analysis.containsThirdPartyFunctions);
 		assertEquals(0, analysis.countPlus);
 		assertEquals(2442, analysis.countMinus);
 		assertEquals(0, analysis.countDivide);
@@ -321,6 +325,7 @@ public class TestBadEnronSheets {
 		assertEquals("IF(R[0]C1=R[-1]C1,R[-1]C[0]+R[0]C[-1],R[0]C[-1])", analysis.mostFrequentFormula);
 		assertEquals(0, analysis.numCharts);
 		assertFalse(analysis.containsMacros);
+		assertFalse(analysis.containsThirdPartyFunctions);
 		assertEquals(27789, analysis.countPlus);
 		assertEquals(6948, analysis.countMinus);
 		assertEquals(0, analysis.countDivide);

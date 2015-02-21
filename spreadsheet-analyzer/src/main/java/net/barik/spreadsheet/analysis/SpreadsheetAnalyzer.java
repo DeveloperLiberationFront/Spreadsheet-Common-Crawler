@@ -83,6 +83,8 @@ public class SpreadsheetAnalyzer {
 
 	private int numFormulasThatArePartOfArrayFormulaGroup;
 
+	private boolean containsThirdPartyFunctions;
+
 	private SpreadsheetAnalyzer(Workbook wb) {
 		setWorkBook(wb);
 	}
@@ -161,6 +163,7 @@ public class SpreadsheetAnalyzer {
 					analyzer.getMostFrequentlyOccurringFormula(), 
 					analyzer.getNumCharts(), 
 					analyzer.containsMacros, 
+					analyzer.containsThirdPartyFunctions,
 					analyzer.getNumSheets(),
 					analyzer.getNumFormulasThatArePartOfArrayFormulaGroup(),
 					analyzer.getFunctionCounts());
@@ -453,6 +456,7 @@ public class SpreadsheetAnalyzer {
 		}
 		catch (FormulaParseException fpe) {
 			if (formulaCell instanceof XSSFCell) {
+				this.containsThirdPartyFunctions = true;
 				XSSFCell xFormulaCell = (XSSFCell) formulaCell;
 				try {
 					//this bypasses the formula parsing which can fail for user-defined functions
@@ -632,6 +636,7 @@ public class SpreadsheetAnalyzer {
 		r1c1FormulaToCountMap.clear();	
 		formulaCellByReferenceMap.clear();
 		containsMacros = false;
+		containsThirdPartyFunctions = false;
 		currentSheet = null;
 		lastInputCellType=null;
 		formulasThatReferenceOtherCells=0;
@@ -971,6 +976,10 @@ public class SpreadsheetAnalyzer {
 		return Collections.max(c);
 	}
 	
+	public boolean containsThirdPartyFunctions() {
+		return containsThirdPartyFunctions;
+	}
+
 	public boolean containsChart() {
 		return getNumCharts() > 0;
 	}
