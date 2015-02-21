@@ -538,8 +538,10 @@ public class SpreadsheetAnalyzer {
 		oldSet.add(inputCellPackage);
 		formulaCellByReferenceMap.put(new SheetLocation(cell), inputCellPackage);
 	}
-
+	Set<String> functionsAlreadyFoundInThisCell = new HashSet<>();
+	
 	private void findFunctionsUsed(String formulaString) {
+		functionsAlreadyFoundInThisCell.clear();
 		Matcher m = findFunctions.matcher(formulaString);
 		while(m.find()) {
 			String function = m.group();
@@ -547,14 +549,23 @@ public class SpreadsheetAnalyzer {
 				continue;
 			}
 			function = function.substring(0, function.length()-1);
+			if (functionsAlreadyFoundInThisCell.contains(function)) {
+				continue;
+			}
+			functionsAlreadyFoundInThisCell.add(function);
 			functionCounts.put(function, incrementOrInitialize(functionCounts.get(function)));
 		}
+		functionsAlreadyFoundInThisCell.clear();
 		m = findOperations.matcher(formulaString);
 		while(m.find()) {
 			String operation = m.group();
 			if (isInQuotes(m.start(), formulaString)) {
 				continue;
 			}
+			if (functionsAlreadyFoundInThisCell.contains(operation)) {
+				continue;
+			}
+			functionsAlreadyFoundInThisCell.add(operation);
 			functionCounts.put(operation, incrementOrInitialize(functionCounts.get(operation)));
 		}		
 	}

@@ -176,7 +176,7 @@ public class TestEusesAnalysis_small {
 	@Test
 	public void testCountingFormulasThatReferenceOtherCells() throws Exception {
 		int count = analyzer.getFormulaReferencingOtherCells();
-		assertEquals(160, count);
+		assertEquals(161, count);
 	}
 	
 	@Test
@@ -239,7 +239,7 @@ public class TestEusesAnalysis_small {
 	@Test
 	public void testGetFormulasUsedOnce() {
 		int count = analyzer.getFormulasUsedOnce();
-		assertEquals(5, count);		//the AND, the two different Counts, The addition and =#ref
+		assertEquals(6, count);		//the AND, the two different Counts, The addition, =#ref, and the sum + sum
 	}
 	
 	@Test
