@@ -37,6 +37,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
+import org.apache.poi.poifs.filesystem.NPOIFSFileSystem;
 import org.apache.poi.poifs.filesystem.POIFSDocumentPath;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.formula.FormulaParseException;
@@ -139,7 +140,7 @@ public class SpreadsheetAnalyzer {
 		
 		SpreadsheetAnalyzer analyzer;
 		try {
-			analyzer = new SpreadsheetAnalyzer(WorkbookFactory.create(inputStreamForWorkbook));
+			analyzer = new SpreadsheetAnalyzer(createWorkBook(inputStreamForWorkbook));
 		} catch (InvalidFormatException e) {
 			throw new ParsingException("Problem reading in the workbook", e);
 		}
@@ -147,6 +148,15 @@ public class SpreadsheetAnalyzer {
 		analyzer.analyzeEUSESMetrics(inputStreamForMacro);
 
 		return analyzer;
+	}
+
+	private static Workbook createWorkBook(InputStream inputStreamForWorkbook) throws IOException, InvalidFormatException {
+
+		if (POIFSFileSystem.hasPOIFSHeader(inputStreamForWorkbook)) {
+			NPOIFSFileSystem nfs = new NPOIFSFileSystem(inputStreamForWorkbook);
+		    return WorkbookFactory.create(nfs);
+		}
+		return WorkbookFactory.create(inputStreamForWorkbook);
 	}
 	
 	public static AnalysisOutput doAnalysisAndGetObject(InputStream is, String corpusName, String identifier) {
