@@ -24,7 +24,7 @@ public class TestDifficultEnronSheets {
 		}
 		for (int i = 0; i < memoryLimit; i++) {
 			System.out.println("Memory test: " + (i + 1));
-			InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_1.xlsx");
+			InputStream is = getClass().getResourceAsStream("/bad_enron_1.xlsx");
 			assertNotNull(is);
 			AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad_enron_1.xlsx");
 			assertNotNull(analysis);
@@ -34,7 +34,7 @@ public class TestDifficultEnronSheets {
 
 	@Test
 	public void testDifficultEnron1() throws Exception {
-		InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_1.xlsx");
+		InputStream is = getClass().getResourceAsStream("/bad_enron_1.xlsx");
 		assertNotNull(is);
 		AnalysisOutputAndFormulas aof = SpreadsheetAnalyzer.doAnalysisAndGetObjectAndFormulas(is, "[test]", "bad_enron_1.xlsx");
 		AnalysisOutput analysis = aof.analysisObject;
@@ -106,7 +106,7 @@ public class TestDifficultEnronSheets {
 
 	@Test
 	public void testDifficultEnron2() throws Exception {
-		InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_2.xlsx");
+		InputStream is = getClass().getResourceAsStream("/bad_enron_2.xlsx");
 		assertNotNull(is);
 		AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad_enron_2.xlsx");
 		assertNotNull(analysis);
@@ -177,7 +177,7 @@ public class TestDifficultEnronSheets {
 
 	@Test
 	public void testDifficultEnron3() throws Exception {
-		InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_3.xlsx");
+		InputStream is = getClass().getResourceAsStream("/bad_enron_3.xlsx");
 		assertNotNull(is);
 		AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad_enron_3.xlsx");
 		assertNotNull(analysis);
@@ -251,7 +251,7 @@ public class TestDifficultEnronSheets {
 
 	@Test
 	public void testDifficultEnron4() throws Exception {
-		InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_4.xlsx");
+		InputStream is = getClass().getResourceAsStream("/bad_enron_4.xlsx");
 		assertNotNull(is);
 		AnalysisOutput analysis = SpreadsheetAnalyzer.doAnalysisAndGetObject(is, "[test]", "bad_enron_4.xlsx");
 		assertNotNull(analysis);
@@ -315,7 +315,7 @@ public class TestDifficultEnronSheets {
 	
 	@Test(timeout=120000)		//two minutes or less
 	public void testDifficultEnron5() throws Exception {
-		InputStream is = TestInputCounts.class.getResourceAsStream("/bad_enron_5.xlsx");
+		InputStream is = getClass().getResourceAsStream("/bad_enron_5.xlsx");
 		assertNotNull(is);
 		AnalysisOutputAndFormulas aof = SpreadsheetAnalyzer.doAnalysisAndGetObjectAndFormulas(is, "[test]", "bad_enron_5.xlsx");
 		AnalysisOutput analysis = aof.analysisObject;
@@ -379,5 +379,16 @@ public class TestDifficultEnronSheets {
 		assertEquals("2014-09-03T20:03:56Z", analysis.lastModifiedDate);
 		assertEquals("ect", analysis.company);
 		assertEquals("",analysis.keywords);
+	}
+	
+	@Test
+	public void testDifficultFuse1() throws Exception {
+		InputStream is = getClass().getResourceAsStream("/bad_fuse_1.xls");
+		assertNotNull(is);
+		AnalysisOutputAndFormulas aof = SpreadsheetAnalyzer.doAnalysisAndGetObjectAndFormulas(is, "[test]", "bad_fuse_1.xls");
+		AnalysisOutput analysis = aof.analysisObject;
+		assertNotNull(analysis);
+		System.out.println(analysis.stackTrace);
+		assertEquals("OK", analysis.errorNotification);
 	}
 }
