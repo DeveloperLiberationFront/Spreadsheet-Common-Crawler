@@ -17,4 +17,12 @@
       <module>spreadsheet-crawler</module>
       <module>spreadsheet-analyzer-hadoop</module>
    </modules>
+   
+   <repositories>
+    <repository>
+        <id>custom.poi</id>
+        <name>Custom POI</name>
+        <url>file:${project.basedir}/custom-poi</url>
+    </repository>
+</repositories>
 </project>

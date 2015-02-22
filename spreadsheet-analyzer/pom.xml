@@ -19,17 +19,17 @@
          <scope>test</scope>
       </dependency>
       <dependency>
-         <groupId>org.apache.poi</groupId>
+         <groupId>net.barik</groupId>
          <artifactId>poi</artifactId>
          <version>3.11</version>
       </dependency>
       <dependency>
-         <groupId>org.apache.poi</groupId>
+         <groupId>net.barik</groupId>
          <artifactId>poi-ooxml</artifactId>
          <version>3.11</version>
       </dependency>
       <dependency>
-         <groupId>org.apache.poi</groupId>
+         <groupId>net.barik</groupId>
          <artifactId>poi-scratchpad</artifactId>
          <version>3.11</version>
       </dependency>
