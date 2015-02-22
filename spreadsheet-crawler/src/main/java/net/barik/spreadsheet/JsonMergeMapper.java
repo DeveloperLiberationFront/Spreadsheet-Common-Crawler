@@ -39,6 +39,8 @@ public class JsonMergeMapper extends Mapper<LongWritable, Text, Text, Text> {
         String exportKeyPrefix = conf.get("export.keyprefix", "cc-warc-stage4-filter/");
 
         String tmpDirectory = conf.get("tmp.directory", "/mnt/");
+        
+        String nameSpace = conf.get("namespace", "Tika");
 
         RecordIO importSourceIO;
         RecordIO importDestIO;
@@ -69,7 +71,7 @@ public class JsonMergeMapper extends Mapper<LongWritable, Text, Text, Text> {
                 JSONObject jsonSource = new JSONObject(source);
                 JSONObject jsonDest = new JSONObject(dest);
 
-                JSONObject result = JsonMergeModel.merge(jsonSource, jsonDest, "Tika");
+                JSONObject result = JsonMergeModel.merge(jsonSource, jsonDest, nameSpace);
                 model.export(resourceKey, result);
 
             }
