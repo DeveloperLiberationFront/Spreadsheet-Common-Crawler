@@ -57,4 +57,16 @@
          </plugin>
       </plugins>
    </build>
+      <repositories>
+    <repository>
+	<releases>
+        <enabled>true</enabled>
+        <checksumPolicy>ignore</checksumPolicy>
+    </releases>
+        <id>project.local</id>
+        <name>Custom POI</name>
+        <url>file://${basedir}/../custom-poi</url>
+    </repository>
+</repositories>
+   
 </project>
