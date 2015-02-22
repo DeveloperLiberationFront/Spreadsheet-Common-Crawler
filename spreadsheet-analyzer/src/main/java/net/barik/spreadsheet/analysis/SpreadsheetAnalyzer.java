@@ -95,7 +95,9 @@ public class SpreadsheetAnalyzer {
 
 	private boolean containsThirdPartyFunctions;
 
-	private DocumentMetadata documentMetadata;
+	private DocumentMetadata documentMetadata = new DocumentMetadata();
+
+	private String problemsWithMetadataAndMacros;
 
 	private SpreadsheetAnalyzer(Workbook wb) {
 		setWorkBook(wb);
@@ -188,7 +190,8 @@ public class SpreadsheetAnalyzer {
 					analyzer.getNumSheets(),
 					analyzer.getNumFormulasThatArePartOfArrayFormulaGroup(),
 					analyzer.getFunctionCounts(),
-					analyzer.getDocumentMetadata());
+					analyzer.getDocumentMetadata(),
+					analyzer.problemsWithMetadataAndMacros);
 			
 			return new AnalysisOutputAndFormulas(analysisOutput, new HashSet<>(analyzer.r1c1FormulaToCountMap.keySet()));
 		}
@@ -262,16 +265,20 @@ public class SpreadsheetAnalyzer {
 			this.containsMacros = xwb.isMacroEnabled();
 			getMetaData(xwb);
 		} else if (POIFSFileSystem.hasPOIFSHeader(inputStream)) {
-			// Looking at HSSF
-			POIFSReader r = new POIFSReader();
-			MacroListener ml = new MacroListener();
-			MetadataListener metadata = new MetadataListener();
-			r.registerListener(ml);
-			r.registerListener(metadata,"\005SummaryInformation");
-			r.registerListener(metadata,"\005DocumentSummaryInformation");
-			r.read(inputStream);
-			this.containsMacros = ml.isMacroDetected();
-			this.documentMetadata = metadata.metadata ;
+			try {
+				// Looking at HSSF
+				POIFSReader r = new POIFSReader();
+				MacroListener ml = new MacroListener();
+				MetadataListener metadata = new MetadataListener();
+				r.registerListener(ml);
+				r.registerListener(metadata,"\005SummaryInformation");
+				r.registerListener(metadata,"\005DocumentSummaryInformation");
+				r.read(inputStream);
+				this.containsMacros = ml.isMacroDetected();
+				this.documentMetadata = metadata.metadata ;
+			} catch (IOException io){	// this happens with some malformed documents
+				this.problemsWithMetadataAndMacros = io.toString()+" : "+Arrays.toString(io.getStackTrace());
+			}
 		}
 		inputStream.close();
 	}

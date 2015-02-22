@@ -526,6 +526,8 @@ public class AnalysisOutput {
 
 	public String keywords;
 
+	public String problemsWithMetadataAndMacros;
+
 	
 	public AnalysisOutput(String corpusName, String identifier,
 			Map<InputCellType, Integer> inputCounts,
@@ -548,7 +550,7 @@ public class AnalysisOutput {
 			int numSheets,
 			int numFormulasThatArePartOfArray,
 			Map<String, Integer> functionCounts,
-			DocumentMetadata metadata
+			DocumentMetadata metadata, String problemsWithMetadataAndMacros
 			){
 
 		this.corpusName = corpusName;
@@ -564,6 +566,7 @@ public class AnalysisOutput {
 		this.lastModifiedDate= metadata.modifiedOn;
 		this.company= metadata.company;
 		this.keywords= metadata.keywords;
+		this.problemsWithMetadataAndMacros = problemsWithMetadataAndMacros;
 		
 		//INPUT CELLS
 		this.totalInputCells = total(inputCounts);
@@ -2091,6 +2094,8 @@ public class AnalysisOutput {
 		builder.append(company);
 		builder.append(", keywords=");
 		builder.append(keywords);
+		builder.append(", problemsWithMetadataAndMacros=");
+		builder.append(problemsWithMetadataAndMacros);
 		builder.append("]");
 		return builder.toString();
 	}

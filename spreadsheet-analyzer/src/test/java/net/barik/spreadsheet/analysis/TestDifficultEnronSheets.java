@@ -388,7 +388,10 @@ public class TestDifficultEnronSheets {
 		AnalysisOutputAndFormulas aof = SpreadsheetAnalyzer.doAnalysisAndGetObjectAndFormulas(is, "[test]", "bad_fuse_1.xls");
 		AnalysisOutput analysis = aof.analysisObject;
 		assertNotNull(analysis);
-		System.out.println(analysis.stackTrace);
 		assertEquals("OK", analysis.errorNotification);
+		assertEquals(1118, analysis.totalInputCells);
+		assertEquals(340, analysis.integerInputCells);
+		assertEquals(778, analysis.stringInputCells);
+		assertEquals(0, analysis.totalFormulas);
 	}
 }
