@@ -184,9 +184,17 @@ public class TestEusesAnalysis_r1c1 {
 	    
 	    Cell O17 = row.createCell(14);
 	    O17.setCellFormula("AVERAGE($20:108)");
-	    //test multi row range with on achor
+	    //test multi row range with on anchor
 	    assertEquals("AVERAGE(R20:R[91])",analyzer.convertToR1C1(O17));
 	    
+	    Cell P17 = row.createCell(15);
+	    P17.setCellFormula("SUM(A2:CHOOSE(2,A3,A4,A5))");
+	    assertEquals("SUM(R[-15]C[-15]:CHOOSE(2,R[-14]C[-15],R[-13]C[-15],R[-12]C[-15]))",analyzer.convertToR1C1(P17));
+	    
+	    Cell Q17 = row.createCell(16);
+	    Q17.setCellFormula("SUM(CHOOSE(2,B3,B4,B5):B2)");
+	    assertEquals("SUM(CHOOSE(2,R[-14]C[-15],R[-13]C[-15],R[-12]C[-15]):R[-15]C[-15])",analyzer.convertToR1C1(Q17));
+
 	    wb.close();
 	}
 	
