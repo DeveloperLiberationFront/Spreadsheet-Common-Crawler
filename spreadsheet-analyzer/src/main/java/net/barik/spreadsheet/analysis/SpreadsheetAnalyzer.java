@@ -452,7 +452,12 @@ public class SpreadsheetAnalyzer {
 					continue;
 				}
 				//look for colon to detect range
-				if (maybeCell.indexOf(':') == -1) {
+				boolean hasColon = maybeCell.indexOf(':') != -1;
+				if (hasColon && m.end() < cellFormula.length() && cellFormula.charAt(m.end()) == '(') {
+					maybeCell = maybeCell.substring(0, maybeCell.indexOf(':'));
+					hasColon = false;
+				}
+				if (!hasColon) {
 					if (maybeCell.matches("[A-Z]+")) {	// skip LOG, SUM and other functions
 						continue;
 					}
