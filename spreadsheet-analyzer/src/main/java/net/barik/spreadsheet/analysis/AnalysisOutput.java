@@ -1070,7 +1070,7 @@ public class AnalysisOutput {
 
 		this.countPlus = nonNull(functionCounts.get("+"));
 		this.countMinus = nonNull(functionCounts.get("-"));
-		this.countDivide = nonNull(functionCounts.get("\\"));
+		this.countDivide = nonNull(functionCounts.get("/"));
 		this.countMultiply = nonNull(functionCounts.get("*"));
 	}
 	

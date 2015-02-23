@@ -75,7 +75,7 @@ public class SpreadsheetAnalyzer {
 	private boolean containsMacros = false;
 	
 	private final Pattern findFunctions = Pattern.compile("[A-Z][A-Z\\.0-9]*\\(");
-	private final Pattern findOperations = Pattern.compile("["+Pattern.quote("+*\\-") + "]");
+	private final Pattern findOperations = Pattern.compile("["+Pattern.quote("+*/-") + "]");
 	
 	private Pattern findPotentialCellReferences;
 
@@ -90,6 +90,8 @@ public class SpreadsheetAnalyzer {
 	private Map<String, Integer> r1c1FormulaToCountMap = new HashMap<>();
 	
 	private int formulasReferencedByOtherCells;
+
+	private Set<String> functionsAlreadyFoundInThisCell = new HashSet<>();
 
 	private int numFormulasThatArePartOfArrayFormulaGroup;
 
@@ -637,8 +639,6 @@ public class SpreadsheetAnalyzer {
 		oldSet.add(inputCellPackage);
 		formulaCellByReferenceMap.put(new SheetLocation(cell), inputCellPackage);
 	}
-	Set<String> functionsAlreadyFoundInThisCell = new HashSet<>();
-	
 	private void findFunctionsUsed(String formulaString) {
 		functionsAlreadyFoundInThisCell.clear();
 		Matcher m = findFunctions.matcher(formulaString);
