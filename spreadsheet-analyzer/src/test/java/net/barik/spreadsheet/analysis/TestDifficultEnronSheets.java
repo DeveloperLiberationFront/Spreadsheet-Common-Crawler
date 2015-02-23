@@ -78,7 +78,7 @@ public class TestDifficultEnronSheets {
 		assertTrue(analysis.containsThirdPartyFunctions);
 		assertEquals(1363, analysis.countPlus);
 		assertEquals(933, analysis.countMinus);
-		assertEquals(0, analysis.countDivide);
+		assertEquals(848, analysis.countDivide);
 		assertEquals(531, analysis.countMultiply);
 		assertEquals(0, analysis.numFormulasThatArePartOfArrayFormulaGroup);
 		
@@ -220,7 +220,7 @@ public class TestDifficultEnronSheets {
 		assertTrue(analysis.containsThirdPartyFunctions);
 		assertEquals(677, analysis.countPlus);
 		assertEquals(1286, analysis.countMinus);
-		assertEquals(0, analysis.countDivide);
+		assertEquals(142, analysis.countDivide);
 		assertEquals(629, analysis.countMultiply);
 		
 		assertEquals(690, analysis.countIF);

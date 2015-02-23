@@ -170,13 +170,13 @@ public class TestEusesAnalysis_small {
 		Map<SpreadsheetAnalyzer.FunctionEvalType, Integer> counts = analyzer.getFormulaCellCounts();
 		Integer count = counts.get(FunctionEvalType.INTEGER);
 		assertNotNull(count);
-		assertEquals(146, count.intValue());
+		assertEquals(149, count.intValue());
 	}
 	
 	@Test
 	public void testCountingFormulasThatReferenceOtherCells() throws Exception {
 		int count = analyzer.getFormulaReferencingOtherCells();
-		assertEquals(161, count);
+		assertEquals(165, count);
 	}
 	
 	@Test
@@ -190,7 +190,7 @@ public class TestEusesAnalysis_small {
         Map<SpreadsheetAnalyzer.FunctionEvalType, Integer> counts = analyzer.getFormulaCellCounts();
         Integer count = counts.get(FunctionEvalType.NON_INTEGER_NUMBER);
         assertNotNull(count);
-        assertEquals(13, count.intValue());
+        assertEquals(14, count.intValue());
     }
     
     @Test
@@ -239,7 +239,8 @@ public class TestEusesAnalysis_small {
 	@Test
 	public void testGetFormulasUsedOnce() {
 		int count = analyzer.getFormulasUsedOnce();
-		assertEquals(6, count);		//the AND, the two different Counts, The addition, =#ref, and the sum + sum
+		assertEquals(10, count);		//the AND, the two different Counts, The addition, =#ref, and the sum + sum
+									//the addition, the multiplication, the subtraction, the division
 	}
 	
 	@Test
@@ -264,5 +265,14 @@ public class TestEusesAnalysis_small {
 	@Test
 	public void testNoThirdPartyFunctions() throws Exception {
 		assertFalse(analyzer.containsThirdPartyFunctions());
+	}
+	
+	@Test
+	public void testOperations() throws Exception {
+		Map<String, Integer> counts = analyzer.getFunctionCounts();
+		assertEquals(Integer.valueOf(3), counts.get("+"));
+		assertEquals(Integer.valueOf(1), counts.get("-"));
+		assertEquals(Integer.valueOf(1), counts.get("/"));
+		assertEquals(Integer.valueOf(1), counts.get("-"));
 	}
 }
