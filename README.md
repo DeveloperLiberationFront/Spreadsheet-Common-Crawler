@@ -40,3 +40,9 @@ We have found some tweaks to the EMR configurations help the jobs complete faste
  **Analyzing spreadsheets**: 
  - Hadoop configuration: `-m mapred.map.tasks.speculative.execution=false -m mapred.reduce.tasks=0 -c fs.s3n.ssl.enabled=false -m io.file.buffer.size=65536 -m mapreduce.task.timeout=2400000 -m mapreduce.map.memory.mb=5500 -m mapreduce.map.java.opts=-Xmx5200m -y yarn.scheduler.maximum-allocation-mb=6000 -y yarn.nodemanager.resource.cpu-vcores=1 -y yarn.nodemanager.resource.memory-mb=7000`
  - Custom Jar arguments: `-D import.bucket="myBucket" -D export.bucket="myBucket" -D import.keyprefix=dir/with/spreadsheets/ -D export.keyprefix=analysis/output/ -D corpus.name=Fuse s3n://location/to/list/of/spreadsheets s3n://location/for/logs`
+
+
+
+###License
+We modified the 3.11 version of Apache POI to allow it to deal with slightly malformed spreadsheets.  We include the compiled, modified jars in this repo (see NOTICE).
+All software is released under the BSD license (see LICENSE).
